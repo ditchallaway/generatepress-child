@@ -1,0 +1,94 @@
+/*
+     Theme Name:   BrokerTricks
+     Author:       Bot
+     Template:     generatepress
+     Version:      1.0.0
+*/
+
+/* --- Layout and Spacing Adjustments --- */
+
+/* .gb-no-top-padding {
+    padding-top: 0 !important;
+} */
+
+/* .gb-no-bottom-padding {
+    padding-bottom: 0 !important;
+} */
+
+/* .gb-extra-wide {
+    max-width: 1200px;  /* Adjust to your desired width */
+} */
+
+/* .gb-sticky-desktop {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 50px; /* Adjust based on your header height */
+    z-index: 10;
+} */
+
+
+/* --- Typography and Appearance --- */
+
+/* .text-large-caps {
+    font-size: 1.1em;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+} */
+
+/* .text-muted {
+    color: #6c757d;
+    font-size: 0.9em;
+} */
+
+/* .highlight-box {
+    background-color: #f7f7f7;
+    border-left: 5px solid #0073e6;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+} */
+
+/* .shadow-light {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+} */
+
+
+/* --- Block Specific Overrides (E.g., for Buttons) --- */
+
+/* .button-secondary {
+    background-color: #6c757d;
+    color: #ffffff;
+    border-color: #6c757d;
+    transition: all 0.2s ease;
+}
+.button-secondary:hover {
+    background-color: #5a6268;
+    border-color: #545b62;
+} */
+
+/* .button-ghost {
+    background-color: transparent;
+    border: 2px solid #0073e6;
+    color: #0073e6;
+}
+.button-ghost:hover {
+    background-color: #0073e6;
+    color: #ffffff;
+} */
+
+/* --- Mobile/Responsive Adjustments (Use in conjunction with GenerateBlocks Hide settings) --- */
+
+/* .mobile-center-text {
+    text-align: center;
+}
+@media (max-width: 768px) {
+    .mobile-center-text {
+        text-align: center !important;
+    }
+} */
+
+/* .mobile-reverse-grid {
+    /* Use for GB Grids to reverse column order on mobile */
+    /* display: flex;
+    flex-direction: column-reverse;
+} */
