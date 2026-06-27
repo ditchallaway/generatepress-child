@@ -25,6 +25,7 @@ get_header(); ?>
             ?>
             <!-- Container for the graphics -->
             <div class="moonshot-gallery-container"></div>
+            <!-- Cache Debug Timestamp: <?php echo date('Y-m-d H:i:s'); ?> -->
         </div>
 	</main>
 </div>
