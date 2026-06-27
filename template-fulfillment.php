@@ -54,14 +54,94 @@ document.addEventListener("DOMContentLoaded", () => {
     
     img.onload = () => {
         // The image loaded successfully, render the custom assets
+        
+        const images = [
+            { name: "Front Elevation", file: "front_elevation.png" },
+            { name: "Top Down", file: "top_down.png" }
+        ];
+
+        let galleryHtml = images.map(img => `
+            <div class="moonshot-item">
+                <img src="${baseUrl}/cust_${custId}/order_${orderId}/${img.file}" alt="${img.name}" />
+                <div style="padding: 10px 15px 0; font-weight: bold;">${img.name}</div>
+                <div class="moonshot-actions">
+                    <button class="moonshot-btn disabled" disabled title="Coming Soon">MLS/Web Size</button>
+                    <button class="moonshot-btn disabled" disabled title="Coming Soon">Print Size</button>
+                </div>
+            </div>
+        `).join('');
+
         container.innerHTML = `
-            <div style="display: grid; gap: 20px;">
-                <img src="${baseUrl}/cust_${custId}/order_${orderId}/front_elevation.png" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
-                <img src="${baseUrl}/cust_${custId}/order_${orderId}/top_down.png" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
-                
-                <a href="${baseUrl}/cust_${custId}/order_${orderId}/all_assets.zip" download="assets.zip" style="background: var(--button, #1e73be); color: var(--contrast, #ffffff); padding: 15px; text-align: center; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 10px; display: block;">
-                    Download ZIP Archive
-                </a>
+            <style>
+            .moonshot-gallery {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+            .moonshot-item {
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+                overflow: hidden;
+                display: flex;
+                flex-direction: column;
+            }
+            .moonshot-item img {
+                width: 100%;
+                height: auto;
+                display: block;
+                border-bottom: 1px solid #eee;
+            }
+            .moonshot-actions {
+                padding: 15px;
+                display: flex;
+                gap: 10px;
+            }
+            .moonshot-btn {
+                flex: 1;
+                background: var(--button, #1e73be);
+                color: var(--contrast, #ffffff);
+                padding: 10px;
+                text-align: center;
+                border-radius: 4px;
+                text-decoration: none;
+                font-size: 14px;
+                font-weight: bold;
+                cursor: pointer;
+                border: none;
+            }
+            .moonshot-btn:disabled, .moonshot-btn.disabled {
+                background: #ccc;
+                color: #666;
+                cursor: not-allowed;
+            }
+            .moonshot-header {
+                text-align: center;
+                margin-bottom: 30px;
+            }
+            .moonshot-download-all {
+                display: flex;
+                gap: 20px;
+                justify-content: center;
+                margin-top: 20px;
+                padding-top: 30px;
+                border-top: 1px solid #eee;
+            }
+            </style>
+            
+            <div class="moonshot-header">
+                <h2>Your Assets are Ready!</h2>
+                <p>Preview and download your images below.</p>
+            </div>
+            
+            <div class="moonshot-gallery">
+                ${galleryHtml}
+            </div>
+            
+            <div class="moonshot-download-all">
+                <button class="moonshot-btn disabled" disabled style="max-width: 250px;" title="Coming Soon">Download All (MLS/Web)</button>
+                <button class="moonshot-btn disabled" disabled style="max-width: 250px;" title="Coming Soon">Download All (Print Size)</button>
             </div>
         `;
     };
