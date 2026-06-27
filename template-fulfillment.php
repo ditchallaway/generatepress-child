@@ -37,49 +37,48 @@ get_footer();
 ?>
 
 <script>
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
     const custId = "<?php echo esc_js($current_user_id); ?>";
     const orderId = "<?php echo esc_js($order_id); ?>";
     
     // Using your exact custom R2 domain
     const baseUrl = "https://pics.brokertricks.com"; 
     
-    // The gatekeeper file n8n drops when finished
-    const manifestUrl = `${baseUrl}/cust_${custId}/order_${orderId}/ready.txt`;
+    // We check if the main image loads instead of using fetch() to bypass any CORS restrictions on the R2 bucket
+    const testImageUrl = `${baseUrl}/cust_${custId}/order_${orderId}/front_elevation.png`;
     const container = document.querySelector('.moonshot-gallery-container');
     
     if (!container) return;
 
-    try {
-        // Check if the ready.txt file exists
-        const response = await fetch(manifestUrl, { method: 'HEAD' });
-        
-        if (response.ok) {
-            // The ready.txt file exists, render the custom assets
-            container.innerHTML = `
-                <div style="display: grid; gap: 20px;">
-                    <img src="${baseUrl}/cust_${custId}/order_${orderId}/front_elevation.png" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
-                    <img src="${baseUrl}/cust_${custId}/order_${orderId}/top_down.png" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
-                    
-                    <a href="${baseUrl}/cust_${custId}/order_${orderId}/all_assets.zip" style="background: var(--button, #1e73be); color: var(--contrast, #ffffff); padding: 15px; text-align: center; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 10px; display: block;">
-                        Download ZIP Archive
-                    </a>
-                </div>
-            `;
-        } else {
-            // The ready.txt file is missing, n8n is still working
-            container.innerHTML = `
-                <div style="text-align: center; padding: 60px 20px; background: var(--base-3, #f5f5f5); border-radius: 12px;">
-                    <h3 style="margin-bottom: 15px;">Generating your graphics...</h3>
-                    <p>We are rendering your custom assets right now. This page will automatically refresh when they are ready.</p>
-                </div>
-            `;
-            // Auto-refresh the page every 15 seconds to check again
-            setTimeout(() => location.reload(), 15000);
-        }
-    } catch (error) {
-        console.error("Error checking R2 status:", error);
-        container.innerHTML = `<p style="color: red;">Error connecting to asset server. Please try refreshing the page.</p>`;
-    }
+    const img = new Image();
+    
+    img.onload = () => {
+        // The image loaded successfully, render the custom assets
+        container.innerHTML = `
+            <div style="display: grid; gap: 20px;">
+                <img src="${baseUrl}/cust_${custId}/order_${orderId}/front_elevation.png" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
+                <img src="${baseUrl}/cust_${custId}/order_${orderId}/top_down.png" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
+                
+                <a href="${baseUrl}/cust_${custId}/order_${orderId}/all_assets.zip" style="background: var(--button, #1e73be); color: var(--contrast, #ffffff); padding: 15px; text-align: center; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 10px; display: block;">
+                    Download ZIP Archive
+                </a>
+            </div>
+        `;
+    };
+    
+    img.onerror = () => {
+        // The image failed to load (probably 404 because n8n is still working)
+        container.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px; background: var(--base-3, #f5f5f5); border-radius: 12px;">
+                <h3 style="margin-bottom: 15px;">Generating your graphics...</h3>
+                <p>We are rendering your custom assets right now. This page will automatically refresh when they are ready.</p>
+            </div>
+        `;
+        // Auto-refresh the page every 15 seconds to check again
+        setTimeout(() => location.reload(), 15000);
+    };
+    
+    // Trigger the load
+    img.src = testImageUrl;
 });
 </script>
