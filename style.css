@@ -16,13 +16,13 @@
 } */
 
 /* .gb-extra-wide {
-    max-width: 1200px;  /* Adjust to your desired width */
+    max-width: 1200px;  /* Adjust to your desired width 
 } */
 
 /* .gb-sticky-desktop {
     position: -webkit-sticky;
     position: sticky;
-    top: 50px; /* Adjust based on your header height */
+    top: 50px;
     z-index: 10;
 } */
 
@@ -86,9 +86,10 @@
         text-align: center !important;
     }
 } */
+/*
+ .mobile-reverse-grid {
 
-/* .mobile-reverse-grid {
-    /* Use for GB Grids to reverse column order on mobile */
-    /* display: flex;
+     display: flex;
     flex-direction: column-reverse;
-} */
+}
+/*
