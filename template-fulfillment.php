@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <img src="${baseUrl}/cust_${custId}/order_${orderId}/front_elevation.png" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
                 <img src="${baseUrl}/cust_${custId}/order_${orderId}/top_down.png" style="width: 100%; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);" />
                 
-                <a href="${baseUrl}/cust_${custId}/order_${orderId}/all_assets.zip" style="background: var(--button, #1e73be); color: var(--contrast, #ffffff); padding: 15px; text-align: center; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 10px; display: block;">
+                <a href="${baseUrl}/cust_${custId}/order_${orderId}/all_assets.zip" download="assets.zip" style="background: var(--button, #1e73be); color: var(--contrast, #ffffff); padding: 15px; text-align: center; border-radius: 8px; text-decoration: none; font-weight: bold; margin-top: 10px; display: block;">
                     Download ZIP Archive
                 </a>
             </div>
