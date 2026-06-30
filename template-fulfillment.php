@@ -5,7 +5,7 @@
 
 // Security Gate
 $url_cust_id = isset($_GET['cust']) ? intval($_GET['cust']) : 0;
-$order_id = isset($_GET['order']) ? sanitize_text_field($_GET['order']) : '';
+$order_id = isset($_GET['sc_order']) ? sanitize_text_field($_GET['order']) : '';
 $current_user_id = get_current_user_id();
 
 if ($url_cust_id === 0 || $url_cust_id !== $current_user_id) {
