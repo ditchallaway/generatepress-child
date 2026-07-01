@@ -13,12 +13,9 @@ function enqueue_jquery() {
 add_action('wp_footer', function() {
     // Only run on the dashboard page
     if (!is_page('dash')) return; 
-    
-    $user_id = get_current_user_id();
     ?>
     <script>
     (function() {
-        const custId = "<?php echo esc_js($user_id); ?>";
         
         // 1. THE NUCLEAR CLICK INTERCEPTOR
         // Attaching to 'window' with 'true' (Capture Phase) fires BEFORE SureCart's scripts
@@ -41,8 +38,8 @@ add_action('wp_footer', function() {
                 let finalUrl = link.href;
                 
                 // Prevent duplicate parameters if clicked multiple times
-                if (!finalUrl.includes('cust=')) {
-                    finalUrl += `${separator}cust=${custId}&order=${orderId}`;
+                if (!finalUrl.includes('sc_order=')) {
+                    finalUrl += `${separator}sc_order=${orderId}`;
                 }
                 
                 // Force a hard redirect, bypassing any SureCart routing/download logic

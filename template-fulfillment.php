@@ -3,14 +3,28 @@
  * Template Name: Fulfillment Page
  */
 
-// Security Gate
-$url_cust_id = isset($_GET['cust']) ? intval($_GET['cust']) : 0;
-$order_id = isset($_GET['sc_order']) ? sanitize_text_field($_GET['order']) : '';
+// ── Auth Gate ─────────────────────────────────────────────────────
+// SureCart customers have real WP accounts (role: sc_customer).
+// We trust the WP auth cookie — no need for a 'cust' URL parameter.
 $current_user_id = get_current_user_id();
 
-if ($url_cust_id === 0 || $url_cust_id !== $current_user_id) {
-    wp_die('Unauthorized access. Please return to your dashboard and click the download link directly.');
+if ( $current_user_id === 0 ) {
+    // Not logged in — send to WP login and redirect back here afterwards
+    auth_redirect();
+    exit;
 }
+
+// ── URL Parameters ────────────────────────────────────────────────
+// Order ID arrives as 'sc_order' (direct from checkout) or 'order' (from dashboard interceptor)
+$order_id = '';
+if ( ! empty( $_GET['sc_order'] ) ) {
+    $order_id = sanitize_text_field( $_GET['sc_order'] );
+} elseif ( ! empty( $_GET['order'] ) ) {
+    $order_id = sanitize_text_field( $_GET['order'] );
+}
+
+// Pack type: single (overhead_only), double (overhead_north), full
+$pack = isset( $_GET['pack'] ) ? sanitize_text_field( $_GET['pack'] ) : '';
 
 get_header(); ?>
 
@@ -25,7 +39,6 @@ get_header(); ?>
             ?>
             <!-- Container for the graphics -->
             <div class="moonshot-gallery-container"></div>
-            <!-- Cache Debug Timestamp: <?php echo date('Y-m-d H:i:s'); ?> -->
         </div>
 	</main>
 </div>
@@ -39,38 +52,172 @@ get_footer();
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-    const custId = "<?php echo esc_js($current_user_id); ?>";
-    const orderId = "<?php echo esc_js($order_id); ?>";
-    
-    // Using your exact custom R2 domain
-    const baseUrl = "https://pics.brokertricks.com"; 
-    
-    // We check if the main image loads instead of using fetch() to bypass any CORS restrictions on the R2 bucket
-    const testImageUrl = `${baseUrl}/cust_${custId}/order_${orderId}/front_elevation.png`;
-    const container = document.querySelector('.moonshot-gallery-container');
-    
-    if (!container) return;
+    const custId  = "<?php echo esc_js( $current_user_id ); ?>";
+    const orderId = "<?php echo esc_js( $order_id ); ?>";
+    const pack    = "<?php echo esc_js( $pack ); ?>";
 
-    const img = new Image();
-    
-    img.onload = () => {
-        // The image loaded successfully, render the custom assets
-        
-        const images = [
-            { name: "Front Elevation", file: "front_elevation.png" },
-            { name: "Top Down", file: "top_down.png" }
-        ];
+    // R2 bucket base URL
+    const baseUrl = "https://pics.brokertricks.com";
 
-        let galleryHtml = images.map(img => `
+    // ── Pack → Directions mapping ─────────────────────────────────
+    // Must mirror editor/js/config.js PACK_MAP (minus 'map' — that's internal)
+    const PACK_MAP = {
+        overhead_only:  { label: "Overhead Only",      directions: ["overhead"] },
+        overhead_north: { label: "Overhead + North",   directions: ["overhead", "north"] },
+        full:           { label: "Full (5 Directions)", directions: ["overhead", "north", "east", "south", "west"] },
+    };
+
+    const DIRECTION_LABELS = {
+        overhead: "Overhead",
+        north:    "North",
+        east:     "East",
+        south:    "South",
+        west:     "West",
+    };
+
+    const container = document.querySelector(".moonshot-gallery-container");
+    if (!container || !orderId) {
+        if (container && !orderId) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 60px 20px; background: var(--base-3, #f5f5f5); border-radius: 12px;">
+                    <h3 style="margin-bottom: 15px;">Missing Order ID</h3>
+                    <p>We couldn't find your order. Please return to your dashboard and use the download link.</p>
+                </div>`;
+        }
+        return;
+    }
+
+    // R2 path prefix
+    const pathPrefix = `${baseUrl}/cust_${custId}/order_${orderId}`;
+
+    // ── Readiness Check via ready.txt ─────────────────────────────
+    // The n8n workflow uploads ready.txt to R2 after all rendering is complete.
+    const readyUrl = `${pathPrefix}/ready.txt?t=${Date.now()}`;
+
+    const readyImg = new Image();
+
+    // We use an Image() object for the probe because a cross-origin fetch()
+    // may be blocked by CORS, but <img> requests always go through.
+    // ready.txt isn't an image, so onload won't fire — but we can also use
+    // fetch with no-cors mode to detect existence.
+    checkReady();
+
+    function checkReady() {
+        fetch(readyUrl, { mode: "no-cors" })
+            .then(response => {
+                // no-cors gives opaque response (status 0).
+                // If the resource doesn't exist, the browser gets a network error
+                // that goes to .catch(). A successful opaque response means the
+                // resource exists.
+                // However, opaque responses always return status 0 and type "opaque"
+                // regardless of the actual HTTP status. We need another approach.
+                //
+                // Fallback: Try loading the first expected image instead.
+                probeFirstImage();
+            })
+            .catch(() => {
+                showWaiting();
+            });
+    }
+
+    function probeFirstImage() {
+        // Determine which image to probe. If pack is known, use first direction.
+        // Otherwise default to 'overhead' which is present in all packs.
+        const probeDir = "overhead";
+        const probeUrl = `${pathPrefix}/property_${probeDir}.png?t=${Date.now()}`;
+
+        const img = new Image();
+        img.onload = () => renderGallery();
+        img.onerror = () => showWaiting();
+        img.src = probeUrl;
+    }
+
+    function showWaiting() {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px; background: var(--base-3, #f5f5f5); border-radius: 12px;">
+                <h3 style="margin-bottom: 15px;">Generating your graphics...</h3>
+                <p>We are rendering your custom assets right now. This page will automatically refresh when they are ready.</p>
+            </div>`;
+        setTimeout(() => location.reload(), 15000);
+    }
+
+    function renderGallery() {
+        // Resolve the pack config. If pack param is provided, use it.
+        // Otherwise, probe all possible images to determine the pack dynamically.
+        const packConfig = PACK_MAP[pack];
+
+        if (packConfig) {
+            buildGallery(packConfig.directions, packConfig.label);
+        } else {
+            // Pack not provided — detect which images exist
+            detectAndRender();
+        }
+    }
+
+    function detectAndRender() {
+        const allDirs = ["overhead", "north", "east", "south", "west"];
+        const found = [];
+        let checked = 0;
+
+        allDirs.forEach(dir => {
+            const img = new Image();
+            img.onload = () => {
+                found.push(dir);
+                checked++;
+                if (checked === allDirs.length) finalize();
+            };
+            img.onerror = () => {
+                checked++;
+                if (checked === allDirs.length) finalize();
+            };
+            img.src = `${pathPrefix}/property_${dir}.png?t=${Date.now()}`;
+        });
+
+        function finalize() {
+            // Sort found directions in the canonical order
+            const order = ["overhead", "north", "east", "south", "west"];
+            found.sort((a, b) => order.indexOf(a) - order.indexOf(b));
+
+            const label = found.length === 1 ? "Overhead Only"
+                        : found.length === 2 ? "Overhead + North"
+                        : `Full (${found.length} Directions)`;
+
+            buildGallery(found, label);
+        }
+    }
+
+    function buildGallery(directions, packLabel) {
+        const ts = Date.now();
+
+        // Build image cards
+        const imageCards = directions.map(dir => `
             <div class="moonshot-item">
-                <img src="${baseUrl}/cust_${custId}/order_${orderId}/${img.file}" alt="${img.name}" />
-                <div style="padding: 10px 15px 0; font-weight: bold;">${img.name}</div>
+                <img src="${pathPrefix}/property_${dir}.png?t=${ts}" alt="${DIRECTION_LABELS[dir] || dir}" />
+                <div style="padding: 10px 15px 0; font-weight: bold;">${DIRECTION_LABELS[dir] || dir}</div>
                 <div class="moonshot-actions">
-                    <button class="moonshot-btn disabled" disabled title="Coming Soon">MLS/Web Size</button>
-                    <button class="moonshot-btn disabled" disabled title="Coming Soon">Print Size</button>
+                    <a href="${pathPrefix}/property_${dir}.png" class="moonshot-btn" download="property_${dir}.png">Download</a>
                 </div>
             </div>
-        `).join('');
+        `).join("");
+
+        // KML file card
+        const kmlCard = `
+            <div class="moonshot-item">
+                <div style="padding: 30px 20px; text-align: center; background: var(--base-3, #f5f5f5); min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--contrast-2, #666); margin-bottom: 12px;">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                        <polyline points="14 2 14 8 20 8"/>
+                        <line x1="16" y1="13" x2="8" y2="13"/>
+                        <line x1="16" y1="17" x2="8" y2="17"/>
+                    </svg>
+                    <div style="font-size: 18px; font-weight: bold; color: var(--contrast-2, #666);">KML File</div>
+                    <div style="font-size: 13px; color: var(--contrast-3, #999); margin-top: 4px;">Property boundary for Google Earth</div>
+                </div>
+                <div class="moonshot-actions">
+                    <a href="${pathPrefix}/property_boundary.kml" class="moonshot-btn" download="property_boundary.kml">Download KML</a>
+                </div>
+            </div>
+        `;
 
         container.innerHTML = `
             <style>
@@ -111,55 +258,28 @@ document.addEventListener("DOMContentLoaded", () => {
                 font-weight: bold;
                 cursor: pointer;
                 border: none;
+                display: inline-block;
+                transition: opacity 0.2s;
             }
-            .moonshot-btn:disabled, .moonshot-btn.disabled {
-                background: #ccc;
-                color: #666;
-                cursor: not-allowed;
+            .moonshot-btn:hover {
+                opacity: 0.85;
             }
             .moonshot-header {
                 text-align: center;
                 margin-bottom: 30px;
             }
-            .moonshot-download-all {
-                display: flex;
-                gap: 20px;
-                justify-content: center;
-                margin-top: 20px;
-                padding-top: 30px;
-                border-top: 1px solid #eee;
-            }
             </style>
             
             <div class="moonshot-header">
                 <h2>Your Assets are Ready!</h2>
-                <p>Preview and download your images below.</p>
+                <p>Preview and download your ${packLabel} images below.</p>
             </div>
             
             <div class="moonshot-gallery">
-                ${galleryHtml}
-            </div>
-            
-            <div class="moonshot-download-all">
-                <button class="moonshot-btn disabled" disabled style="max-width: 250px;" title="Coming Soon">Download All (MLS/Web)</button>
-                <button class="moonshot-btn disabled" disabled style="max-width: 250px;" title="Coming Soon">Download All (Print Size)</button>
+                ${imageCards}
+                ${kmlCard}
             </div>
         `;
-    };
-    
-    img.onerror = () => {
-        // The image failed to load (probably 404 because n8n is still working)
-        container.innerHTML = `
-            <div style="text-align: center; padding: 60px 20px; background: var(--base-3, #f5f5f5); border-radius: 12px;">
-                <h3 style="margin-bottom: 15px;">Generating your graphics...</h3>
-                <p>We are rendering your custom assets right now. This page will automatically refresh when they are ready.</p>
-            </div>
-        `;
-        // Auto-refresh the page every 15 seconds to check again
-        setTimeout(() => location.reload(), 15000);
-    };
-    
-    // Trigger the load
-    img.src = testImageUrl;
+    }
 });
 </script>
