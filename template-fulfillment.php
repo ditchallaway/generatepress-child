@@ -65,6 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         overhead_only:  { label: "Overhead Only",      directions: ["overhead"] },
         overhead_north: { label: "Overhead + North",   directions: ["overhead", "north"] },
         full:           { label: "Full (5 Directions)", directions: ["overhead", "north", "east", "south", "west"] },
+        kml_only:       { label: "KML Boundary File",  directions: [] },
     };
 
     const DIRECTION_LABELS = {
@@ -121,8 +122,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function probeFirstImage() {
-        // Determine which image to probe. If pack is known, use first direction.
-        // Otherwise default to 'overhead' which is present in all packs.
+        // KML-only orders have no rendered images — probe the KML file instead
+        if (pack === "kml_only") {
+            const probeUrl = `${pathPrefix}/parcel_boundary.kml?t=${Date.now()}`;
+            fetch(probeUrl, { method: "HEAD" })
+                .then(r => r.ok ? renderGallery() : showWaiting())
+                .catch(() => showWaiting());
+            return;
+        }
+
+        // Snapshot orders — probe first expected image
         const probeDir = "overhead";
         const probeUrl = `${pathPrefix}/property_${probeDir}.png?t=${Date.now()}`;
 
@@ -174,6 +183,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         function finalize() {
+            if (found.length === 0) {
+                // No direction images found — check if this is a KML-only order
+                fetch(`${pathPrefix}/parcel_boundary.kml?t=${Date.now()}`, { method: "HEAD" })
+                    .then(r => {
+                        if (r.ok) {
+                            buildGallery([], "KML Boundary File");
+                        } else {
+                            showWaiting();
+                        }
+                    })
+                    .catch(() => showWaiting());
+                return;
+            }
+
             // Sort found directions in the canonical order
             const order = ["overhead", "north", "east", "south", "west"];
             found.sort((a, b) => order.indexOf(a) - order.indexOf(b));
@@ -200,6 +223,17 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         `).join("");
 
+        // Static map card (available for all packs including kml_only)
+        const staticMapCard = `
+            <div class="moonshot-item">
+                <img src="${pathPrefix}/parcel_boundary.png?t=${ts}" alt="Parcel Boundary Map" />
+                <div style="padding: 10px 15px 0; font-weight: bold;">Parcel Boundary Map</div>
+                <div class="moonshot-actions">
+                    <a href="${pathPrefix}/parcel_boundary.png" class="moonshot-btn" download="parcel_boundary.png">Download Map</a>
+                </div>
+            </div>
+        `;
+
         // KML file card
         const kmlCard = `
             <div class="moonshot-item">
@@ -214,7 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div style="font-size: 13px; color: var(--contrast-3, #999); margin-top: 4px;">Property boundary for Google Earth</div>
                 </div>
                 <div class="moonshot-actions">
-                    <a href="${pathPrefix}/property_boundary.kml" class="moonshot-btn" download="property_boundary.kml">Download KML</a>
+                    <a href="${pathPrefix}/parcel_boundary.kml" class="moonshot-btn" download="parcel_boundary.kml">Download KML</a>
                 </div>
             </div>
         `;
@@ -271,12 +305,15 @@ document.addEventListener("DOMContentLoaded", () => {
             </style>
             
             <div class="moonshot-header">
-                <h2>Your Assets are Ready!</h2>
-                <p>Preview and download your ${packLabel} images below.</p>
+                <h2>${directions.length > 0 ? 'Your Assets are Ready!' : 'Your KML File is Ready!'}</h2>
+                <p>${directions.length > 0 
+                    ? `Preview and download your ${packLabel} images below.`
+                    : 'Download your property boundary file below. Open it in Google Earth or any mapping software.'}</p>
             </div>
             
             <div class="moonshot-gallery">
                 ${imageCards}
+                ${staticMapCard}
                 ${kmlCard}
             </div>
         `;
