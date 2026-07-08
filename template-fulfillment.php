@@ -226,10 +226,10 @@ document.addEventListener("DOMContentLoaded", () => {
         // Static map card (available for all packs including kml_only)
         const staticMapCard = `
             <div class="moonshot-item">
-                <img src="${pathPrefix}/parcel_boundary.png?t=${ts}" alt="Parcel Boundary Map" />
+                <img src="${pathPrefix}/property_map.png?t=${ts}" alt="Parcel Boundary Map" />
                 <div style="padding: 10px 15px 0; font-weight: bold;">Parcel Boundary Map</div>
                 <div class="moonshot-actions">
-                    <a href="${pathPrefix}/parcel_boundary.png" class="moonshot-btn" download="parcel_boundary.png">Download Map</a>
+                    <a href="${pathPrefix}/property_map.png" class="moonshot-btn" download="property_map.png">Download Map</a>
                 </div>
             </div>
         `;
