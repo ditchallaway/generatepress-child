@@ -64,3 +64,24 @@ add_action('wp_footer', function() {
     </script>
     <?php
 });
+
+/**
+ * Redirect SureCart Checkout to Fulfillment Page
+ */
+add_action('wp_footer', function() {
+    ?>
+    <script>
+    document.addEventListener('surecart:purchase', function(e) {
+        if (e.detail && e.detail.order) {
+            const orderId = e.detail.order.id;
+            window.location.href = '/fulfillment/?sc_order=' + orderId;
+        }
+    });
+    </script>
+    <?php
+});
+
+/**
+ * Require custom fulfillment dashboard shortcode
+ */
+require_once get_stylesheet_directory() . '/inc/shortcode-fulfillment-dashboard.php';

@@ -54,27 +54,7 @@ get_footer();
 document.addEventListener("DOMContentLoaded", () => {
     const custId  = "<?php echo esc_js( $current_user_id ); ?>";
     const orderId = "<?php echo esc_js( $order_id ); ?>";
-    const pack    = "<?php echo esc_js( $pack ); ?>";
-
-    // R2 bucket base URL
-    const baseUrl = "https://pics.brokertricks.com";
-
-    // ── Pack → Directions mapping ─────────────────────────────────
-    // Must mirror editor/js/config.js PACK_MAP (minus 'map' — that's internal)
-    const PACK_MAP = {
-        overhead_only:  { label: "Overhead Only",      directions: ["overhead"] },
-        overhead_north: { label: "Overhead + North",   directions: ["overhead", "north"] },
-        full:           { label: "Full (5 Directions)", directions: ["overhead", "north", "east", "south", "west"] },
-        kml_only:       { label: "KML Boundary File",  directions: [] },
-    };
-
-    const DIRECTION_LABELS = {
-        overhead: "Overhead",
-        north:    "North",
-        east:     "East",
-        south:    "South",
-        west:     "West",
-    };
+    const nonce   = "<?php echo esc_js( wp_create_nonce('wp_rest') ); ?>";
 
     const container = document.querySelector(".moonshot-gallery-container");
     if (!container || !orderId) {
@@ -88,171 +68,125 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // R2 path prefix
-    const pathPrefix = `${baseUrl}/cust_${custId}/order_${orderId}`;
+    // Polling logic
+    let pollAttempts = 0;
+    const maxPolls = 60; // 5 minutes at 5s intervals
 
-    // ── Readiness Check via ready.txt ─────────────────────────────
-    // The n8n workflow uploads ready.txt to R2 after all rendering is complete.
-    const readyUrl = `${pathPrefix}/ready.txt?t=${Date.now()}`;
+    checkFulfillment();
 
-    const readyImg = new Image();
-
-    // We use an Image() object for the probe because a cross-origin fetch()
-    // may be blocked by CORS, but <img> requests always go through.
-    // ready.txt isn't an image, so onload won't fire — but we can also use
-    // fetch with no-cors mode to detect existence.
-    checkReady();
-
-    function checkReady() {
-        fetch(readyUrl, { mode: "no-cors" })
-            .then(response => {
-                // no-cors gives opaque response (status 0).
-                // If the resource doesn't exist, the browser gets a network error
-                // that goes to .catch(). A successful opaque response means the
-                // resource exists.
-                // However, opaque responses always return status 0 and type "opaque"
-                // regardless of the actual HTTP status. We need another approach.
-                //
-                // Fallback: Try loading the first expected image instead.
-                probeFirstImage();
-            })
-            .catch(() => {
-                showWaiting();
+    async function checkFulfillment() {
+        try {
+            const res = await fetch(`/wp-json/surecart/v1/notes?notable_id=${orderId}&notable_type=order`, {
+                headers: { 'X-WP-Nonce': nonce }
             });
-    }
-
-    function probeFirstImage() {
-        // KML-only orders have no rendered images — probe the KML file instead
-        if (pack === "kml_only") {
-            const probeUrl = `${pathPrefix}/parcel_boundary.kml?t=${Date.now()}`;
-            fetch(probeUrl, { method: "HEAD" })
-                .then(r => r.ok ? renderGallery() : showWaiting())
-                .catch(() => showWaiting());
-            return;
+            
+            if (!res.ok) throw new Error('Network error');
+            
+            const data = await res.json();
+            const notes = data.data || [];
+            const downloadNote = notes.find(n => n.metadata && n.metadata.fulfilled_at);
+            
+            if (downloadNote && downloadNote.metadata) {
+                renderGallery(downloadNote.metadata);
+            } else {
+                pollAttempts++;
+                if (pollAttempts < maxPolls) {
+                    showWaiting();
+                    setTimeout(checkFulfillment, 5000);
+                } else {
+                    showTimeout();
+                }
+            }
+        } catch (e) {
+            console.error(e);
+            pollAttempts++;
+            if (pollAttempts < maxPolls) {
+                showWaiting();
+                setTimeout(checkFulfillment, 5000);
+            } else {
+                showError();
+            }
         }
-
-        // Snapshot orders — probe first expected image
-        const probeDir = "overhead";
-        const probeUrl = `${pathPrefix}/property_${probeDir}.png?t=${Date.now()}`;
-
-        const img = new Image();
-        img.onload = () => renderGallery();
-        img.onerror = () => showWaiting();
-        img.src = probeUrl;
     }
 
     function showWaiting() {
         container.innerHTML = `
             <div style="text-align: center; padding: 60px 20px; background: var(--base-3, #f5f5f5); border-radius: 12px;">
                 <h3 style="margin-bottom: 15px;">Generating your graphics...</h3>
-                <p>We are rendering your custom assets right now. This page will automatically refresh when they are ready.</p>
+                <p>We are rendering your custom assets right now. Please wait, this may take up to 2 minutes.</p>
+                <div style="margin-top: 20px;">
+                    <div style="display:inline-block; width: 40px; height: 40px; border: 4px solid #ccc; border-top-color: #1e73be; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+                </div>
+            </div>
+            <style>
+                @keyframes spin { to { transform: rotate(360deg); } }
+            </style>`;
+    }
+
+    function showTimeout() {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px; background: #fff3cd; border: 1px solid #ffe69c; border-radius: 12px;">
+                <h3 style="margin-bottom: 15px; color: #856404;">Taking longer than expected</h3>
+                <p style="color: #856404;">Your files are still processing. You can safely close this page. We'll email you the files when they are ready.</p>
             </div>`;
-        setTimeout(() => location.reload(), 15000);
     }
 
-    function renderGallery() {
-        // Resolve the pack config. If pack param is provided, use it.
-        // Otherwise, probe all possible images to determine the pack dynamically.
-        const packConfig = PACK_MAP[pack];
-
-        if (packConfig) {
-            buildGallery(packConfig.directions, packConfig.label);
-        } else {
-            // Pack not provided — detect which images exist
-            detectAndRender();
-        }
+    function showError() {
+        container.innerHTML = `
+            <div style="text-align: center; padding: 60px 20px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 12px;">
+                <h3 style="margin-bottom: 15px; color: #721c24;">Connection Error</h3>
+                <p style="color: #721c24;">We are having trouble checking your order status. Please check your email or dashboard later.</p>
+            </div>`;
     }
 
-    function detectAndRender() {
-        const allDirs = ["overhead", "north", "east", "south", "west"];
-        const found = [];
-        let checked = 0;
-
-        allDirs.forEach(dir => {
-            const img = new Image();
-            img.onload = () => {
-                found.push(dir);
-                checked++;
-                if (checked === allDirs.length) finalize();
-            };
-            img.onerror = () => {
-                checked++;
-                if (checked === allDirs.length) finalize();
-            };
-            img.src = `${pathPrefix}/property_${dir}.png?t=${Date.now()}`;
-        });
-
-        function finalize() {
-            if (found.length === 0) {
-                // No direction images found — check if this is a KML-only order
-                fetch(`${pathPrefix}/parcel_boundary.kml?t=${Date.now()}`, { method: "HEAD" })
-                    .then(r => {
-                        if (r.ok) {
-                            buildGallery([], "KML Boundary File");
-                        } else {
-                            showWaiting();
-                        }
-                    })
-                    .catch(() => showWaiting());
-                return;
-            }
-
-            // Sort found directions in the canonical order
-            const order = ["overhead", "north", "east", "south", "west"];
-            found.sort((a, b) => order.indexOf(a) - order.indexOf(b));
-
-            const label = found.length === 1 ? "Overhead Only"
-                        : found.length === 2 ? "Overhead + North"
-                        : `Full (${found.length} Directions)`;
-
-            buildGallery(found, label);
-        }
-    }
-
-    function buildGallery(directions, packLabel) {
+    function renderGallery(meta) {
         const ts = Date.now();
-
-        // Build image cards
-        const imageCards = directions.map(dir => `
-            <div class="moonshot-item">
-                <img src="${pathPrefix}/property_${dir}.png?t=${ts}" alt="${DIRECTION_LABELS[dir] || dir}" />
-                <div style="padding: 10px 15px 0; font-weight: bold;">${DIRECTION_LABELS[dir] || dir}</div>
-                <div class="moonshot-actions">
-                    <a href="${pathPrefix}/property_${dir}.png" class="moonshot-btn" download="property_${dir}.png">Download</a>
+        let filesHtml = '';
+        
+        if (meta.overhead_url) {
+            filesHtml += `
+                <div class="moonshot-item">
+                    <img src="${meta.overhead_url}?t=${ts}" alt="Overhead Image" />
+                    <div style="padding: 10px 15px 0; font-weight: bold;">Overhead Aerial</div>
+                    <div class="moonshot-actions">
+                        <a href="${meta.overhead_url}" class="moonshot-btn" target="_blank" download>Print Size</a>
+                    </div>
                 </div>
-            </div>
-        `).join("");
-
-        // Static map card (available for all packs including kml_only)
-        const staticMapCard = `
-            <div class="moonshot-item">
-                <img src="${pathPrefix}/property_map.png?t=${ts}" alt="Parcel Boundary Map" />
-                <div style="padding: 10px 15px 0; font-weight: bold;">Parcel Boundary Map</div>
-                <div class="moonshot-actions">
-                    <a href="${pathPrefix}/property_map.png" class="moonshot-btn" download="property_map.png">Download Map</a>
+            `;
+        }
+        
+        if (meta.map_url) {
+            filesHtml += `
+                <div class="moonshot-item">
+                    <img src="${meta.map_url}?t=${ts}" alt="Static Map" />
+                    <div style="padding: 10px 15px 0; font-weight: bold;">Context Map</div>
+                    <div class="moonshot-actions">
+                        <a href="${meta.map_url}" class="moonshot-btn" target="_blank" download>Print Size</a>
+                    </div>
                 </div>
-            </div>
-        `;
-
-        // KML file card
-        const kmlCard = `
-            <div class="moonshot-item">
-                <div style="padding: 30px 20px; text-align: center; background: var(--base-3, #f5f5f5); min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--contrast-2, #666); margin-bottom: 12px;">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14 2 14 8 20 8"/>
-                        <line x1="16" y1="13" x2="8" y2="13"/>
-                        <line x1="16" y1="17" x2="8" y2="17"/>
-                    </svg>
-                    <div style="font-size: 18px; font-weight: bold; color: var(--contrast-2, #666);">KML File</div>
-                    <div style="font-size: 13px; color: var(--contrast-3, #999); margin-top: 4px;">Property boundary for Google Earth</div>
+            `;
+        }
+        
+        if (meta.kml_url) {
+            filesHtml += `
+                <div class="moonshot-item">
+                    <div style="padding: 30px 20px; text-align: center; background: var(--base-3, #f5f5f5); min-height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--contrast-2, #666); margin-bottom: 12px;">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="16" y1="13" x2="8" y2="13"/>
+                            <line x1="16" y1="17" x2="8" y2="17"/>
+                        </svg>
+                        <div style="font-size: 18px; font-weight: bold; color: var(--contrast-2, #666);">KML File</div>
+                        <div style="font-size: 13px; color: var(--contrast-3, #999); margin-top: 4px;">Property boundary for Google Earth</div>
+                    </div>
+                    <div class="moonshot-actions">
+                        <a href="${meta.kml_url}" class="moonshot-btn" target="_blank" download>Download KML</a>
+                    </div>
                 </div>
-                <div class="moonshot-actions">
-                    <a href="${pathPrefix}/parcel_boundary.kml" class="moonshot-btn" download="parcel_boundary.kml">Download KML</a>
-                </div>
-            </div>
-        `;
-
+            `;
+        }
+        
         container.innerHTML = `
             <style>
             .moonshot-gallery {
@@ -274,11 +208,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 height: auto;
                 display: block;
                 border-bottom: 1px solid #eee;
+                max-height: 300px;
+                object-fit: cover;
             }
             .moonshot-actions {
                 padding: 15px;
                 display: flex;
                 gap: 10px;
+                margin-top: auto;
             }
             .moonshot-btn {
                 flex: 1;
@@ -305,16 +242,12 @@ document.addEventListener("DOMContentLoaded", () => {
             </style>
             
             <div class="moonshot-header">
-                <h2>${directions.length > 0 ? 'Your Assets are Ready!' : 'Your KML File is Ready!'}</h2>
-                <p>${directions.length > 0 
-                    ? `Preview and download your ${packLabel} images below.`
-                    : 'Download your property boundary file below. Open it in Google Earth or any mapping software.'}</p>
+                <h2>Your Assets are Ready!</h2>
+                <p>Preview and download your files below.</p>
             </div>
             
             <div class="moonshot-gallery">
-                ${imageCards}
-                ${staticMapCard}
-                ${kmlCard}
+                ${filesHtml}
             </div>
         `;
     }
