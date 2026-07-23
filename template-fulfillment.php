@@ -143,25 +143,27 @@ document.addEventListener("DOMContentLoaded", () => {
         const ts = Date.now();
         let filesHtml = '';
         
-        if (meta.overhead_url) {
+        if (meta.overhead_url || meta.overhead_web_url) {
             filesHtml += `
                 <div class="moonshot-item">
-                    <img src="${meta.overhead_url}?t=${ts}" alt="Overhead Image" />
+                    <img src="${meta.overhead_url || meta.overhead_web_url}?t=${ts}" alt="Overhead Image" />
                     <div style="padding: 10px 15px 0; font-weight: bold;">Overhead Aerial</div>
                     <div class="moonshot-actions">
-                        <a href="${meta.overhead_url}" class="moonshot-btn" target="_blank" download>Print Size</a>
+                        ${meta.overhead_web_url ? `<a href="${meta.overhead_web_url}" class="moonshot-btn" target="_blank" download>Download Web/MLS Size</a>` : ''}
+                        ${meta.overhead_url ? `<a href="${meta.overhead_url}" class="moonshot-btn secondary" target="_blank" download>Download High-Res Print Size</a>` : ''}
                     </div>
                 </div>
             `;
         }
         
-        if (meta.map_url) {
+        if (meta.map_url || meta.map_web_url) {
             filesHtml += `
                 <div class="moonshot-item">
-                    <img src="${meta.map_url}?t=${ts}" alt="Static Map" />
+                    <img src="${meta.map_url || meta.map_web_url}?t=${ts}" alt="Context Map" />
                     <div style="padding: 10px 15px 0; font-weight: bold;">Context Map</div>
                     <div class="moonshot-actions">
-                        <a href="${meta.map_url}" class="moonshot-btn" target="_blank" download>Print Size</a>
+                        ${meta.map_web_url ? `<a href="${meta.map_web_url}" class="moonshot-btn" target="_blank" download>Download Web/MLS Size</a>` : ''}
+                        ${meta.map_url ? `<a href="${meta.map_url}" class="moonshot-btn secondary" target="_blank" download>Download High-Res Print Size</a>` : ''}
                     </div>
                 </div>
             `;
@@ -179,9 +181,17 @@ document.addEventListener("DOMContentLoaded", () => {
                         </svg>
                         <div style="font-size: 18px; font-weight: bold; color: var(--contrast-2, #666);">KML File</div>
                         <div style="font-size: 13px; color: var(--contrast-3, #999); margin-top: 4px;">Property boundary for Google Earth</div>
+                        
+                        <!-- Video Explainer Placeholder -->
+                        <div style="margin-top: 15px; font-size: 12px; color: #0056b3; cursor: pointer; text-decoration: underline;">
+                            🎥 How to use this KML file
+                        </div>
                     </div>
                     <div class="moonshot-actions">
                         <a href="${meta.kml_url}" class="moonshot-btn" target="_blank" download>Download KML</a>
+                        <div style="font-size: 11px; text-align: center; margin-top: 5px; color: #666;">
+                            Import this file into Google Earth or your GIS app to view the interactive boundary.
+                        </div>
                     </div>
                 </div>
             `;
@@ -214,23 +224,29 @@ document.addEventListener("DOMContentLoaded", () => {
             .moonshot-actions {
                 padding: 15px;
                 display: flex;
+                flex-direction: column;
                 gap: 10px;
                 margin-top: auto;
             }
             .moonshot-btn {
-                flex: 1;
+                width: 100%;
                 background: var(--button, #1e73be);
                 color: var(--contrast, #ffffff);
-                padding: 10px;
+                padding: 12px;
                 text-align: center;
-                border-radius: 4px;
+                border-radius: 6px;
                 text-decoration: none;
-                font-size: 14px;
+                font-size: 15px;
                 font-weight: bold;
                 cursor: pointer;
                 border: none;
-                display: inline-block;
+                display: block;
                 transition: opacity 0.2s;
+            }
+            .moonshot-btn.secondary {
+                background: var(--base-3, #f0f0f0);
+                color: var(--contrast, #333333);
+                border: 1px solid #ccc;
             }
             .moonshot-btn:hover {
                 opacity: 0.85;
@@ -243,12 +259,17 @@ document.addEventListener("DOMContentLoaded", () => {
             
             <div class="moonshot-header">
                 <h2>Your Assets are Ready!</h2>
-                <p>Preview and download your files below.</p>
+                <p>Preview and download your files below. We recommend downloading individual images to your phone, or using the "Download All" zip link if you are on a computer.</p>
+                ${meta.zip_url ? `<div style="margin-top: 15px;"><a href="${meta.zip_url}" class="moonshot-btn" style="max-width: 300px; margin: 0 auto;" target="_blank" download>Download All (Zipped)</a></div>` : ''}
             </div>
             
             <div class="moonshot-gallery">
                 ${filesHtml}
             </div>
+            
+            ${meta.zip_url ? `<div style="text-align: center; margin-top: 40px; margin-bottom: 20px;">
+                <a href="${meta.zip_url}" class="moonshot-btn secondary" style="max-width: 300px; margin: 0 auto;" target="_blank" download>Download All (Zipped)</a>
+            </div>` : ''}
         `;
     }
 });
