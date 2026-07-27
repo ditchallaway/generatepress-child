@@ -8,18 +8,17 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit; // Exit if accessed directly.
 }
 
-add_shortcode('btx_fulfillment_dashboard', 'btx_render_fulfillment_dashboard');
+// We will hook this into the footer so it runs automatically without needing a shortcode!
+add_action('wp_footer', 'btx_render_fulfillment_dashboard_script');
 
-function btx_render_fulfillment_dashboard() {
+function btx_render_fulfillment_dashboard_script() {
+    // Only inject this script on the 'dash' or 'dashboard' page
+    if (!is_page(array('dash', 'dashboard'))) return;
+
     // Generate a nonce (will be a guest nonce if WP user is not logged in, but SureCart will authenticate the request via cookie)
     $nonce = wp_create_nonce('wp_rest');
-
-    
-    ob_start();
     ?>
-    <div id="btx-fulfillment-dashboard" class="btx-dashboard-container">
-        <p>Loading your files...</p>
-    </div>
+    <!-- The script will populate any div with id="btx-fulfillment-dashboard" on the page -->
     
     <style>
         .btx-dashboard-container {
@@ -106,6 +105,8 @@ function btx_render_fulfillment_dashboard() {
     <script>
     document.addEventListener("DOMContentLoaded", async function() {
         const container = document.getElementById('btx-fulfillment-dashboard');
+        if (!container) return; // Exit if the user hasn't added the placeholder div to the page
+        
         const nonce = '<?php echo esc_js($nonce); ?>';
         
         try {
@@ -218,5 +219,4 @@ function btx_render_fulfillment_dashboard() {
     });
     </script>
     <?php
-    return ob_get_clean();
 }
