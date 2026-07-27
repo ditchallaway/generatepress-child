@@ -120,7 +120,7 @@ function btx_render_fulfillment_dashboard_script() {
             let orders = [];
             
             if (scOrderToken) {
-                // Fetch specific order by token (for guests on thank you page)
+                // Fetch specific order by token
                 const orderRes = await fetch(`/wp-json/surecart/v1/orders/${scOrderToken}?token=${scOrderToken}`, {
                     headers: { 'X-WP-Nonce': nonce },
                     credentials: 'same-origin'
@@ -131,18 +131,32 @@ function btx_render_fulfillment_dashboard_script() {
                     if (orderData.data) {
                         orders = [orderData.data];
                     }
-                } else if (orderRes.status === 401 || orderRes.status === 403 || orderRes.status === 404) {
-                    // Fallback to fetching all orders if token fetch fails
-                    const allOrdersRes = await fetch('/wp-json/surecart/v1/orders', {
-                        headers: { 'X-WP-Nonce': nonce },
-                        credentials: 'same-origin'
-                    });
-                    if (allOrdersRes.ok) {
-                        const allOrdersData = await allOrdersRes.json();
-                        orders = allOrdersData.data || [];
-                    } else if (allOrdersRes.status === 401) {
-                         container.innerHTML = '<p>Please log in to your SureCart dashboard to view your files.</p>';
-                         return;
+                } else {
+                    // Try to parse the error message if possible
+                    let errorMsg = `Status ${orderRes.status}`;
+                    try {
+                        const errData = await orderRes.json();
+                        if (errData.message) errorMsg += ` - ${errData.message}`;
+                    } catch(e) {}
+                    
+                    if (orderRes.status === 401 || orderRes.status === 403 || orderRes.status === 404) {
+                        console.warn(`Token fetch failed (${errorMsg}), falling back to all orders...`);
+                        const allOrdersRes = await fetch('/wp-json/surecart/v1/orders', {
+                            headers: { 'X-WP-Nonce': nonce },
+                            credentials: 'same-origin'
+                        });
+                        
+                        if (allOrdersRes.ok) {
+                            const allOrdersData = await allOrdersRes.json();
+                            orders = allOrdersData.data || [];
+                        } else if (allOrdersRes.status === 401) {
+                             container.innerHTML = '<p>Please log in to your SureCart dashboard to view your files.</p>';
+                             return;
+                        } else {
+                            throw new Error(`Fallback fetch failed (Status: ${allOrdersRes.status})`);
+                        }
+                    } else {
+                        throw new Error(`Token fetch failed (${errorMsg})`);
                     }
                 }
             } else {
@@ -151,11 +165,21 @@ function btx_render_fulfillment_dashboard_script() {
                     headers: { 'X-WP-Nonce': nonce },
                     credentials: 'same-origin'
                 });
+                
                 if (ordersRes.status === 401) {
                     container.innerHTML = '<p>Please log in to your SureCart dashboard to view your files.</p>';
                     return;
                 }
-                if (!ordersRes.ok) throw new Error('Failed to fetch orders');
+                
+                if (!ordersRes.ok) {
+                    let errorMsg = `Status ${ordersRes.status}`;
+                    try {
+                        const errData = await ordersRes.json();
+                        if (errData.message) errorMsg += ` - ${errData.message}`;
+                    } catch(e) {}
+                    throw new Error(`Failed to fetch orders (${errorMsg})`);
+                }
+                
                 const ordersData = await ordersRes.json();
                 orders = ordersData.data || [];
             }
