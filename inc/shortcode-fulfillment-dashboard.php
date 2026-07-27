@@ -11,12 +11,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 // We will hook this into the footer so it runs automatically without needing a shortcode!
 add_action('wp_footer', 'btx_render_fulfillment_dashboard_script');
 
+// AJAX action to fetch a fresh nonce for cached pages
+add_action('wp_ajax_btx_get_fresh_nonce', 'btx_get_fresh_nonce_callback');
+add_action('wp_ajax_nopriv_btx_get_fresh_nonce', 'btx_get_fresh_nonce_callback');
+function btx_get_fresh_nonce_callback() {
+    wp_send_json_success(wp_create_nonce('wp_rest'));
+}
+
 function btx_render_fulfillment_dashboard_script() {
     // Only inject this script on the 'dash' or 'dashboard' page
     if (!is_page(array('dash', 'dashboard'))) return;
 
-    // Generate a nonce (will be a guest nonce if WP user is not logged in, but SureCart will authenticate the request via cookie)
-    $nonce = wp_create_nonce('wp_rest');
     ?>
     <!-- The script will populate any div with id="btx-fulfillment-dashboard" on the page -->
     
@@ -111,11 +116,18 @@ function btx_render_fulfillment_dashboard_script() {
             return;
         }
         
-        const nonce = '<?php echo esc_js($nonce); ?>';
         const urlParams = new URLSearchParams(window.location.search);
         const scOrderToken = urlParams.get('sc_order');
         
         try {
+            // Fetch a fresh nonce via AJAX to bypass page caching issues
+            const ajaxUrl = '<?php echo admin_url("admin-ajax.php"); ?>';
+            const fd = new FormData();
+            fd.append('action', 'btx_get_fresh_nonce');
+            const nonceRes = await fetch(ajaxUrl, { method: 'POST', body: fd });
+            const nonceData = await nonceRes.json();
+            const nonce = nonceData.success ? nonceData.data : '';
+            
             console.log("Fetching orders...", scOrderToken ? `(Using token: ${scOrderToken})` : "");
             let orders = [];
             
