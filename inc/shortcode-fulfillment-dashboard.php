@@ -104,24 +104,61 @@ function btx_render_fulfillment_dashboard_script() {
 
     <script>
     document.addEventListener("DOMContentLoaded", async function() {
+        console.log("Fulfillment dashboard script loaded.");
         const container = document.getElementById('btx-fulfillment-dashboard');
-        if (!container) return; // Exit if the user hasn't added the placeholder div to the page
+        if (!container) {
+            console.log("Container 'btx-fulfillment-dashboard' not found on page.");
+            return;
+        }
         
         const nonce = '<?php echo esc_js($nonce); ?>';
+        const urlParams = new URLSearchParams(window.location.search);
+        const scOrderToken = urlParams.get('sc_order');
         
         try {
-            // 1. Fetch Orders from SureCart WP REST endpoint
-            const ordersRes = await fetch('/wp-json/surecart/v1/orders', {
-                headers: { 'X-WP-Nonce': nonce },
-                credentials: 'same-origin'
-            });
-            if (ordersRes.status === 401) {
-                container.innerHTML = '<p>Please log in to your SureCart dashboard to view your files.</p>';
-                return;
+            console.log("Fetching orders...", scOrderToken ? `(Using token: ${scOrderToken})` : "");
+            let orders = [];
+            
+            if (scOrderToken) {
+                // Fetch specific order by token (for guests on thank you page)
+                const orderRes = await fetch(`/wp-json/surecart/v1/orders/${scOrderToken}?token=${scOrderToken}`, {
+                    headers: { 'X-WP-Nonce': nonce },
+                    credentials: 'same-origin'
+                });
+                
+                if (orderRes.ok) {
+                    const orderData = await orderRes.json();
+                    if (orderData.data) {
+                        orders = [orderData.data];
+                    }
+                } else if (orderRes.status === 401 || orderRes.status === 403 || orderRes.status === 404) {
+                    // Fallback to fetching all orders if token fetch fails
+                    const allOrdersRes = await fetch('/wp-json/surecart/v1/orders', {
+                        headers: { 'X-WP-Nonce': nonce },
+                        credentials: 'same-origin'
+                    });
+                    if (allOrdersRes.ok) {
+                        const allOrdersData = await allOrdersRes.json();
+                        orders = allOrdersData.data || [];
+                    } else if (allOrdersRes.status === 401) {
+                         container.innerHTML = '<p>Please log in to your SureCart dashboard to view your files.</p>';
+                         return;
+                    }
+                }
+            } else {
+                // Fetch all orders
+                const ordersRes = await fetch('/wp-json/surecart/v1/orders', {
+                    headers: { 'X-WP-Nonce': nonce },
+                    credentials: 'same-origin'
+                });
+                if (ordersRes.status === 401) {
+                    container.innerHTML = '<p>Please log in to your SureCart dashboard to view your files.</p>';
+                    return;
+                }
+                if (!ordersRes.ok) throw new Error('Failed to fetch orders');
+                const ordersData = await ordersRes.json();
+                orders = ordersData.data || [];
             }
-            if (!ordersRes.ok) throw new Error('Failed to fetch orders');
-            const ordersData = await ordersRes.json();
-            const orders = ordersData.data || [];
             
             if (orders.length === 0) {
                 container.innerHTML = '<p>You have no orders yet.</p>';
@@ -136,7 +173,10 @@ function btx_render_fulfillment_dashboard_script() {
                 if (order.status === 'draft') continue;
                 
                 // 2. Fetch Notes for the order
-                const notesRes = await fetch(`/wp-json/surecart/v1/notes?notable_id=${order.id}&notable_type=order`, {
+                // If we are a guest with a token, we might need to pass the token to the notes endpoint as well, 
+                // but usually notes are public if you have the order access, or maybe we append ?token=
+                const tokenParam = scOrderToken ? `&token=${scOrderToken}` : '';
+                const notesRes = await fetch(`/wp-json/surecart/v1/notes?notable_id=${order.id}&notable_type=order${tokenParam}`, {
                     headers: { 'X-WP-Nonce': nonce },
                     credentials: 'same-origin'
                 });
@@ -158,39 +198,39 @@ function btx_render_fulfillment_dashboard_script() {
                     let filesHtml = '';
                     
                     if (meta.overhead_url) {
-                        filesHtml += \`
+                        filesHtml += `
                             <div class="btx-file-card">
                                 <strong>Overhead Aerial</strong>
-                                <a href="\${meta.overhead_url}" class="btx-btn" target="_blank" download>Print Size</a>
+                                <a href="${meta.overhead_url}" class="btx-btn" target="_blank" download>Print Size</a>
                             </div>
-                        \`;
+                        `;
                     }
                     if (meta.map_url) {
-                        filesHtml += \`
+                        filesHtml += `
                             <div class="btx-file-card">
                                 <strong>Static Context Map</strong>
-                                <a href="\${meta.map_url}" class="btx-btn" target="_blank" download>Print Size</a>
+                                <a href="${meta.map_url}" class="btx-btn" target="_blank" download>Print Size</a>
                             </div>
-                        \`;
+                        `;
                     }
                     if (meta.kml_url) {
-                        filesHtml += \`
+                        filesHtml += `
                             <div class="btx-file-card">
                                 <strong>Boundary Coordinates</strong>
-                                <a href="\${meta.kml_url}" class="btx-btn" target="_blank" download>Download KML</a>
+                                <a href="${meta.kml_url}" class="btx-btn" target="_blank" download>Download KML</a>
                             </div>
-                        \`;
+                        `;
                     }
                     
-                    card.innerHTML = \`
+                    card.innerHTML = `
                         <div class="btx-order-header">
-                            <h3>\${orderTitle}</h3>
-                            <small>Fulfilled: \${new Date(meta.fulfilled_at).toLocaleDateString()}</small>
+                            <h3>${orderTitle}</h3>
+                            <small>Fulfilled: ${new Date(meta.fulfilled_at).toLocaleDateString()}</small>
                         </div>
                         <div class="btx-gallery-grid">
-                            \${filesHtml}
+                            ${filesHtml}
                         </div>
-                    \`;
+                    `;
                     container.appendChild(card);
                     
                 } else if (order.fulfillment_status === 'unfulfilled') {
@@ -198,12 +238,12 @@ function btx_render_fulfillment_dashboard_script() {
                     // But order line items aren't immediately accessible without expansion.
                     // For now, any unfulfilled order might be processing files.
                     fileCount++;
-                    card.innerHTML = \`
+                    card.innerHTML = `
                         <div class="btx-order-header">
-                            <h3>\${orderTitle}</h3>
+                            <h3>${orderTitle}</h3>
                             <p class="btx-status-processing">Processing your files...</p>
                         </div>
-                    \`;
+                    `;
                     container.appendChild(card);
                 }
             }
@@ -213,7 +253,7 @@ function btx_render_fulfillment_dashboard_script() {
             }
             
         } catch (err) {
-            console.error(err);
+            console.error("Dashboard error:", err);
             container.innerHTML = '<p>Error loading your files. Please try again later.</p>';
         }
     });
