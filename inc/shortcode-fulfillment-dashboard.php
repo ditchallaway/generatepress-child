@@ -254,7 +254,7 @@ function btx_render_fulfillment_dashboard_script() {
             
         } catch (err) {
             console.error("Dashboard error:", err);
-            container.innerHTML = '<p>Error loading your files. Please try again later.</p>';
+            container.innerHTML = '<p>Error loading your files: ' + err.message + '</p>';
         }
     });
     </script>
