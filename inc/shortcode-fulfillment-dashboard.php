@@ -119,6 +119,8 @@ function btx_render_fulfillment_dashboard_script() {
             console.log("Fetching orders...", scOrderToken ? `(Using token: ${scOrderToken})` : "");
             let orders = [];
             
+            const authErrorMessage = '<p>Please log in to your dashboard to view your files.</p><p style="font-size: 0.9em; color: #64748b;">(If you just purchased or are already logged in, please refresh the page to update your session.)</p>';
+            
             if (scOrderToken) {
                 // Fetch specific order by token
                 const orderRes = await fetch(`/wp-json/surecart/v1/orders/${scOrderToken}?token=${scOrderToken}`, {
@@ -149,8 +151,8 @@ function btx_render_fulfillment_dashboard_script() {
                         if (allOrdersRes.ok) {
                             const allOrdersData = await allOrdersRes.json();
                             orders = allOrdersData.data || [];
-                        } else if (allOrdersRes.status === 401) {
-                             container.innerHTML = '<p>Please log in to your SureCart dashboard to view your files.</p>';
+                        } else if (allOrdersRes.status === 401 || allOrdersRes.status === 403) {
+                             container.innerHTML = authErrorMessage;
                              return;
                         } else {
                             throw new Error(`Fallback fetch failed (Status: ${allOrdersRes.status})`);
@@ -166,8 +168,8 @@ function btx_render_fulfillment_dashboard_script() {
                     credentials: 'same-origin'
                 });
                 
-                if (ordersRes.status === 401) {
-                    container.innerHTML = '<p>Please log in to your SureCart dashboard to view your files.</p>';
+                if (ordersRes.status === 401 || ordersRes.status === 403) {
+                    container.innerHTML = authErrorMessage;
                     return;
                 }
                 
