@@ -11,12 +11,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_shortcode('btx_fulfillment_dashboard', 'btx_render_fulfillment_dashboard');
 
 function btx_render_fulfillment_dashboard() {
-    if (!is_user_logged_in()) {
-        return '<p>Please log in to view your files.</p>';
-    }
-    
-    $user_id = get_current_user_id();
+    // Generate a nonce (will be a guest nonce if WP user is not logged in, but SureCart will authenticate the request via cookie)
     $nonce = wp_create_nonce('wp_rest');
+
     
     ob_start();
     ?>
@@ -114,8 +111,13 @@ function btx_render_fulfillment_dashboard() {
         try {
             // 1. Fetch Orders from SureCart WP REST endpoint
             const ordersRes = await fetch('/wp-json/surecart/v1/orders', {
-                headers: { 'X-WP-Nonce': nonce }
+                headers: { 'X-WP-Nonce': nonce },
+                credentials: 'same-origin'
             });
+            if (ordersRes.status === 401) {
+                container.innerHTML = '<p>Please log in to your SureCart dashboard to view your files.</p>';
+                return;
+            }
             if (!ordersRes.ok) throw new Error('Failed to fetch orders');
             const ordersData = await ordersRes.json();
             const orders = ordersData.data || [];
@@ -134,7 +136,8 @@ function btx_render_fulfillment_dashboard() {
                 
                 // 2. Fetch Notes for the order
                 const notesRes = await fetch(`/wp-json/surecart/v1/notes?notable_id=${order.id}&notable_type=order`, {
-                    headers: { 'X-WP-Nonce': nonce }
+                    headers: { 'X-WP-Nonce': nonce },
+                    credentials: 'same-origin'
                 });
                 const notesData = await notesRes.json();
                 const notes = notesData.data || [];
