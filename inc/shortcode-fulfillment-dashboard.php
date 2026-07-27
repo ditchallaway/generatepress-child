@@ -165,7 +165,7 @@ function btx_render_fulfillment_dashboard_script() {
                 return;
             }
             
-            container.innerHTML = '<h2 style="margin-bottom:20px;">My Files</h2>';
+            container.innerHTML = '<h2 style="margin-bottom:20px; color: blue;">My Files (CD Test)</h2>';
             let fileCount = 0;
             
             for (const order of orders) {
