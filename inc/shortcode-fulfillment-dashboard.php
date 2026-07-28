@@ -70,17 +70,22 @@ function btx_get_fulfillment_files($request) {
     foreach ($orders_to_process as $order) {
         if ($order->status === 'draft') continue;
         
-        $notes = \SureCart\Models\Note::where('notable_id', $order->id)
-            ->where('notable_type', 'order')
-            ->get();
-            
+        $api_token = \SureCart\Models\ApiToken::get();
+        $response = wp_remote_get("https://api.surecart.com/v1/notes?notable_id={$order->id}&notable_type=order", [
+            'headers' => [
+                'Authorization' => 'Bearer ' . $api_token,
+                'Content-Type'  => 'application/json'
+            ]
+        ]);
+        
         $download_note = null;
-        if (!empty($notes)) {
+        if (!is_wp_error($response) && wp_remote_retrieve_response_code($response) === 200) {
+            $body = json_decode(wp_remote_retrieve_body($response), true);
+            $notes = isset($body['data']) ? $body['data'] : [];
+            
             foreach ($notes as $note) {
-                // Handle both array and object metadata depending on SureCart's model casting
-                $meta = is_object($note->metadata) ? (array) $note->metadata : $note->metadata;
-                if (!empty($meta) && isset($meta['fulfilled_at'])) {
-                    $download_note = $meta;
+                if (!empty($note['metadata']) && isset($note['metadata']['fulfilled_at'])) {
+                    $download_note = $note['metadata'];
                     break;
                 }
             }
