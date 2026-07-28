@@ -11,14 +11,90 @@ if ( ! defined( 'ABSPATH' ) ) {
 // We will hook this into the footer so it runs automatically without needing a shortcode!
 add_action('wp_footer', 'btx_render_fulfillment_dashboard_script');
 
-// AJAX action to fetch a fresh nonce for cached pages
-add_action('wp_ajax_btx_get_fresh_nonce', 'btx_get_fresh_nonce_callback');
-add_action('wp_ajax_nopriv_btx_get_fresh_nonce', 'btx_get_fresh_nonce_callback');
-function btx_get_fresh_nonce_callback() {
-    wp_send_json_success(array(
-        'nonce' => wp_create_nonce('wp_rest'),
-        'user_id' => get_current_user_id()
+// Register custom REST API endpoint for fetching SureCart files
+add_action('rest_api_init', function () {
+    register_rest_route('btx/v1', '/fulfillment', array(
+        'methods' => 'GET',
+        'callback' => 'btx_get_fulfillment_files',
+        'permission_callback' => '__return_true' // We handle auth internally via token or WP user
     ));
+});
+
+function btx_get_fulfillment_files($request) {
+    $token = $request->get_param('token');
+    
+    // We must have the SureCart plugin active
+    if (!class_exists('\SureCart\Models\Checkout')) {
+        return new WP_Error('surecart_missing', 'SureCart plugin is not active.', array('status' => 500));
+    }
+    
+    $orders_to_process = [];
+    
+    if (!empty($token)) {
+        // 1. Fetch by checkout token (bypasses WordPress authentication entirely)
+        $checkout = \SureCart\Models\Checkout::find($token);
+        if (!$checkout) {
+            return new WP_Error('invalid_token', 'Invalid checkout token.', array('status' => 404));
+        }
+        
+        $order_id = is_object($checkout->order) ? $checkout->order->id : $checkout->order;
+        if (empty($order_id)) {
+            return new WP_Error('no_order', 'Order not created yet.', array('status' => 404));
+        }
+        
+        $order = \SureCart\Models\Order::find($order_id);
+        if (!$order) {
+            return new WP_Error('no_order', 'Order not found.', array('status' => 404));
+        }
+        $orders_to_process[] = $order;
+    } else {
+        // 2. Fetch by logged in user
+        $user_id = get_current_user_id();
+        if (!$user_id) {
+            return new WP_Error('unauthorized', 'You must be logged in to view all files.', array('status' => 401));
+        }
+        
+        $current_user = wp_get_current_user();
+        $orders = \SureCart\Models\Order::where('customer.email', $current_user->user_email)
+            ->orderBy('created_at', 'desc')
+            ->get();
+            
+        if (empty($orders)) {
+            return array('orders' => []);
+        }
+        $orders_to_process = $orders;
+    }
+    
+    $result_orders = [];
+    
+    foreach ($orders_to_process as $order) {
+        if ($order->status === 'draft') continue;
+        
+        $notes = \SureCart\Models\Note::where('notable_id', $order->id)
+            ->where('notable_type', 'order')
+            ->get();
+            
+        $download_note = null;
+        if (!empty($notes)) {
+            foreach ($notes as $note) {
+                // Handle both array and object metadata depending on SureCart's model casting
+                $meta = is_object($note->metadata) ? (array) $note->metadata : $note->metadata;
+                if (!empty($meta) && isset($meta['fulfilled_at'])) {
+                    $download_note = $meta;
+                    break;
+                }
+            }
+        }
+        
+        $result_orders[] = array(
+            'id' => $order->id,
+            'order_number' => $order->order_number,
+            'fulfillment_status' => $order->fulfillment_status,
+            'metadata' => $download_note
+        );
+    }
+    
+    return array('orders' => $result_orders);
 }
 
 function btx_render_fulfillment_dashboard_script() {
@@ -97,6 +173,26 @@ function btx_render_fulfillment_dashboard_script() {
         .btx-status-processing {
             color: #d97706;
             font-weight: 600;
+            margin: 0;
+        }
+        .btx-status-processing-subtitle {
+            font-size: 0.85em;
+            color: #64748b;
+            margin-top: 4px;
+        }
+        .btx-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(217, 119, 6, 0.3);
+            border-radius: 50%;
+            border-top-color: #d97706;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         /* Mobile adjustments */
         @media (max-width: 600px) {
@@ -111,9 +207,9 @@ function btx_render_fulfillment_dashboard_script() {
     </style>
 
     <script>
-    document.addEventListener("DOMContentLoaded", async function() {
+    document.addEventListener("DOMContentLoaded", function() {
         console.group("Fulfillment Dashboard Debug");
-        console.log("Script loaded and initialized.");
+        console.log("Script loaded and initialized (Server-Side Proxy Mode).");
         
         const container = document.getElementById('btx-fulfillment-dashboard');
         if (!container) {
@@ -126,222 +222,155 @@ function btx_render_fulfillment_dashboard_script() {
         const scOrderToken = urlParams.get('sc_order');
         console.log("URL parameters detected:", { sc_order: scOrderToken });
         
-        try {
-            console.log("Fetching fresh nonce from admin-ajax.php...");
-            const ajaxUrl = '<?php echo admin_url("admin-ajax.php"); ?>';
-            const fd = new FormData();
-            fd.append('action', 'btx_get_fresh_nonce');
-            
-            const nonceRes = await fetch(ajaxUrl, { 
-                method: 'POST', 
-                body: fd,
-                credentials: 'same-origin'
-            });
-            const nonceData = await nonceRes.json();
-            const nonce = nonceData.success ? nonceData.data.nonce : '';
-            const wpUserId = nonceData.success ? nonceData.data.user_id : 0;
-            
-            console.log("WP Auth Check:", { 
-                nonceLength: nonce.length, 
-                wpUserId: wpUserId,
-                isLoggedIntoWP: wpUserId > 0 
-            });
-            
-            let orders = [];
-            const authErrorMessage = '<p>Please log in to your dashboard to view your files.</p><p style="font-size: 0.9em; color: #64748b;">(If you just purchased or are already logged in, please refresh the page to update your session.)</p>';
-            
-            if (scOrderToken) {
-                console.log(`Attempting to fetch specific order by token: ${scOrderToken}`);
-                const orderRes = await fetch(`/wp-json/surecart/v1/orders/${scOrderToken}?token=${scOrderToken}`, {
-                    headers: { 'X-WP-Nonce': nonce },
-                    credentials: 'same-origin'
-                });
+        const pollInterval = 5000; // 5 seconds
+        const maxPolls = 60; // 5 minutes max
+        let pollCount = 0;
+        
+        async function fetchAndRenderFiles() {
+            try {
+                console.log(`Fetching orders via custom endpoint... Token: ${scOrderToken || 'None (Using WP Session)'}`);
+                const endpoint = scOrderToken ? `/wp-json/btx/v1/fulfillment?token=${scOrderToken}` : '/wp-json/btx/v1/fulfillment';
                 
-                if (orderRes.ok) {
-                    const orderData = await orderRes.json();
-                    if (orderData.data) {
-                        orders = [orderData.data];
-                        console.log("Successfully fetched order via token:", orders[0]);
-                    }
-                } else {
-                    let errorMsg = `Status ${orderRes.status}`;
+                // We send credentials so if they don't have a token, WordPress knows who they are.
+                const res = await fetch(endpoint, { credentials: 'same-origin' });
+                
+                if (res.status === 401) {
+                    console.warn("Fetch denied (Status 401). User is logged out and no token provided.");
+                    container.innerHTML = '<p>Please log in to your dashboard to view your files.</p><p style="font-size: 0.9em; color: #64748b;">(If you just purchased or are already logged in, please refresh the page to update your session.)</p>';
+                    return false; // Stop polling
+                }
+                
+                if (!res.ok) {
+                    let errorMsg = `Status ${res.status}`;
                     try {
-                        const errData = await orderRes.json();
+                        const errData = await res.json();
                         if (errData.message) errorMsg += ` - ${errData.message}`;
                     } catch(e) {}
+                    console.error("API error:", errorMsg);
                     
-                    console.warn(`Token fetch failed (${errorMsg}). Checking for fallback...`);
-                    
-                    if (orderRes.status === 401 || orderRes.status === 403 || orderRes.status === 404) {
-                        console.log("Falling back to fetch ALL orders for current logged-in user...");
-                        const allOrdersRes = await fetch('/wp-json/surecart/v1/orders', {
-                            headers: { 'X-WP-Nonce': nonce },
-                            credentials: 'same-origin'
-                        });
-                        
-                        if (allOrdersRes.ok) {
-                            const allOrdersData = await allOrdersRes.json();
-                            orders = allOrdersData.data || [];
-                            console.log(`Fallback successful. Retrieved ${orders.length} orders.`, orders);
-                        } else if (allOrdersRes.status === 401 || allOrdersRes.status === 403) {
-                             console.warn(`Fallback fetch denied (Status ${allOrdersRes.status}). User likely logged out or nonce invalid.`);
-                             container.innerHTML = authErrorMessage;
-                             console.groupEnd();
-                             return;
-                        } else {
-                            throw new Error(`Fallback fetch failed (Status: ${allOrdersRes.status})`);
-                        }
-                    } else {
-                        throw new Error(`Token fetch failed (${errorMsg})`);
+                    if (res.status === 404) {
+                        // Order or checkout not found yet (could be asynchronous delay from SureCart)
+                        return true; // Continue polling
                     }
+                    
+                    container.innerHTML = `<p>Error loading your files: ${errorMsg}</p>`;
+                    return false; // Stop polling
+                }
+                
+                const data = await res.json();
+                const orders = data.orders || [];
+                console.log(`Successfully fetched ${orders.length} orders.`, orders);
+                
+                if (orders.length === 0) {
+                    container.innerHTML = '<p>You have no orders yet.</p>';
+                    return false;
+                }
+                
+                container.innerHTML = '<h2 style="margin-bottom:20px; color: blue;">My Files</h2>';
+                let fileCount = 0;
+                let isWaitingForFiles = false;
+                
+                for (const order of orders) {
+                    const card = document.createElement('div');
+                    card.className = 'btx-order-card';
+                    let orderTitle = `Order #${order.order_number}`;
+                    
+                    if (order.metadata && order.metadata.fulfilled_at) {
+                        fileCount++;
+                        const meta = order.metadata;
+                        console.log("Valid fulfillment metadata found!", meta);
+                        
+                        let filesHtml = '';
+                        
+                        if (meta.overhead_url) {
+                            filesHtml += `
+                                <div class="btx-file-card">
+                                    <strong>Overhead Aerial</strong>
+                                    <a href="${meta.overhead_url}" class="btx-btn" target="_blank" download>Print Size</a>
+                                </div>
+                            `;
+                        }
+                        if (meta.map_url) {
+                            filesHtml += `
+                                <div class="btx-file-card">
+                                    <strong>Static Context Map</strong>
+                                    <a href="${meta.map_url}" class="btx-btn" target="_blank" download>Print Size</a>
+                                </div>
+                            `;
+                        }
+                        if (meta.kml_url) {
+                            filesHtml += `
+                                <div class="btx-file-card">
+                                    <strong>Boundary Coordinates</strong>
+                                    <a href="${meta.kml_url}" class="btx-btn" target="_blank" download>Download KML</a>
+                                </div>
+                            `;
+                        }
+                        
+                        card.innerHTML = `
+                            <div class="btx-order-header">
+                                <h3>${orderTitle}</h3>
+                                <small>Fulfilled: ${new Date(meta.fulfilled_at).toLocaleDateString()}</small>
+                            </div>
+                            <div class="btx-gallery-grid">
+                                ${filesHtml}
+                            </div>
+                        `;
+                        container.appendChild(card);
+                        
+                    } else if (order.fulfillment_status === 'unfulfilled') {
+                        console.log("Order is unfulfilled. Waiting for files...");
+                        isWaitingForFiles = true;
+                        fileCount++;
+                        card.innerHTML = `
+                            <div class="btx-order-header">
+                                <h3>${orderTitle}</h3>
+                                <div>
+                                    <p class="btx-status-processing"><span class="btx-spinner"></span>Generating your custom files...</p>
+                                    <p class="btx-status-processing-subtitle">This usually takes 1-3 minutes. We will also email you the links when they are ready.</p>
+                                </div>
+                            </div>
+                        `;
+                        container.appendChild(card);
+                    }
+                }
+                
+                if (fileCount === 0) {
+                    container.innerHTML += '<p>No files available for your orders.</p>';
+                }
+                
+                // If we are waiting for files and we have a token, we should poll.
+                // If they are just looking at their historical dashboard without a token, no need to poll.
+                if (isWaitingForFiles && scOrderToken) {
+                    return true; // Continue polling
+                }
+                
+                return false; // Stop polling
+                
+            } catch (err) {
+                console.error("Dashboard exception:", err);
+                container.innerHTML = '<p>Error loading your files: ' + err.message + '</p>';
+                return false;
+            }
+        }
+        
+        async function runPoller() {
+            const shouldContinue = await fetchAndRenderFiles();
+            if (shouldContinue) {
+                pollCount++;
+                if (pollCount < maxPolls) {
+                    console.log(`Scheduling next poll in ${pollInterval/1000}s (Poll ${pollCount}/${maxPolls})`);
+                    setTimeout(runPoller, pollInterval);
+                } else {
+                    console.log("Max polls reached. Stopping.");
                 }
             } else {
-                console.log("No token provided. Fetching all orders for current logged-in user...");
-                const ordersRes = await fetch('/wp-json/surecart/v1/orders', {
-                    headers: { 'X-WP-Nonce': nonce },
-                    credentials: 'same-origin'
-                });
-                
-                if (ordersRes.status === 401 || ordersRes.status === 403) {
-                    console.warn(`Fetch all orders denied (Status ${ordersRes.status}). User likely logged out or nonce invalid.`);
-                    container.innerHTML = authErrorMessage;
-                    console.groupEnd();
-                    return;
-                }
-                
-                if (!ordersRes.ok) {
-                    let errorMsg = `Status ${ordersRes.status}`;
-                    try {
-                        const errData = await ordersRes.json();
-                        if (errData.message) errorMsg += ` - ${errData.message}`;
-                    } catch(e) {}
-                    throw new Error(`Failed to fetch orders (${errorMsg})`);
-                }
-                
-                const ordersData = await ordersRes.json();
-                orders = ordersData.data || [];
-                console.log(`Successfully fetched ${orders.length} orders.`, orders);
-            }
-            
-            if (orders.length === 0) {
-                console.log("No orders found to display.");
-                container.innerHTML = '<p>You have no orders yet.</p>';
-                console.groupEnd();
-                return;
-            }
-            
-            container.innerHTML = '<h2 style="margin-bottom:20px; color: blue;">My Files (CD Test)</h2>';
-            let fileCount = 0;
-            
-            for (const order of orders) {
-                console.groupCollapsed(`Processing Order #${order.order_number}`);
-                console.log("Order Data:", order);
-                
-                // Skip draft or unpaid orders
-                if (order.status === 'draft') {
-                    console.log("Skipping draft order.");
-                    console.groupEnd();
-                    continue;
-                }
-                
-                // 2. Fetch Notes for the order
-                const tokenParam = scOrderToken ? `&token=${scOrderToken}` : '';
-                console.log(`Fetching notes for order ID: ${order.id}...`);
-                
-                const notesRes = await fetch(`/wp-json/surecart/v1/notes?notable_id=${order.id}&notable_type=order${tokenParam}`, {
-                    headers: { 'X-WP-Nonce': nonce },
-                    credentials: 'same-origin'
-                });
-                
-                if (!notesRes.ok) {
-                    console.warn(`Failed to fetch notes for order ${order.id} (Status ${notesRes.status})`);
-                    console.groupEnd();
-                    continue;
-                }
-                
-                const notesData = await notesRes.json();
-                const notes = notesData.data || [];
-                console.log(`Retrieved ${notes.length} notes.`, notes);
-                
-                // 3. Find note with download metadata
-                const downloadNote = notes.find(n => n.metadata && n.metadata.fulfilled_at);
-                
-                const card = document.createElement('div');
-                card.className = 'btx-order-card';
-                
-                let orderTitle = `Order #${order.order_number}`;
-                
-                if (downloadNote && downloadNote.metadata) {
-                    fileCount++;
-                    const meta = downloadNote.metadata;
-                    console.log("Valid fulfillment note found! Metadata:", meta);
-                    
-                    let filesHtml = '';
-                    
-                    if (meta.overhead_url) {
-                        filesHtml += `
-                            <div class="btx-file-card">
-                                <strong>Overhead Aerial</strong>
-                                <a href="${meta.overhead_url}" class="btx-btn" target="_blank" download>Print Size</a>
-                            </div>
-                        `;
-                    }
-                    if (meta.map_url) {
-                        filesHtml += `
-                            <div class="btx-file-card">
-                                <strong>Static Context Map</strong>
-                                <a href="${meta.map_url}" class="btx-btn" target="_blank" download>Print Size</a>
-                            </div>
-                        `;
-                    }
-                    if (meta.kml_url) {
-                        filesHtml += `
-                            <div class="btx-file-card">
-                                <strong>Boundary Coordinates</strong>
-                                <a href="${meta.kml_url}" class="btx-btn" target="_blank" download>Download KML</a>
-                            </div>
-                        `;
-                    }
-                    
-                    card.innerHTML = `
-                        <div class="btx-order-header">
-                            <h3>${orderTitle}</h3>
-                            <small>Fulfilled: ${new Date(meta.fulfilled_at).toLocaleDateString()}</small>
-                        </div>
-                        <div class="btx-gallery-grid">
-                            ${filesHtml}
-                        </div>
-                    `;
-                    container.appendChild(card);
-                    
-                } else if (order.fulfillment_status === 'unfulfilled') {
-                    console.log("No fulfillment note found, but order is unfulfilled. Showing processing message.");
-                    fileCount++;
-                    card.innerHTML = `
-                        <div class="btx-order-header">
-                            <h3>${orderTitle}</h3>
-                            <p class="btx-status-processing">Processing your files...</p>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                } else {
-                    console.log("Order is fulfilled but has no download note. Skipping display.");
-                }
-                
                 console.groupEnd();
             }
-            
-            console.log(`Total files/processing orders displayed: ${fileCount}`);
-            if (fileCount === 0) {
-                container.innerHTML += '<p>No files available for your orders.</p>';
-            }
-            
-            console.groupEnd();
-        } catch (err) {
-            console.error("Dashboard error exception:", err);
-            container.innerHTML = '<p>Error loading your files: ' + err.message + '</p>';
-            console.groupEnd();
         }
+        
+        // Start execution
+        runPoller();
     });
     </script>
     <?php
