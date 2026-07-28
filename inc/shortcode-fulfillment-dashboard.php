@@ -15,7 +15,10 @@ add_action('wp_footer', 'btx_render_fulfillment_dashboard_script');
 add_action('wp_ajax_btx_get_fresh_nonce', 'btx_get_fresh_nonce_callback');
 add_action('wp_ajax_nopriv_btx_get_fresh_nonce', 'btx_get_fresh_nonce_callback');
 function btx_get_fresh_nonce_callback() {
-    wp_send_json_success(wp_create_nonce('wp_rest'));
+    wp_send_json_success(array(
+        'nonce' => wp_create_nonce('wp_rest'),
+        'user_id' => get_current_user_id()
+    ));
 }
 
 function btx_render_fulfillment_dashboard_script() {
@@ -135,8 +138,14 @@ function btx_render_fulfillment_dashboard_script() {
                 credentials: 'same-origin'
             });
             const nonceData = await nonceRes.json();
-            const nonce = nonceData.success ? nonceData.data : '';
-            console.log("Nonce fetched successfully:", nonce ? "Yes (length " + nonce.length + ")" : "No");
+            const nonce = nonceData.success ? nonceData.data.nonce : '';
+            const wpUserId = nonceData.success ? nonceData.data.user_id : 0;
+            
+            console.log("WP Auth Check:", { 
+                nonceLength: nonce.length, 
+                wpUserId: wpUserId,
+                isLoggedIntoWP: wpUserId > 0 
+            });
             
             let orders = [];
             const authErrorMessage = '<p>Please log in to your dashboard to view your files.</p><p style="font-size: 0.9em; color: #64748b;">(If you just purchased or are already logged in, please refresh the page to update your session.)</p>';
