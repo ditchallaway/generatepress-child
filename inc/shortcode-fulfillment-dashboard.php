@@ -109,23 +109,26 @@ function btx_render_fulfillment_dashboard_script() {
 
     <script>
     document.addEventListener("DOMContentLoaded", async function() {
-        console.log("Fulfillment dashboard script loaded.");
+        console.group("Fulfillment Dashboard Debug");
+        console.log("Script loaded and initialized.");
+        
         const container = document.getElementById('btx-fulfillment-dashboard');
         if (!container) {
-            console.log("Container 'btx-fulfillment-dashboard' not found on page.");
+            console.warn("Container 'btx-fulfillment-dashboard' not found on page. Exiting.");
+            console.groupEnd();
             return;
         }
         
         const urlParams = new URLSearchParams(window.location.search);
         const scOrderToken = urlParams.get('sc_order');
+        console.log("URL parameters detected:", { sc_order: scOrderToken });
         
         try {
-            // Fetch a fresh nonce via AJAX to bypass page caching issues
+            console.log("Fetching fresh nonce from admin-ajax.php...");
             const ajaxUrl = '<?php echo admin_url("admin-ajax.php"); ?>';
             const fd = new FormData();
             fd.append('action', 'btx_get_fresh_nonce');
             
-            // MUST include credentials so admin-ajax knows who is logged in and generates the CORRECT user nonce!
             const nonceRes = await fetch(ajaxUrl, { 
                 method: 'POST', 
                 body: fd,
@@ -133,14 +136,13 @@ function btx_render_fulfillment_dashboard_script() {
             });
             const nonceData = await nonceRes.json();
             const nonce = nonceData.success ? nonceData.data : '';
+            console.log("Nonce fetched successfully:", nonce ? "Yes (length " + nonce.length + ")" : "No");
             
-            console.log("Fetching orders...", scOrderToken ? `(Using token: ${scOrderToken})` : "");
             let orders = [];
-            
             const authErrorMessage = '<p>Please log in to your dashboard to view your files.</p><p style="font-size: 0.9em; color: #64748b;">(If you just purchased or are already logged in, please refresh the page to update your session.)</p>';
             
             if (scOrderToken) {
-                // Fetch specific order by token
+                console.log(`Attempting to fetch specific order by token: ${scOrderToken}`);
                 const orderRes = await fetch(`/wp-json/surecart/v1/orders/${scOrderToken}?token=${scOrderToken}`, {
                     headers: { 'X-WP-Nonce': nonce },
                     credentials: 'same-origin'
@@ -150,17 +152,19 @@ function btx_render_fulfillment_dashboard_script() {
                     const orderData = await orderRes.json();
                     if (orderData.data) {
                         orders = [orderData.data];
+                        console.log("Successfully fetched order via token:", orders[0]);
                     }
                 } else {
-                    // Try to parse the error message if possible
                     let errorMsg = `Status ${orderRes.status}`;
                     try {
                         const errData = await orderRes.json();
                         if (errData.message) errorMsg += ` - ${errData.message}`;
                     } catch(e) {}
                     
+                    console.warn(`Token fetch failed (${errorMsg}). Checking for fallback...`);
+                    
                     if (orderRes.status === 401 || orderRes.status === 403 || orderRes.status === 404) {
-                        console.warn(`Token fetch failed (${errorMsg}), falling back to all orders...`);
+                        console.log("Falling back to fetch ALL orders for current logged-in user...");
                         const allOrdersRes = await fetch('/wp-json/surecart/v1/orders', {
                             headers: { 'X-WP-Nonce': nonce },
                             credentials: 'same-origin'
@@ -169,8 +173,11 @@ function btx_render_fulfillment_dashboard_script() {
                         if (allOrdersRes.ok) {
                             const allOrdersData = await allOrdersRes.json();
                             orders = allOrdersData.data || [];
+                            console.log(`Fallback successful. Retrieved ${orders.length} orders.`, orders);
                         } else if (allOrdersRes.status === 401 || allOrdersRes.status === 403) {
+                             console.warn(`Fallback fetch denied (Status ${allOrdersRes.status}). User likely logged out or nonce invalid.`);
                              container.innerHTML = authErrorMessage;
+                             console.groupEnd();
                              return;
                         } else {
                             throw new Error(`Fallback fetch failed (Status: ${allOrdersRes.status})`);
@@ -180,14 +187,16 @@ function btx_render_fulfillment_dashboard_script() {
                     }
                 }
             } else {
-                // Fetch all orders
+                console.log("No token provided. Fetching all orders for current logged-in user...");
                 const ordersRes = await fetch('/wp-json/surecart/v1/orders', {
                     headers: { 'X-WP-Nonce': nonce },
                     credentials: 'same-origin'
                 });
                 
                 if (ordersRes.status === 401 || ordersRes.status === 403) {
+                    console.warn(`Fetch all orders denied (Status ${ordersRes.status}). User likely logged out or nonce invalid.`);
                     container.innerHTML = authErrorMessage;
+                    console.groupEnd();
                     return;
                 }
                 
@@ -202,10 +211,13 @@ function btx_render_fulfillment_dashboard_script() {
                 
                 const ordersData = await ordersRes.json();
                 orders = ordersData.data || [];
+                console.log(`Successfully fetched ${orders.length} orders.`, orders);
             }
             
             if (orders.length === 0) {
+                console.log("No orders found to display.");
                 container.innerHTML = '<p>You have no orders yet.</p>';
+                console.groupEnd();
                 return;
             }
             
@@ -213,19 +225,34 @@ function btx_render_fulfillment_dashboard_script() {
             let fileCount = 0;
             
             for (const order of orders) {
+                console.groupCollapsed(`Processing Order #${order.order_number}`);
+                console.log("Order Data:", order);
+                
                 // Skip draft or unpaid orders
-                if (order.status === 'draft') continue;
+                if (order.status === 'draft') {
+                    console.log("Skipping draft order.");
+                    console.groupEnd();
+                    continue;
+                }
                 
                 // 2. Fetch Notes for the order
-                // If we are a guest with a token, we might need to pass the token to the notes endpoint as well, 
-                // but usually notes are public if you have the order access, or maybe we append ?token=
                 const tokenParam = scOrderToken ? `&token=${scOrderToken}` : '';
+                console.log(`Fetching notes for order ID: ${order.id}...`);
+                
                 const notesRes = await fetch(`/wp-json/surecart/v1/notes?notable_id=${order.id}&notable_type=order${tokenParam}`, {
                     headers: { 'X-WP-Nonce': nonce },
                     credentials: 'same-origin'
                 });
+                
+                if (!notesRes.ok) {
+                    console.warn(`Failed to fetch notes for order ${order.id} (Status ${notesRes.status})`);
+                    console.groupEnd();
+                    continue;
+                }
+                
                 const notesData = await notesRes.json();
                 const notes = notesData.data || [];
+                console.log(`Retrieved ${notes.length} notes.`, notes);
                 
                 // 3. Find note with download metadata
                 const downloadNote = notes.find(n => n.metadata && n.metadata.fulfilled_at);
@@ -238,6 +265,7 @@ function btx_render_fulfillment_dashboard_script() {
                 if (downloadNote && downloadNote.metadata) {
                     fileCount++;
                     const meta = downloadNote.metadata;
+                    console.log("Valid fulfillment note found! Metadata:", meta);
                     
                     let filesHtml = '';
                     
@@ -278,9 +306,7 @@ function btx_render_fulfillment_dashboard_script() {
                     container.appendChild(card);
                     
                 } else if (order.fulfillment_status === 'unfulfilled') {
-                    // Check if it's a product that yields files by looking for our snapshot mode
-                    // But order line items aren't immediately accessible without expansion.
-                    // For now, any unfulfilled order might be processing files.
+                    console.log("No fulfillment note found, but order is unfulfilled. Showing processing message.");
                     fileCount++;
                     card.innerHTML = `
                         <div class="btx-order-header">
@@ -289,16 +315,23 @@ function btx_render_fulfillment_dashboard_script() {
                         </div>
                     `;
                     container.appendChild(card);
+                } else {
+                    console.log("Order is fulfilled but has no download note. Skipping display.");
                 }
+                
+                console.groupEnd();
             }
             
+            console.log(`Total files/processing orders displayed: ${fileCount}`);
             if (fileCount === 0) {
                 container.innerHTML += '<p>No files available for your orders.</p>';
             }
             
+            console.groupEnd();
         } catch (err) {
-            console.error("Dashboard error:", err);
+            console.error("Dashboard error exception:", err);
             container.innerHTML = '<p>Error loading your files: ' + err.message + '</p>';
+            console.groupEnd();
         }
     });
     </script>
