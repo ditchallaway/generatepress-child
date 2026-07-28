@@ -10,6 +10,6 @@ function enqueue_jquery() {
 
 
 /**
- * Require custom fulfillment dashboard shortcode
+ * Require custom fulfillment dashboard script
  */
-require_once get_stylesheet_directory() . '/inc/shortcode-fulfillment-dashboard.php';
+require_once get_stylesheet_directory() . '/inc/fulfillment-dashboard.php';
