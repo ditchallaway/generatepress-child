@@ -93,7 +93,7 @@ function btx_get_fulfillment_files($request) {
         
         $result_orders[] = array(
             'id' => $order->id,
-            'order_number' => $order->order_number,
+            'order_number' => $order->number,
             'fulfillment_status' => $order->fulfillment_status,
             'metadata' => $download_note
         );
@@ -271,7 +271,7 @@ function btx_render_fulfillment_dashboard_script() {
                     return false;
                 }
                 
-                container.innerHTML = '<h2 style="margin-bottom:20px; color: blue;">My Files</h2>';
+                container.innerHTML = '<h2 style="margin-bottom:20px; color: #1e293b;">My Files</h2>';
                 let fileCount = 0;
                 let isWaitingForFiles = false;
                 
