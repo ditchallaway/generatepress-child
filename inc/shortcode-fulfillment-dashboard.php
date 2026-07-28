@@ -124,7 +124,13 @@ function btx_render_fulfillment_dashboard_script() {
             const ajaxUrl = '<?php echo admin_url("admin-ajax.php"); ?>';
             const fd = new FormData();
             fd.append('action', 'btx_get_fresh_nonce');
-            const nonceRes = await fetch(ajaxUrl, { method: 'POST', body: fd });
+            
+            // MUST include credentials so admin-ajax knows who is logged in and generates the CORRECT user nonce!
+            const nonceRes = await fetch(ajaxUrl, { 
+                method: 'POST', 
+                body: fd,
+                credentials: 'same-origin'
+            });
             const nonceData = await nonceRes.json();
             const nonce = nonceData.success ? nonceData.data : '';
             
