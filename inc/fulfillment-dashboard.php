@@ -21,7 +21,17 @@ add_action('rest_api_init', function () {
 });
 
 function btx_get_fulfillment_files($request) {
+    // Get comma-separated tokens or single token
+    $tokens_str = $request->get_param('tokens');
+    $tokens = [];
+    if (!empty($tokens_str)) {
+        $tokens = array_filter(array_map('trim', explode(',', $tokens_str)));
+    }
     $token = $request->get_param('token');
+    if (!empty($token)) {
+        $tokens[] = $token;
+    }
+    $tokens = array_unique($tokens);
     
     // We must have the SureCart plugin active
     if (!class_exists('\SureCart\Models\Checkout')) {
@@ -30,23 +40,23 @@ function btx_get_fulfillment_files($request) {
     
     $orders_to_process = [];
     
-    if (!empty($token)) {
-        // 1. Fetch by checkout token (bypasses WordPress authentication entirely)
-        $checkout = \SureCart\Models\Checkout::find($token);
-        if (!$checkout) {
-            return new WP_Error('invalid_token', 'Invalid checkout token.', array('status' => 404));
+    if (!empty($tokens)) {
+        // 1. Fetch by checkout tokens (bypasses WordPress authentication entirely)
+        foreach ($tokens as $t) {
+            $checkout = \SureCart\Models\Checkout::find($t);
+            if ($checkout) {
+                $order_id = is_object($checkout->order) ? $checkout->order->id : $checkout->order;
+                if (!empty($order_id)) {
+                    $order = \SureCart\Models\Order::find($order_id);
+                    if ($order) {
+                        $orders_to_process[] = $order;
+                    }
+                }
+            }
         }
-        
-        $order_id = is_object($checkout->order) ? $checkout->order->id : $checkout->order;
-        if (empty($order_id)) {
-            return new WP_Error('no_order', 'Order not created yet.', array('status' => 404));
+        if (empty($orders_to_process)) {
+            return new WP_Error('no_order', 'Orders not found or not created yet.', array('status' => 404));
         }
-        
-        $order = \SureCart\Models\Order::find($order_id);
-        if (!$order) {
-            return new WP_Error('no_order', 'Order not found.', array('status' => 404));
-        }
-        $orders_to_process[] = $order;
     } else {
         // 2. Fetch by logged in user
         $user_id = get_current_user_id();
@@ -214,7 +224,7 @@ function btx_render_fulfillment_dashboard_script() {
     <script>
     document.addEventListener("DOMContentLoaded", function() {
         console.group("Fulfillment Dashboard Debug");
-        console.log("Script loaded and initialized (Server-Side Proxy Mode).");
+        console.log("Script loaded and initialized (Server-Side Proxy Mode with LocalStorage Fallback).");
         
         const container = document.getElementById('btx-fulfillment-dashboard');
         if (!container) {
@@ -224,20 +234,41 @@ function btx_render_fulfillment_dashboard_script() {
         }
         
         const urlParams = new URLSearchParams(window.location.search);
-        const scOrderToken = urlParams.get('sc_order');
-        console.log("URL parameters detected:", { sc_order: scOrderToken });
+        let tokens = [];
+        if (urlParams.get('sc_order')) tokens.push(urlParams.get('sc_order'));
+        
+        // Fallback to SureCart's localStorage if no token in URL, or just to show recent orders
+        try {
+            const lsCheckouts = JSON.parse(localStorage.getItem('scCompletedCheckouts') || '[]');
+            if (Array.isArray(lsCheckouts)) {
+                tokens = tokens.concat(lsCheckouts);
+            }
+        } catch(e) {}
+        
+        // Remove duplicates
+        tokens = [...new Set(tokens)];
+        console.log("Tokens detected:", tokens);
         
         const pollInterval = 5000; // 5 seconds
         const maxPolls = 60; // 5 minutes max
         let pollCount = 0;
         
+        const wpNonce = "<?php echo esc_js(wp_create_nonce('wp_rest')); ?>";
+        
         async function fetchAndRenderFiles() {
             try {
-                console.log(`Fetching orders via custom endpoint... Token: ${scOrderToken || 'None (Using WP Session)'}`);
-                const endpoint = scOrderToken ? `/wp-json/btx/v1/fulfillment?token=${scOrderToken}` : '/wp-json/btx/v1/fulfillment';
+                console.log(`Fetching orders via custom endpoint... Tokens: ${tokens.join(',') || 'None (Using WP Session)'}`);
+                const endpoint = tokens.length > 0 
+                    ? `/wp-json/btx/v1/fulfillment?tokens=${encodeURIComponent(tokens.join(','))}` 
+                    : '/wp-json/btx/v1/fulfillment';
                 
-                // We send credentials so if they don't have a token, WordPress knows who they are.
-                const res = await fetch(endpoint, { credentials: 'same-origin' });
+                // We send credentials and X-WP-Nonce so WordPress REST API accepts the cookie session
+                const res = await fetch(endpoint, { 
+                    credentials: 'same-origin',
+                    headers: {
+                        'X-WP-Nonce': wpNonce
+                    }
+                });
                 
                 if (res.status === 401) {
                     console.warn("Fetch denied (Status 401). User is logged out and no token provided.");
@@ -344,9 +375,9 @@ function btx_render_fulfillment_dashboard_script() {
                     container.innerHTML += '<p>No files available for your orders.</p>';
                 }
                 
-                // If we are waiting for files and we have a token, we should poll.
-                // If they are just looking at their historical dashboard without a token, no need to poll.
-                if (isWaitingForFiles && scOrderToken) {
+                // If we are waiting for files and we have tokens, we should poll.
+                // If they are just looking at their historical dashboard without tokens, no need to poll.
+                if (isWaitingForFiles && tokens.length > 0) {
                     return true; // Continue polling
                 }
                 
