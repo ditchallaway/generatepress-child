@@ -1,1 +1,39 @@
 /*css*/
+
+/* =============================================
+   SureCart Checkout Form – Contrast Improvements
+   ============================================= */
+
+/*
+ * SureCart uses Shadow DOM, so we override via their
+ * exposed CSS custom properties. Using :root:root for
+ * extra specificity to beat any inline defaults.
+ */
+
+:root:root {
+  /* --- Checkbox --- */
+  --sc-checkbox-size: 1.25em;                       /* slightly larger for visibility */
+  --sc-input-border-color: #4a4a4a;                 /* darker border for unchecked state */
+
+  /* --- General form inputs --- */
+  --sc-input-label-color: #1a1a1a;                  /* near-black labels */
+  --sc-input-placeholder-color: #6b6b6b;            /* mid-gray placeholders (WCAG AA) */
+  --sc-input-color: #1a1a1a;                        /* typed-text color */
+}
+
+/* Darken checkbox border specifically if the global var isn't enough */
+sc-checkbox::part(control) {
+  border-color: #4a4a4a;
+  border-width: 2px;
+}
+
+/* Ensure the checked state is clearly visible */
+sc-checkbox::part(control--checked) {
+  background-color: var(--sc-color-primary-500, #0073e6);
+  border-color: var(--sc-color-primary-500, #0073e6);
+}
+
+/* Checkbox label text contrast */
+sc-checkbox::part(label) {
+  color: #1a1a1a;
+}
