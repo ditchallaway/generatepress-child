@@ -48,3 +48,38 @@ pm2 status
 
 # Restart the listener
 pm2 restart github-webhook
+
+# SureCart Order Notes — Data Shape for the Fulfillment Dashboard
+
+A completed order has a SureCart **order note** whose `metadata` is the fulfillment
+record:
+
+| key | type | meaning |
+|---|---|---|
+| `pack` | string | product/package identifier, e.g. `"single_map"` |
+| `fulfilled_at` | string | ISO-8601 timestamp delivery completed |
+| `kml_url` | string | short link to the parcel boundary KML (when present) |
+| `overhead_url` | string | short link to the overhead/hero image — **always the first image key** |
+| `<shot>_url` | string | one short link per oblique shot, keyed by shot name (`north_url`, `east_url`, …) |
+| `shot_N_url` | string | fallback key when a shot has no name (`shot_2_url`, `shot_3_url`, …) |
+
+- All URLs are short links (`link.brokertricks.com/...`).
+- The first image is always `overhead_url`; subsequent images use named/fallback keys.
+
+### Real example (`single_map`)
+
+```json
+{
+  "pack": "single_map",
+  "fulfilled_at": "2026-09-27T06:44:23.800Z",
+  "kml_url": "https://link.brokertricks.com/2rvjap",
+  "overhead_url": "https://link.brokertricks.com/yahaaj"
+}
+```
+
+### Per-product image keys
+
+| `pack` | image keys |
+|---|---|
+| `single_map` | `overhead_url` |
+| full 5-shot pack | `overhead_url` + `north_url`, `east_url`, `south_url`, `west_url` |
