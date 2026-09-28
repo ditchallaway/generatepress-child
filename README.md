@@ -57,6 +57,7 @@ record:
 | key | type | meaning |
 |---|---|---|
 | `pack` | string | product/package identifier, e.g. `"single_map"` |
+| `parcel_number` | string | assessor's parcel number (APN), e.g. `"RPS0562002007TA"` |
 | `fulfilled_at` | string | ISO-8601 timestamp delivery completed |
 | `kml_url` | string | short link to the parcel boundary KML (when present) |
 | `overhead_url` | string | short link to the overhead/hero image — **always the first image key** |
@@ -66,17 +67,24 @@ record:
 - All URLs are short links (`link.brokertricks.com/...`).
 - The first image is always `overhead_url`; subsequent images use named/fallback keys.
 
-### Real example (`single_map`)
+### Example (`single_map`)
 
 ```json
 {
   "pack": "single_map",
+  "parcel_number": "RPS0562002007TA",
   "fulfilled_at": "2026-09-27T06:44:23.800Z",
   "kml_url": "https://link.brokertricks.com/2rvjap",
   "overhead_url": "https://link.brokertricks.com/yahaaj"
 }
 ```
 
+### Per-product image keys
+
+| `pack` | image keys |
+|---|---|
+| `single_map` | `overhead_url` |
+| full 5-shot pack | `overhead_url` + `north_url`, `east_url`, `south_url`, `west_url` |
 ### Per-product image keys
 
 | `pack` | image keys |
