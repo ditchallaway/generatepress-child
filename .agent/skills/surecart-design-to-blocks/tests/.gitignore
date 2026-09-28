@@ -1,0 +1,3 @@
+# Per-run artifact — what the skill emitted for the fixture.
+# Created by the merchant/developer, compared against golden.html, never committed.
+fixtures/*/actual.html

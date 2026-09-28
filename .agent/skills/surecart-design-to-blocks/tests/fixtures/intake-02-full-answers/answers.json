@@ -1,0 +1,19 @@
+{
+	"Q1_PRODUCT_TYPE": "SaaS / software",
+	"Q2_ACCENT_DESCRIPTION": "Cool — blue / teal / cyan",
+	"Q3A_VARIANTS": "1-axis (size or color or storage)",
+	"Q3B_PRICING": "Subscription monthly + yearly toggle",
+	"Q4_SECTIONS": [
+		"Reviews (full section + ratings histogram)",
+		"Comparison table",
+		"How it works (steps)"
+	],
+	"Q5_VISUAL_MOOD": "Tech-SaaS / dashboard",
+	"Q6_TYPOGRAPHY": "Mono accents (price, badges, code)",
+	"_branching": {
+		"Q6_skipped_reason": null,
+		"Q3b_included": true,
+		"Q3b_option_filter_applied": "Pay-what-you-want removed (Q1=SaaS branch)",
+		"Q4_option_filter_applied": "Sticky bar removed (Q1=SaaS branch)"
+	}
+}

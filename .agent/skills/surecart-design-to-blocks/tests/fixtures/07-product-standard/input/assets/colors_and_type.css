@@ -1,0 +1,13 @@
+:root {
+	--fg-1: #111827; /* primary text */
+	--fg-2: #686868; /* secondary / interval text */
+	--fg-mute: #8a8a8a; /* muted helper text */
+	--brand: #000000; /* primary action / sale badge bg */
+	--border-1: #e5e7eb;
+	--bg-1: #ffffff;
+	--bg-page: #ffffff;
+	--sale-red: #dc2626;
+
+	--font-display: "Inter", system-ui, -apple-system, sans-serif;
+	--font-body: "Inter", system-ui, -apple-system, sans-serif;
+}

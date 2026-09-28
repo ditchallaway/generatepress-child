@@ -1,0 +1,12 @@
+{
+	"archetype": "FAQ",
+	"input_mode": "zip",
+	"covers": [
+		"core/details with mandatory summary attr matching inner <summary> HTML (Rule 5)",
+		"5x details items in a vertical core/group with blockGap",
+		".sc-h2 section heading + aligncenter",
+		"layout.contentSize:800px to keep readable",
+		"text-only output — no images, no buttons"
+	],
+	"notes": "Smallest non-trivial fixture. Verifies core/details summary-attr round-trip and FAQ archetype canonical tree."
+}

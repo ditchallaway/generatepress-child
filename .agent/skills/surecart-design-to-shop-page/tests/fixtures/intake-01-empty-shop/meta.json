@@ -1,0 +1,16 @@
+{
+	"fixture": "intake-01-empty-shop",
+	"input_mode": "questionnaire-defaults",
+	"archetype": "minimum-answer shop-page intake path",
+	"covers": [
+		"SQ1 = Physical goods default",
+		"SQ2 = SureCart default → surecart-brand preset (#01824C)",
+		"SQ3 = 3-up grid default",
+		"SQ5 = Rating stars + Numbered pagination (defaults)",
+		"SQ4 = Tag chips default"
+	],
+	"branching_exercised": [
+		"None (all defaults)"
+	],
+	"prompt_word_count_target": "900-1,200 (lower end of Tier I-7 range — shop-page is leaner than product-detail)"
+}

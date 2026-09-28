@@ -1,0 +1,40 @@
+:root {
+	--brand: #01824c;
+	--bg-1: #ffffff;
+	--fg-1: #0b1014;
+	--fg-2: #4b5563;
+	--border-1: #e5e7eb;
+
+	--font-display: "Geist", "Inter", system-ui, -apple-system, sans-serif;
+	--font-body: "Figtree", "Inter", system-ui, -apple-system, sans-serif;
+}
+
+.sc-h2 {
+	font-family: var(--font-display);
+	font-size: 40px;
+	font-weight: 700;
+	line-height: 1.15;
+	letter-spacing: -0.02em;
+}
+
+.sc-h3 {
+	font-family: var(--font-display);
+	font-size: 22px;
+	font-weight: 600;
+	line-height: 1.3;
+	letter-spacing: -0.01em;
+}
+
+.sc-lead {
+	font-family: var(--font-body);
+	font-size: 20px;
+	font-weight: 400;
+	line-height: 1.5;
+}
+
+.sc-body {
+	font-family: var(--font-body);
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 1.6;
+}

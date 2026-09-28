@@ -1,0 +1,13 @@
+:root {
+	--fg-1: #111827; /* heading */
+	--fg-2: #4b5563; /* body */
+	--fg-mute: #6b7280;
+	--brand: #6366f1; /* indigo accent */
+	--border-1: #e5e7eb;
+	--bg-1: #ffffff;
+	--bg-page: #f9fafb; /* light gray page bg */
+	--sale-red: #dc2626;
+
+	--font-display: "Inter", system-ui, -apple-system, sans-serif;
+	--font-body: "Inter", system-ui, -apple-system, sans-serif;
+}

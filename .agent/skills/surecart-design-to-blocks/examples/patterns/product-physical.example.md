@@ -1,0 +1,494 @@
+# `surecart-product-physical` — Product Physical
+
+**Source:** `~/Desktop/patterns/product-physical.php` — SureCart plugin block-patterns library
+**Block type:** `surecart/product-page`
+**Category:** `surecart_product_page`
+**Priority:** `1`
+
+## Use case
+
+Brown / earth-tone product page for physical lifestyle goods. Cream background (`#f3f0ec`) with saddle-brown accents (`#8b4513`), pill-rounded quantity stepper, and a hardcoded shipping / returns / sustainability benefits row beneath the buy buttons.
+
+## Conventions demonstrated
+
+- Outer wrapper `surecart/product-page` with `align:'full'` and `layout:{type:'constrained',contentSize:'1320px'}` (literal byte-perfect contentSize).
+- Brown palette: `#28201b` (dark text), `#5b5048` (body / muted), `#8b4513` (action / accent), `#8b451340` (40% alpha for muted borders), `#f3f0ec` (cream bg), `#dc2626` (sale red).
+- `surecart/product-quantity-control` paired with explicit `*-decrease` / `*-input` / `*-increase` children — the full quantity-stepper anatomy.
+- Pill-rounded buy buttons via per-corner `border.radius:{topLeft:'999px',topRight:'999px',bottomLeft:'999px',bottomRight:'999px'}` (must emit all 4 corners).
+- `core/html` blocks containing inline SVG icons (stroke-only, viewBox-based) for shipping / returns / sustainability benefits. SVGs are L1-safe (no scripts, no animations, fixed viewBox).
+- Two `surecart/product-buy-buttons` instances: one outline-styled with custom border, one filled.
+
+## Content-only variant (v7.18.3 — corrected)
+
+For pure-presentation pages without buy interactions (no quantity / no buy-buttons / no price chooser), still use the `surecart/product-page` outer wrapper but omit the purchase blocks from the inner template. The earlier doctrine referenced a `surecart/product-page-content` block — **that block does NOT exist in the inventory** and the reference was removed in v7.18.3. Use the same palette + same `core/html`-with-inline-SVG icon convention + same flex card grid, just without the purchase chrome.
+
+## Markup (paste-ready)
+
+```html
+<!-- wp:surecart/product-page {"metadata":{"categories":["surecart_product_page"],"patternName":"surecart-product-physical","name":"Product Physical"},"align":"full","layout":{"type":"constrained","contentSize":"1320px"},"style":{"spacing":{"padding":{"right":"0","left":"0"},"margin":{"top":"0","bottom":"0"}}}} -->
+<!-- wp:group {"style":{"spacing":{"padding":{"left":"75px","top":"60px","bottom":"0","right":"75px"},"margin":{"top":"0","bottom":"0"}},"color":{"background":"#f3f0ec"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group has-background" style="background-color:#f3f0ec;margin-top:0;margin-bottom:0;padding-top:60px;padding-right:75px;padding-bottom:0;padding-left:75px"><!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"right":"0","left":"0","top":"0","bottom":"0"},"margin":{"top":"0","bottom":"0"}}},"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"top","justifyContent":"center"}} -->
+<div class="wp-block-group" style="margin-top:0;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:group {"style":{"layout":{"selfStretch":"fixed","flexSize":"800px"},"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"bottom":"0"}}},"layout":{"type":"default"}} -->
+<div class="wp-block-group" style="margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:surecart/product-media {"desktop_gallery":true,"show_thumbnails":false} /--></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"layout":{"selfStretch":"fixed","flexSize":"424px"},"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"left":"96px","bottom":"0"}},"typography":{"fontSize":"16px","fontStyle":"normal","fontWeight":"500"}},"layout":{"type":"constrained"}} -->
+<div class="wp-block-group" style="margin-bottom:0;margin-left:96px;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px;font-style:normal;font-weight:500"><!-- wp:group {"style":{"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"bottom":"0"}}},"layout":{"type":"default"}} -->
+<div class="wp-block-group" style="margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:surecart/product-title {"style":{"typography":{"fontSize":"40px"},"spacing":{"margin":{"top":"10px","bottom":"10px"}},"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}}}} /-->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"8px","bottom":"0"}}}} -->
+<div class="wp-block-group" style="margin-top:8px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"0","bottom":"0"}}},"layout":{"type":"flex","flexWrap":"wrap","justifyContent":"left","verticalAlignment":"bottom"}} -->
+<div class="wp-block-group" style="margin-top:0;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:surecart/product-selected-price-amount {"style":{"typography":{"fontSize":"20px","lineHeight":"1.3"},"elements":{"link":{"color":{"text":"#28201b"}}},"color":{"text":"#28201b"}}} /-->
+
+<!-- wp:surecart/product-selected-price-interval {"style":{"typography":{"lineHeight":"1.5","fontSize":"15px"},"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}},"spacing":{"margin":{"left":"0.5em"}}}} /-->
+
+<!-- wp:surecart/product-selected-price-scratch-amount {"style":{"typography":{"textDecoration":"line-through","fontSize":"15px","lineHeight":"1.5"},"color":{"text":"#dc2626"},"elements":{"link":{"color":{"text":"#dc2626"}}},"spacing":{"margin":{"left":"0.5em"}}}} /--></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"0","bottom":"0"}}},"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"left"}} -->
+<div class="wp-block-group" style="margin-top:0;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:surecart/product-selected-price-trial {"style":{"typography":{"fontSize":"15px"}}} /-->
+
+<!-- wp:surecart/product-selected-price-fees {"style":{"typography":{"fontSize":"15px"},"spacing":{"margin":{"left":"0.5em"}}}} /--></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:surecart/product-description {"style":{"typography":{"fontSize":"16px"},"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"spacing":{"margin":{"top":"16px"}}}} /-->
+
+<!-- wp:surecart/product-price-chooser {"style":{"elements":{"link":{"color":{"text":"#28201b"}}},"color":{"text":"#28201b"},"spacing":{"margin":{"top":"16px"}}}} -->
+<!-- wp:surecart/product-price-choice-template {"style":{"color":{"text":"#8b4513","background":"#ffffff00"},"elements":{"link":{"color":{"text":"#8b4513"}}},"border":{"color":"#8b451340","width":"1px"},"spacing":{"blockGap":"0"}},"layout":{"type":"flex","justifyContent":"space-between"}} -->
+<!-- wp:surecart/price-name /-->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","margin":{"bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical","justifyContent":"right"}} -->
+<div class="wp-block-group" style="margin-bottom:0"><!-- wp:group {"style":{"spacing":{"blockGap":"0","margin":{"top":"0","bottom":"0"}}},"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"left"}} -->
+<div class="wp-block-group" style="margin-top:0;margin-bottom:0"><!-- wp:surecart/price-scratch-amount {"style":{"typography":{"fontStyle":"normal","fontWeight":"700","textDecoration":"line-through"},"color":{"text":"#8b451340"}}} /-->
+
+<!-- wp:surecart/price-amount {"style":{"typography":{"fontStyle":"normal","fontWeight":"700"},"spacing":{"margin":{"left":"0.5rem"}}}} /-->
+
+<!-- wp:surecart/price-interval {"style":{"typography":{"fontStyle":"normal","fontWeight":"700"},"spacing":{"margin":{"left":"0.5rem"}}}} /--></div>
+<!-- /wp:group -->
+
+<!-- wp:surecart/price-trial {"style":{"color":{"text":"#8b4513"},"elements":{"link":{"color":{"text":"#8b4513"}}},"spacing":{"margin":{"top":"0"}}},"fontSize":"small"} /-->
+
+<!-- wp:surecart/price-setup-fee {"style":{"color":{"text":"#8b4513"},"elements":{"link":{"color":{"text":"#8b4513"}}},"spacing":{"margin":{"top":"0"}}},"fontSize":"small"} /--></div>
+<!-- /wp:group -->
+<!-- /wp:surecart/product-price-choice-template -->
+<!-- /wp:surecart/product-price-chooser -->
+
+<!-- wp:surecart/product-variant-pills {"style":{"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}},"spacing":{"margin":{"top":"16px"}}}} -->
+<!-- wp:surecart/product-variant-pill {"highlight_text":"#FFFFFF","highlight_background":"#8b4513","highlight_border":"#8b4513","style":{"elements":{"link":{"color":{"text":"#8b4513"}}},"color":{"text":"#8b4513"},"border":{"color":"#8b451340","width":"1px"}}} /-->
+<!-- /wp:surecart/product-variant-pills -->
+
+<!-- wp:paragraph {"style":{"spacing":{"margin":{"top":"16px","bottom":"0"}}}} -->
+<p style="margin-top:16px;margin-bottom:0"></p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"16px","bottom":"0"}}},"layout":{"type":"flex","flexWrap":"nowrap"}} -->
+<div class="wp-block-group" style="margin-top:16px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:surecart/product-quantity {"label":"","hidden_label":true,"className":"is-style-pebble","style":{"border":{"radius":{"topLeft":"9999px","topRight":"9999px","bottomLeft":"9999px","bottomRight":"9999px"}},"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}}}} -->
+<!-- wp:surecart/product-quantity-control {"style":{"border":{"color":"#8b451340","width":"1px"}}} -->
+<!-- wp:surecart/product-quantity-input-decrease {"style":{"color":{"background":"#ffffff00","text":"#8b4513"},"elements":{"link":{"color":{"text":"#8b4513"}}},"typography":{"fontSize":"20px"}}} /-->
+
+<!-- wp:surecart/product-quantity-input {"style":{"color":{"background":"#ffffff00"},"typography":{"fontStyle":"normal","fontWeight":"700","fontSize":"16px"},"border":{"width":"0px","style":"none"}}} /-->
+
+<!-- wp:surecart/product-quantity-input-increase {"style":{"color":{"background":"#ffffff00","text":"#8b4513"},"elements":{"link":{"color":{"text":"#8b4513"}}},"typography":{"fontSize":"20px"}}} /-->
+<!-- /wp:surecart/product-quantity-control -->
+<!-- /wp:surecart/product-quantity -->
+
+<!-- wp:surecart/product-buy-buttons {"style":{"spacing":{"blockGap":"0","margin":{"left":"12px"}},"layout":{"selfStretch":"fixed","flexSize":"188px"}}} -->
+<div class="wp-block-surecart-product-buy-buttons wp-block-buttons sc-block-buttons is-layout-flex" style="margin-left:12px"><!-- wp:surecart/product-buy-button {"add_to_cart":true,"text":"Add To Cart","style":{"border":{"radius":{"topLeft":"999px","topRight":"999px","bottomLeft":"999px","bottomRight":"999px"},"color":"#8b451340","width":"1px","style":"solid"},"spacing":{"padding":{"left":"12px","right":"12px","top":"13px","bottom":"13px"}},"elements":{"link":{"color":{"text":"#8b4513"}}},"typography":{"fontSize":"16px","lineHeight":"1.38","fontStyle":"normal","fontWeight":"600"},"color":{"text":"#8b4513","background":"#ffffff00"}}} /--></div>
+<!-- /wp:surecart/product-buy-buttons --></div>
+<!-- /wp:group -->
+
+<!-- wp:surecart/product-buy-buttons {"style":{"spacing":{"blockGap":"0","margin":{"top":"16px"}}}} -->
+<div class="wp-block-surecart-product-buy-buttons wp-block-buttons sc-block-buttons is-layout-flex" style="margin-top:16px"><!-- wp:surecart/product-buy-button {"text":"Buy Now","style":{"border":{"radius":{"topLeft":"999px","topRight":"999px","bottomLeft":"999px","bottomRight":"999px"},"color":"#8b4513","width":"1px","style":"solid"},"spacing":{"padding":{"left":"12px","right":"12px","top":"12px","bottom":"12px"}},"elements":{"link":{"color":{"text":"white"}}},"typography":{"fontSize":"16px","fontStyle":"normal","fontWeight":"600"},"color":{"background":"#8b4513"}},"textColor":"white"} /--></div>
+<!-- /wp:surecart/product-buy-buttons -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"16px","bottom":"16px","left":"0","right":"0"},"margin":{"top":"16px","bottom":"0"}}},"layout":{"type":"default"}} -->
+<div class="wp-block-group" style="margin-top:16px;margin-bottom:0;padding-top:16px;padding-right:0;padding-bottom:16px;padding-left:0"><!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"bottom":"0"}}},"layout":{"type":"flex","flexWrap":"nowrap"}} -->
+<div class="wp-block-group" style="margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:html -->
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M8.33366 14.167H11.667V4.16699H1.66699V14.167H4.16699" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16.667 14.1667H18.3337V11.3833C18.334 10.9455 18.2481 10.5118 18.0808 10.1072C17.9135 9.70252 17.6681 9.33479 17.3587 9.025L15.8337 7.5H11.667" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M11.667 14.167H12.5003" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M6.25033 16.6667C7.40092 16.6667 8.33366 15.7339 8.33366 14.5833C8.33366 13.4327 7.40092 12.5 6.25033 12.5C5.09973 12.5 4.16699 13.4327 4.16699 14.5833C4.16699 15.7339 5.09973 16.6667 6.25033 16.6667Z" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14.5833 16.6667C15.7339 16.6667 16.6667 15.7339 16.6667 14.5833C16.6667 13.4327 15.7339 12.5 14.5833 12.5C13.4327 12.5 12.5 13.4327 12.5 14.5833C12.5 15.7339 13.4327 16.6667 14.5833 16.6667Z" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<!-- /wp:html -->
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"14px","fontStyle":"normal","fontWeight":"500"},"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"8px"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:0;margin-right:0;margin-bottom:0;margin-left:8px;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:14px;font-style:normal;font-weight:500">Free International Shipping over $500</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"12px","bottom":"0"}}},"layout":{"type":"flex","flexWrap":"nowrap"}} -->
+<div class="wp-block-group" style="margin-top:12px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:html -->
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7.49967 11.6663L3.33301 7.49967L7.49967 3.33301" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3.33301 7.5H12.083C12.6849 7.5 13.2809 7.61855 13.837 7.84889C14.393 8.07922 14.8983 8.41682 15.3239 8.84243C15.7495 9.26803 16.0871 9.77329 16.3175 10.3294C16.5478 10.8854 16.6663 11.4814 16.6663 12.0833C16.6663 12.6852 16.5478 13.2812 16.3175 13.8373C16.0871 14.3934 15.7495 14.8986 15.3239 15.3242C14.8983 15.7498 14.393 16.0874 13.837 16.3178C13.2809 16.5481 12.6849 16.6667 12.083 16.6667H9.16634" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<!-- /wp:html -->
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"14px","fontStyle":"normal","fontWeight":"500"},"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"8px"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:0;margin-right:0;margin-bottom:0;margin-left:8px;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:14px;font-style:normal;font-weight:500">Free Returns Within 30 days</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"80px","bottom":"80px","left":"0","right":"0"},"margin":{"top":"0","bottom":"0"}},"border":{"top":[],"bottom":{"color":"#8b45131f","width":"1px"},"left":[]}},"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between"}} -->
+<div class="wp-block-group" style="border-bottom-color:#8b45131f;border-bottom-width:1px;margin-top:0;margin-bottom:0;padding-top:80px;padding-right:0;padding-bottom:80px;padding-left:0"><!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"bottom":"0"}},"layout":{"selfStretch":"fixed","flexSize":"258px"}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:html -->
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M3.85019 8.6201C3.70423 7.96262 3.72665 7.27894 3.91535 6.63244C4.10405 5.98593 4.45294 5.39754 4.92966 4.92182C5.40638 4.4461 5.9955 4.09844 6.6424 3.91109C7.2893 3.72374 7.97303 3.70276 8.63019 3.8501C8.9919 3.2844 9.4902 2.81886 10.0791 2.49638C10.6681 2.17391 11.3287 2.00488 12.0002 2.00488C12.6716 2.00488 13.3323 2.17391 13.9212 2.49638C14.5102 2.81886 15.0085 3.2844 15.3702 3.8501C16.0284 3.70212 16.7133 3.72301 17.3612 3.91081C18.0091 4.09862 18.599 4.44724 19.076 4.92425C19.5531 5.40126 19.9017 5.99117 20.0895 6.6391C20.2773 7.28703 20.2982 7.97193 20.1502 8.6301C20.7159 8.99181 21.1814 9.4901 21.5039 10.079C21.8264 10.668 21.9954 11.3286 21.9954 12.0001C21.9954 12.6715 21.8264 13.3322 21.5039 13.9211C21.1814 14.5101 20.7159 15.0084 20.1502 15.3701C20.2975 16.0273 20.2765 16.711 20.0892 17.3579C19.9018 18.0048 19.5542 18.5939 19.0785 19.0706C18.6027 19.5473 18.0144 19.8962 17.3679 20.0849C16.7213 20.2736 16.0377 20.2961 15.3802 20.1501C15.019 20.718 14.5203 21.1855 13.9303 21.5094C13.3404 21.8333 12.6782 22.0032 12.0052 22.0032C11.3322 22.0032 10.67 21.8333 10.0801 21.5094C9.49011 21.1855 8.99143 20.718 8.63019 20.1501C7.97303 20.2974 7.2893 20.2765 6.6424 20.0891C5.9955 19.9018 5.40638 19.5541 4.92966 19.0784C4.45294 18.6027 4.10405 18.0143 3.91535 17.3678C3.72665 16.7213 3.70423 16.0376 3.85019 15.3801C3.28015 15.0193 2.81061 14.5203 2.48524 13.9293C2.15988 13.3384 1.98926 12.6747 1.98926 12.0001C1.98926 11.3255 2.15988 10.6618 2.48524 10.0709C2.81061 9.47992 3.28015 8.98085 3.85019 8.6201Z" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9 12L11 14L15 10" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<!-- /wp:html -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-top:16px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"align":"left","style":{"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}},"typography":{"fontStyle":"normal","fontWeight":"500","fontSize":"16px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-align-left has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px;font-style:normal;font-weight:500">High quality</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"left","style":{"typography":{"fontSize":"16px"},"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"4px","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-align-left has-text-color has-link-color" style="color:#5b5048;margin-top:4px;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px">Durable fabric or leather that never goes out of style.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"left":"24px","bottom":"0"}},"layout":{"selfStretch":"fixed","flexSize":"258px"}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-bottom:0;margin-left:24px;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:html -->
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M18 13C17.7614 14.4124 17.0254 15.6929 15.9249 16.6099C14.8245 17.5269 13.4323 18.02 12 18C10.5677 18.02 9.1755 17.5269 8.07507 16.6099C6.97464 15.6929 6.2386 14.4124 6 13H18Z" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9 9H9.01" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M15 9H15.01" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<!-- /wp:html -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-top:16px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}},"typography":{"fontStyle":"normal","fontWeight":"500","fontSize":"16px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px;font-style:normal;font-weight:500">Easy to setup</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"16px"},"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"4px","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:4px;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px">Put it together in just a few easy steps—no extra tools needed!</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"left":"24px","bottom":"0"}},"layout":{"selfStretch":"fixed","flexSize":"258px"}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-bottom:0;margin-left:24px;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:html -->
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M16 16L18 18L22 14" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M21 9.9999V7.9999C20.9996 7.64918 20.9071 7.30471 20.7315 7.00106C20.556 6.69742 20.3037 6.44526 20 6.2699L13 2.2699C12.696 2.09437 12.3511 2.00195 12 2.00195C11.6489 2.00195 11.304 2.09437 11 2.2699L4 6.2699C3.69626 6.44526 3.44398 6.69742 3.26846 7.00106C3.09294 7.30471 3.00036 7.64918 3 7.9999V15.9999C3.00036 16.3506 3.09294 16.6951 3.26846 16.9987C3.44398 17.3024 3.69626 17.5545 4 17.7299L11 21.7299C11.304 21.9054 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9054 13 21.7299L15 20.5899" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M16.4998 9.40023L7.5498 4.24023" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M3.29004 7L12 12L20.71 7" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M12 22V12" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<!-- /wp:html -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-top:16px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}},"typography":{"fontStyle":"normal","fontWeight":"500","fontSize":"16px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px;font-style:normal;font-weight:500">Free shipping</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"16px"},"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"4px","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:4px;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px">Shipped right to your doorstep in super easy boxes!</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"left":"24px","bottom":"0"}},"layout":{"selfStretch":"fixed","flexSize":"258px"}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-bottom:0;margin-left:24px;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:html -->
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7 20H17" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M10 20C15.5 17.5 10.8 13.6 13 10" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M9.5 9.3996C10.6 10.1996 11.3 11.5996 11.8 13.0996C9.8 13.4996 8.3 13.4996 7 12.7996C5.8 12.1996 4.7 10.8996 4 8.59961C6.8 8.09961 8.4 8.5996 9.5 9.3996Z" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M14.0998 6C13.3374 7.19156 12.9539 8.58615 12.9998 10C14.8998 9.9 16.2998 9.4 17.2998 8.6C18.2998 7.6 18.8998 6.3 18.9998 4C16.2998 4.1 14.9998 5 14.0998 6Z" stroke="#8B4513" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
+<!-- /wp:html -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-top:16px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}},"typography":{"fontStyle":"normal","fontWeight":"500","fontSize":"16px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px;font-style:normal;font-weight:500">Sustainability</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style":{"typography":{"fontSize":"16px"},"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"4px","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:4px;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px">Committed to sustainability and ethical sourcing.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"80px","bottom":"80px","left":"0","right":"0"},"margin":{"top":"0","bottom":"0"}},"border":{"bottom":{"color":"#8b45131f","width":"1px"},"top":[],"right":[],"left":[]}},"layout":{"type":"flex","orientation":"vertical","justifyContent":"center"}} -->
+<div class="wp-block-group" style="border-bottom-color:#8b45131f;border-bottom-width:1px;margin-top:0;margin-bottom:0;padding-top:80px;padding-right:0;padding-bottom:80px;padding-left:0"><!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"32px","lineHeight":"1.3"},"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}},"spacing":{"margin":{"right":"244px","left":"244px","top":"0","bottom":"0"},"padding":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-align-center has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:244px;margin-bottom:0;margin-left:244px;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:32px;line-height:1.3">Embracing an unyielding passion for design excellence and continuous improvement</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:image {"id":362,"width":"1320px","height":"672px","scale":"cover","sizeSlug":"full","linkDestination":"none","style":{"spacing":{"margin":{"top":"64px"}}}} -->
+<figure class="wp-block-image size-full is-resized" style="margin-top:64px"><img src="http://localhost:10003/wp-content/uploads/2025/11/1c35dae85cee3004674a48844793977665fa03f7-1.png" alt="" class="wp-image-362" style="object-fit:cover;width:1320px;height:672px"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"64px","bottom":"0"}}},"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"top"}} -->
+<div class="wp-block-group" style="margin-top:64px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}},"typography":{"fontSize":"20px"},"layout":{"selfStretch":"fixed","flexSize":"572px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:20px">Transform your space with an exquisite blend of style, functionality, and harmony – your room has never looked this stunning! Discover how the right decor can elevate your environment, making it not only visually appealing but also a perfect reflection of your personality.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group {"style":{"layout":{"selfStretch":"fixed","flexSize":"612px"},"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"left":"96px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-bottom:0;margin-left:96px;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"bottom":"0"}}},"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"top"}} -->
+<div class="wp-block-group" style="margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"typography":{"fontSize":"20px"},"color":{"text":"#8b4513"},"elements":{"link":{"color":{"text":"#8b4513"}}},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#8b4513;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:20px">01</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"left":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-bottom:0;margin-left:16px;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}},"typography":{"fontSize":"20px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:20px">Make it yours</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"typography":{"fontSize":"16px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"4px","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:4px;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px">Personalize your furniture to match your unique style, with customizable options for colors, finishes, materials, and fabrics.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"40px","bottom":"0"}}},"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"top"}} -->
+<div class="wp-block-group" style="margin-top:40px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"typography":{"fontSize":"20px"},"color":{"text":"#8b4513"},"elements":{"link":{"color":{"text":"#8b4513"}}},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#8b4513;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:20px">02</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"left":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-bottom:0;margin-left:16px;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}},"typography":{"fontSize":"20px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:20px">Timeless Designs</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"typography":{"fontSize":"16px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"4px","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:4px;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px">Explore contemporary furniture designs that blend functionality with artistic flair, tailored to fit modern living spaces.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"40px","bottom":"0"}}},"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"top"}} -->
+<div class="wp-block-group" style="margin-top:40px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"typography":{"fontSize":"20px"},"color":{"text":"#8b4513"},"elements":{"link":{"color":{"text":"#8b4513"}}},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#8b4513;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:20px">03</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"left":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-bottom:0;margin-left:16px;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}},"typography":{"fontSize":"20px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:20px">Sustainable Choices</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"typography":{"fontSize":"16px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"4px","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:4px;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px">Choose from eco-friendly materials and production methods that not only enhance your home but also protect the planet.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"40px","bottom":"0"}}},"layout":{"type":"flex","flexWrap":"nowrap","verticalAlignment":"top"}} -->
+<div class="wp-block-group" style="margin-top:40px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"typography":{"fontSize":"20px"},"color":{"text":"#8b4513"},"elements":{"link":{"color":{"text":"#8b4513"}}},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#8b4513;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:20px">04</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"left":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-bottom:0;margin-left:16px;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}},"typography":{"fontSize":"20px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:20px">Smart Technology</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"typography":{"fontSize":"16px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"4px","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:4px;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px">Incorporate smart furniture features that enhance convenience, making your living space more efficient and enjoyable.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"80px","bottom":"80px","left":"0","right":"0"},"margin":{"top":"0","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-top:0;margin-bottom:0;padding-top:80px;padding-right:0;padding-bottom:80px;padding-left:0"><!-- wp:paragraph {"style":{"typography":{"fontSize":"24px","fontStyle":"normal","fontWeight":"500"},"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:24px;font-style:normal;font-weight:500">Get Inspired by Spaces</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"24px","bottom":"0"}}},"layout":{"type":"flex","flexWrap":"nowrap"}} -->
+<div class="wp-block-group" style="margin-top:24px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:image {"id":375,"sizeSlug":"large","linkDestination":"none","style":{"spacing":{"margin":{"top":"0px","bottom":"0px"}}}} -->
+<figure class="wp-block-image size-large" style="margin-top:0px;margin-bottom:0px"><img src="http://localhost:10003/wp-content/uploads/2025/11/464208f08d0f5d1e6b91bca108d154fd3f8dc825-1024x575.png" alt="" class="wp-image-375"/></figure>
+<!-- /wp:image -->
+
+<!-- wp:image {"id":376,"sizeSlug":"large","linkDestination":"none","style":{"spacing":{"margin":{"top":"0px","bottom":"0px","left":"24px"}}}} -->
+<figure class="wp-block-image size-large" style="margin-top:0px;margin-bottom:0px;margin-left:24px"><img src="http://localhost:10003/wp-content/uploads/2025/11/848f471fce7cae47061b71ba90837f98d0fc320f-1024x575.png" alt="" class="wp-image-376"/></figure>
+<!-- /wp:image --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"0","bottom":"0"}},"border":{"top":[],"bottom":{"color":"#8b45131f","width":"1px"},"left":[]}},"layout":{"type":"default"}} -->
+<div class="wp-block-group" style="border-bottom-color:#8b45131f;border-bottom-width:1px;margin-top:0;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:surecart/product-list-related {"limit":null,"query":{"perPage":4,"pages":1,"offset":0,"postType":"sc_product","order":"desc","orderBy":"date","author":"","search":"","exclude":[],"include":[],"sticky":"","related":true,"inherit":true,"taxQuery":null,"parents":[],"taxonomy":"sc_collection","totalPages":3,"fallback":true,"shuffle":true},"metadata":{"categories":["surecart_related_products"],"patternName":"surecart-related-carousel-alternate","name":"Related Products Carousel"},"layout":{"type":"constrained"},"style":{"spacing":{"margin":{"top":"0px"},"padding":{"bottom":"96px","right":"0","left":"0"}}}} -->
+<!-- wp:group {"align":"full","style":{"spacing":{"blockGap":"0","padding":{"right":"0px","left":"0px","top":"32px","bottom":"32px"},"margin":{"top":"0","bottom":"0"}}},"layout":{"type":"flex","flexWrap":"nowrap","justifyContent":"space-between","verticalAlignment":"bottom"}} -->
+<div class="wp-block-group alignfull" style="margin-top:0;margin-bottom:0;padding-top:32px;padding-right:0px;padding-bottom:32px;padding-left:0px"><!-- wp:heading {"textAlign":"center","level":3,"className":"is-style-default","style":{"typography":{"fontSize":"24px","fontStyle":"normal","fontWeight":"500"},"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}}}} -->
+<h3 class="wp-block-heading has-text-align-center is-style-default has-text-color has-link-color" style="color:#28201b;font-size:24px;font-style:normal;font-weight:500">You may also like
+	</h3>
+<!-- /wp:heading -->
+
+<!-- wp:buttons {"style":{"spacing":{"blockGap":"0"}}} -->
+<div class="wp-block-buttons"><!-- wp:button {"style":{"spacing":{"padding":{"left":"12px","right":"12px","top":"8px","bottom":"8px"}},"color":{"background":"#ffffff00","text":"#8b4513"},"border":{"radius":{"topLeft":"99999px","topRight":"99999px","bottomLeft":"99999px","bottomRight":"99999px"},"color":"#8b451340","width":"1px","style":"solid"},"typography":{"fontSize":"12px","fontStyle":"normal","fontWeight":"600"},"elements":{"link":{"color":{"text":"#8b4513"}}}},"line_items":[]} -->
+<div class="wp-block-button"><a class="wp-block-button__link has-text-color has-background has-link-color has-border-color has-custom-font-size wp-element-button" style="border-color:#8b451340;border-style:solid;border-width:1px;border-top-left-radius:99999px;border-top-right-radius:99999px;border-bottom-left-radius:99999px;border-bottom-right-radius:99999px;color:#8b4513;background-color:#ffffff00;padding-top:8px;padding-right:12px;padding-bottom:8px;padding-left:12px;font-size:12px;font-style:normal;font-weight:600">Shop All</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons --></div>
+<!-- /wp:group -->
+
+<!-- wp:surecart/product-template {"align":"full","style":{"spacing":{"padding":{"top":"0","bottom":"0","left":"0","right":"0"}},"color":{"background":"#ffffff00"}},"layout":{"type":"grid","columnCount":4,"minimumColumnWidth":null}} -->
+<!-- wp:group {"style":{"spacing":{"padding":{"top":"0px","bottom":"0px","left":"0px","right":"0px"},"margin":{"bottom":"0"}},"border":{"radius":{"topLeft":"0px","topRight":"0px","bottomLeft":"0px","bottomRight":"0px"},"width":"0px","style":"none"},"dimensions":{"minHeight":"100%"},"color":{"background":"#ffffff00"}},"layout":{"type":"default"}} -->
+<div class="wp-block-group has-background" style="border-style:none;border-width:0px;border-top-left-radius:0px;border-top-right-radius:0px;border-bottom-left-radius:0px;border-bottom-right-radius:0px;background-color:#ffffff00;min-height:100%;margin-bottom:0;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px"><!-- wp:group {"style":{"color":{"background":"#0000000d"},"border":{"radius":{"topLeft":"10px","topRight":"10px","bottomLeft":"0px","bottomRight":"0px"}},"spacing":{"padding":{"top":"0px","bottom":"0px","left":"0px","right":"0px"},"margin":{"top":"0px","bottom":"0px"}}},"layout":{"type":"default"}} -->
+<div class="wp-block-group has-background" style="border-top-left-radius:10px;border-top-right-radius:10px;border-bottom-left-radius:0px;border-bottom-right-radius:0px;background-color:#0000000d;margin-top:0px;margin-bottom:0px;padding-top:0px;padding-right:0px;padding-bottom:0px;padding-left:0px"><!-- wp:cover {"useFeaturedImage":true,"dimRatio":0,"isUserOverlayColor":true,"focalPoint":{"x":0.5,"y":0.5},"contentPosition":"top right","isDark":false,"style":{"dimensions":{"aspectRatio":"1"},"layout":{"selfStretch":"fit","flexSize":null},"spacing":{"margin":{"top":"0px","bottom":"0px"}},"border":{"radius":{"topLeft":"10px","topRight":"10px","bottomLeft":"0px","bottomRight":"0px"}}},"layout":{"type":"default"}} -->
+<div class="wp-block-cover is-light has-custom-content-position is-position-top-right" style="border-top-left-radius:10px;border-top-right-radius:10px;border-bottom-left-radius:0px;border-bottom-right-radius:0px;margin-top:0px;margin-bottom:0px"><span aria-hidden="true" class="wp-block-cover__background has-background-dim-0 has-background-dim"></span><div class="wp-block-cover__inner-container"><!-- wp:surecart/product-sale-badge {"style":{"typography":{"fontSize":"12px"},"border":{"radius":"100px"}}} /--></div></div>
+<!-- /wp:cover --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"right":"0px","left":"0px","top":"20px","bottom":"20px"},"margin":{"top":"30px","bottom":"0"}},"color":{"background":"#ffffff00"}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group has-background" style="background-color:#ffffff00;margin-top:30px;margin-bottom:0;padding-top:20px;padding-right:0px;padding-bottom:20px;padding-left:0px"><!-- wp:surecart/product-collection-tags {"style":{"spacing":{"margin":{"top":"0px","bottom":"0px"}}}} -->
+<!-- wp:surecart/product-collection-tag {"isLink":false,"style":{"color":{"background":"#ffffff00","text":"#454f66cf"},"spacing":{"padding":{"top":"0px","bottom":"0px","left":"0px","right":"0px"},"margin":{"top":"0px","bottom":"0px"}},"typography":{"fontStyle":"normal","fontWeight":"400","fontSize":"10px","letterSpacing":"1px","textTransform":"uppercase","lineHeight":"1"},"elements":{"link":{"color":{"text":"#454f66cf"}}}}} /-->
+<!-- /wp:surecart/product-collection-tags -->
+
+<!-- wp:surecart/product-title {"level":2,"style":{"typography":{"fontSize":"16px","fontStyle":"normal","fontWeight":"400"},"spacing":{"margin":{"top":"10px","bottom":"0px"}},"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}}}} /-->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","margin":{"top":"10px","bottom":"0px"},"padding":{"right":"0px","left":"0px","top":"0","bottom":"0"}},"margin":{"top":"0px","bottom":"0px"},"typography":{"lineHeight":"1"}},"layout":{"type":"flex","flexWrap":"nowrap"}} -->
+<div class="wp-block-group" style="margin-top:10px;margin-bottom:0px;padding-top:0;padding-right:0px;padding-bottom:0;padding-left:0px;line-height:1"><!-- wp:surecart/product-list-price {"style":{"typography":{"fontSize":"16px","fontStyle":"normal","fontWeight":"400"},"spacing":{"margin":{"bottom":"0px","top":"0px"}},"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}}}} /-->
+
+<!-- wp:surecart/product-scratch-price {"style":{"typography":{"fontSize":"15px","fontStyle":"normal","fontWeight":"400"},"spacing":{"margin":{"bottom":"0px","top":"0px","left":"0.5em"}}}} /--></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+<!-- /wp:surecart/product-template -->
+<!-- /wp:surecart/product-list-related --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"80px","bottom":"80px","left":"0","right":"0"},"margin":{"top":"0","bottom":"0"}},"border":{"bottom":{"color":"#8b45131f","width":"1px"},"top":[],"right":[],"left":[]}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="border-bottom-color:#8b45131f;border-bottom-width:1px;margin-top:0;margin-bottom:0;padding-top:80px;padding-right:0;padding-bottom:80px;padding-left:0"><!-- wp:paragraph {"style":{"typography":{"fontStyle":"normal","fontWeight":"500","fontSize":"24px"},"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:24px;font-style:normal;font-weight:500">What Our Customers are Saying</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"24px","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"48px","bottom":"0"}}},"layout":{"type":"flex","flexWrap":"nowrap"}} -->
+<div class="wp-block-group" style="margin-top:48px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"24px","bottom":"24px","left":"24px","right":"24px"},"margin":{"bottom":"0"}},"layout":{"selfStretch":"fixed","flexSize":"312px"},"color":{"background":"#f9f8f6"}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group has-background" style="background-color:#f9f8f6;margin-bottom:0;padding-top:24px;padding-right:24px;padding-bottom:24px;padding-left:24px"><!-- wp:html -->
+<svg width="80" height="16" viewBox="0 0 80 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7.23916 2.34164C7.47864 1.60459 8.52136 1.60459 8.76085 2.34164L9.6165 4.97508C9.7236 5.3047 10.0308 5.52786 10.3773 5.52786H13.1463C13.9213 5.52786 14.2435 6.51956 13.6165 6.97508L11.3764 8.60263C11.096 8.80635 10.9787 9.16744 11.0858 9.49706L11.9414 12.1305C12.1809 12.8675 11.3373 13.4804 10.7104 13.0249L8.47023 11.3974C8.18984 11.1937 7.81016 11.1937 7.52977 11.3974L5.28964 13.0249C4.66266 13.4804 3.81908 12.8675 4.05856 12.1305L4.91422 9.49706C5.02132 9.16744 4.90399 8.80635 4.6236 8.60263L2.38347 6.97508C1.75649 6.51956 2.07872 5.52786 2.85369 5.52786H5.62265C5.96924 5.52786 6.2764 5.3047 6.3835 4.97508L7.23916 2.34164Z" fill="#8B4513"/>
+<path d="M23.2392 2.34164C23.4786 1.60459 24.5214 1.60459 24.7608 2.34164L25.6165 4.97508C25.7236 5.3047 26.0308 5.52786 26.3773 5.52786H29.1463C29.9213 5.52786 30.2435 6.51956 29.6165 6.97508L27.3764 8.60263C27.096 8.80635 26.9787 9.16744 27.0858 9.49706L27.9414 12.1305C28.1809 12.8675 27.3373 13.4804 26.7104 13.0249L24.4702 11.3974C24.1898 11.1937 23.8102 11.1937 23.5298 11.3974L21.2896 13.0249C20.6627 13.4804 19.8191 12.8675 20.0586 12.1305L20.9142 9.49706C21.0213 9.16744 20.904 8.80635 20.6236 8.60263L18.3835 6.97508C17.7565 6.51956 18.0787 5.52786 18.8537 5.52786H21.6227C21.9692 5.52786 22.2764 5.3047 22.3835 4.97508L23.2392 2.34164Z" fill="#8B4513"/>
+<path d="M39.2392 2.34164C39.4786 1.60459 40.5214 1.60459 40.7608 2.34164L41.6165 4.97508C41.7236 5.3047 42.0308 5.52786 42.3773 5.52786H45.1463C45.9213 5.52786 46.2435 6.51956 45.6165 6.97508L43.3764 8.60263C43.096 8.80635 42.9787 9.16744 43.0858 9.49706L43.9414 12.1305C44.1809 12.8675 43.3373 13.4804 42.7104 13.0249L40.4702 11.3974C40.1898 11.1937 39.8102 11.1937 39.5298 11.3974L37.2896 13.0249C36.6627 13.4804 35.8191 12.8675 36.0586 12.1305L36.9142 9.49706C37.0213 9.16744 36.904 8.80635 36.6236 8.60263L34.3835 6.97508C33.7565 6.51956 34.0787 5.52786 34.8537 5.52786H37.6227C37.9692 5.52786 38.2764 5.3047 38.3835 4.97508L39.2392 2.34164Z" fill="#8B4513"/>
+<path d="M55.2392 2.34164C55.4786 1.60459 56.5214 1.60459 56.7608 2.34164L57.6165 4.97508C57.7236 5.3047 58.0308 5.52786 58.3773 5.52786H61.1463C61.9213 5.52786 62.2435 6.51956 61.6165 6.97508L59.3764 8.60263C59.096 8.80635 58.9787 9.16744 59.0858 9.49706L59.9414 12.1305C60.1809 12.8675 59.3373 13.4804 58.7104 13.0249L56.4702 11.3974C56.1898 11.1937 55.8102 11.1937 55.5298 11.3974L53.2896 13.0249C52.6627 13.4804 51.8191 12.8675 52.0586 12.1305L52.9142 9.49706C53.0213 9.16744 52.904 8.80635 52.6236 8.60263L50.3835 6.97508C49.7565 6.51956 50.0787 5.52786 50.8537 5.52786H53.6227C53.9692 5.52786 54.2764 5.3047 54.3835 4.97508L55.2392 2.34164Z" fill="#8B4513"/>
+<path d="M71.2392 2.34164C71.4786 1.60459 72.5214 1.60459 72.7608 2.34164L73.6165 4.97508C73.7236 5.3047 74.0308 5.52786 74.3773 5.52786H77.1463C77.9213 5.52786 78.2435 6.51956 77.6165 6.97508L75.3764 8.60263C75.096 8.80635 74.9787 9.16744 75.0858 9.49706L75.9414 12.1305C76.1809 12.8675 75.3373 13.4804 74.7104 13.0249L72.4702 11.3974C72.1898 11.1937 71.8102 11.1937 71.5298 11.3974L69.2896 13.0249C68.6627 13.4804 67.8191 12.8675 68.0586 12.1305L68.9142 9.49706C69.0213 9.16744 68.904 8.80635 68.6236 8.60263L66.3835 6.97508C65.7565 6.51956 66.0787 5.52786 66.8537 5.52786H69.6227C69.9692 5.52786 70.2764 5.3047 70.3835 4.97508L71.2392 2.34164Z" fill="#8B4513"/>
+</svg>
+<!-- /wp:html -->
+
+<!-- wp:group {"style":{"dimensions":{"minHeight":"156px"},"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="min-height:156px;margin-top:16px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"typography":{"fontSize":"16px","fontStyle":"normal","fontWeight":"400"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px;font-style:normal;font-weight:400">Incredibly comfortable and stylish! It fits perfectly in my living room and has become my favorite spot to relax after a long day.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-top:16px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"elements":{"link":{"color":{"text":"#28201b"}}},"typography":{"fontSize":"16px","fontStyle":"normal","fontWeight":"500"},"color":{"text":"#28201b"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px;font-style:normal;font-weight:500">Isabella Johnson</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"typography":{"fontSize":"14px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"2px","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:2px;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:14px">Verified buyer</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"24px","bottom":"24px","left":"24px","right":"24px"},"margin":{"bottom":"0"}},"layout":{"selfStretch":"fixed","flexSize":"312px"},"color":{"background":"#f9f8f6"}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group has-background" style="background-color:#f9f8f6;margin-bottom:0;padding-top:24px;padding-right:24px;padding-bottom:24px;padding-left:24px"><!-- wp:html -->
+<svg width="80" height="16" viewBox="0 0 80 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7.23916 2.34164C7.47864 1.60459 8.52136 1.60459 8.76085 2.34164L9.6165 4.97508C9.7236 5.3047 10.0308 5.52786 10.3773 5.52786H13.1463C13.9213 5.52786 14.2435 6.51956 13.6165 6.97508L11.3764 8.60263C11.096 8.80635 10.9787 9.16744 11.0858 9.49706L11.9414 12.1305C12.1809 12.8675 11.3373 13.4804 10.7104 13.0249L8.47023 11.3974C8.18984 11.1937 7.81016 11.1937 7.52977 11.3974L5.28964 13.0249C4.66266 13.4804 3.81908 12.8675 4.05856 12.1305L4.91422 9.49706C5.02132 9.16744 4.90399 8.80635 4.6236 8.60263L2.38347 6.97508C1.75649 6.51956 2.07872 5.52786 2.85369 5.52786H5.62265C5.96924 5.52786 6.2764 5.3047 6.3835 4.97508L7.23916 2.34164Z" fill="#8B4513"/>
+<path d="M23.2392 2.34164C23.4786 1.60459 24.5214 1.60459 24.7608 2.34164L25.6165 4.97508C25.7236 5.3047 26.0308 5.52786 26.3773 5.52786H29.1463C29.9213 5.52786 30.2435 6.51956 29.6165 6.97508L27.3764 8.60263C27.096 8.80635 26.9787 9.16744 27.0858 9.49706L27.9414 12.1305C28.1809 12.8675 27.3373 13.4804 26.7104 13.0249L24.4702 11.3974C24.1898 11.1937 23.8102 11.1937 23.5298 11.3974L21.2896 13.0249C20.6627 13.4804 19.8191 12.8675 20.0586 12.1305L20.9142 9.49706C21.0213 9.16744 20.904 8.80635 20.6236 8.60263L18.3835 6.97508C17.7565 6.51956 18.0787 5.52786 18.8537 5.52786H21.6227C21.9692 5.52786 22.2764 5.3047 22.3835 4.97508L23.2392 2.34164Z" fill="#8B4513"/>
+<path d="M39.2392 2.34164C39.4786 1.60459 40.5214 1.60459 40.7608 2.34164L41.6165 4.97508C41.7236 5.3047 42.0308 5.52786 42.3773 5.52786H45.1463C45.9213 5.52786 46.2435 6.51956 45.6165 6.97508L43.3764 8.60263C43.096 8.80635 42.9787 9.16744 43.0858 9.49706L43.9414 12.1305C44.1809 12.8675 43.3373 13.4804 42.7104 13.0249L40.4702 11.3974C40.1898 11.1937 39.8102 11.1937 39.5298 11.3974L37.2896 13.0249C36.6627 13.4804 35.8191 12.8675 36.0586 12.1305L36.9142 9.49706C37.0213 9.16744 36.904 8.80635 36.6236 8.60263L34.3835 6.97508C33.7565 6.51956 34.0787 5.52786 34.8537 5.52786H37.6227C37.9692 5.52786 38.2764 5.3047 38.3835 4.97508L39.2392 2.34164Z" fill="#8B4513"/>
+<path d="M55.2392 2.34164C55.4786 1.60459 56.5214 1.60459 56.7608 2.34164L57.6165 4.97508C57.7236 5.3047 58.0308 5.52786 58.3773 5.52786H61.1463C61.9213 5.52786 62.2435 6.51956 61.6165 6.97508L59.3764 8.60263C59.096 8.80635 58.9787 9.16744 59.0858 9.49706L59.9414 12.1305C60.1809 12.8675 59.3373 13.4804 58.7104 13.0249L56.4702 11.3974C56.1898 11.1937 55.8102 11.1937 55.5298 11.3974L53.2896 13.0249C52.6627 13.4804 51.8191 12.8675 52.0586 12.1305L52.9142 9.49706C53.0213 9.16744 52.904 8.80635 52.6236 8.60263L50.3835 6.97508C49.7565 6.51956 50.0787 5.52786 50.8537 5.52786H53.6227C53.9692 5.52786 54.2764 5.3047 54.3835 4.97508L55.2392 2.34164Z" fill="#8B4513"/>
+<path d="M71.2392 2.34164C71.4786 1.60459 72.5214 1.60459 72.7608 2.34164L73.6165 4.97508C73.7236 5.3047 74.0308 5.52786 74.3773 5.52786H77.1463C77.9213 5.52786 78.2435 6.51956 77.6165 6.97508L75.3764 8.60263C75.096 8.80635 74.9787 9.16744 75.0858 9.49706L75.9414 12.1305C76.1809 12.8675 75.3373 13.4804 74.7104 13.0249L72.4702 11.3974C72.1898 11.1937 71.8102 11.1937 71.5298 11.3974L69.2896 13.0249C68.6627 13.4804 67.8191 12.8675 68.0586 12.1305L68.9142 9.49706C69.0213 9.16744 68.904 8.80635 68.6236 8.60263L66.3835 6.97508C65.7565 6.51956 66.0787 5.52786 66.8537 5.52786H69.6227C69.9692 5.52786 70.2764 5.3047 70.3835 4.97508L71.2392 2.34164Z" fill="#8B4513"/>
+</svg>
+<!-- /wp:html -->
+
+<!-- wp:group {"style":{"dimensions":{"minHeight":"156px"},"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="min-height:156px;margin-top:16px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"typography":{"fontSize":"16px","fontStyle":"normal","fontWeight":"400"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px;font-style:normal;font-weight:400">I can't believe how much this sofa has transformed my space ! It's not only cozy but also adds a modern touch to my decor.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-top:16px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"elements":{"link":{"color":{"text":"#28201b"}}},"typography":{"fontSize":"16px","fontStyle":"normal","fontWeight":"500"},"color":{"text":"#28201b"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px;font-style:normal;font-weight:500">Olivia Smith</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"typography":{"fontSize":"14px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"2px","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:2px;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:14px">Verified buyer</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"24px","bottom":"24px","left":"24px","right":"24px"},"margin":{"bottom":"0"}},"layout":{"selfStretch":"fixed","flexSize":"312px"},"color":{"background":"#f9f8f6"}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group has-background" style="background-color:#f9f8f6;margin-bottom:0;padding-top:24px;padding-right:24px;padding-bottom:24px;padding-left:24px"><!-- wp:html -->
+<svg width="80" height="16" viewBox="0 0 80 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7.23916 2.34164C7.47864 1.60459 8.52136 1.60459 8.76085 2.34164L9.6165 4.97508C9.7236 5.3047 10.0308 5.52786 10.3773 5.52786H13.1463C13.9213 5.52786 14.2435 6.51956 13.6165 6.97508L11.3764 8.60263C11.096 8.80635 10.9787 9.16744 11.0858 9.49706L11.9414 12.1305C12.1809 12.8675 11.3373 13.4804 10.7104 13.0249L8.47023 11.3974C8.18984 11.1937 7.81016 11.1937 7.52977 11.3974L5.28964 13.0249C4.66266 13.4804 3.81908 12.8675 4.05856 12.1305L4.91422 9.49706C5.02132 9.16744 4.90399 8.80635 4.6236 8.60263L2.38347 6.97508C1.75649 6.51956 2.07872 5.52786 2.85369 5.52786H5.62265C5.96924 5.52786 6.2764 5.3047 6.3835 4.97508L7.23916 2.34164Z" fill="#8B4513"/>
+<path d="M23.2392 2.34164C23.4786 1.60459 24.5214 1.60459 24.7608 2.34164L25.6165 4.97508C25.7236 5.3047 26.0308 5.52786 26.3773 5.52786H29.1463C29.9213 5.52786 30.2435 6.51956 29.6165 6.97508L27.3764 8.60263C27.096 8.80635 26.9787 9.16744 27.0858 9.49706L27.9414 12.1305C28.1809 12.8675 27.3373 13.4804 26.7104 13.0249L24.4702 11.3974C24.1898 11.1937 23.8102 11.1937 23.5298 11.3974L21.2896 13.0249C20.6627 13.4804 19.8191 12.8675 20.0586 12.1305L20.9142 9.49706C21.0213 9.16744 20.904 8.80635 20.6236 8.60263L18.3835 6.97508C17.7565 6.51956 18.0787 5.52786 18.8537 5.52786H21.6227C21.9692 5.52786 22.2764 5.3047 22.3835 4.97508L23.2392 2.34164Z" fill="#8B4513"/>
+<path d="M39.2392 2.34164C39.4786 1.60459 40.5214 1.60459 40.7608 2.34164L41.6165 4.97508C41.7236 5.3047 42.0308 5.52786 42.3773 5.52786H45.1463C45.9213 5.52786 46.2435 6.51956 45.6165 6.97508L43.3764 8.60263C43.096 8.80635 42.9787 9.16744 43.0858 9.49706L43.9414 12.1305C44.1809 12.8675 43.3373 13.4804 42.7104 13.0249L40.4702 11.3974C40.1898 11.1937 39.8102 11.1937 39.5298 11.3974L37.2896 13.0249C36.6627 13.4804 35.8191 12.8675 36.0586 12.1305L36.9142 9.49706C37.0213 9.16744 36.904 8.80635 36.6236 8.60263L34.3835 6.97508C33.7565 6.51956 34.0787 5.52786 34.8537 5.52786H37.6227C37.9692 5.52786 38.2764 5.3047 38.3835 4.97508L39.2392 2.34164Z" fill="#8B4513"/>
+<path d="M55.2392 2.34164C55.4786 1.60459 56.5214 1.60459 56.7608 2.34164L57.6165 4.97508C57.7236 5.3047 58.0308 5.52786 58.3773 5.52786H61.1463C61.9213 5.52786 62.2435 6.51956 61.6165 6.97508L59.3764 8.60263C59.096 8.80635 58.9787 9.16744 59.0858 9.49706L59.9414 12.1305C60.1809 12.8675 59.3373 13.4804 58.7104 13.0249L56.4702 11.3974C56.1898 11.1937 55.8102 11.1937 55.5298 11.3974L53.2896 13.0249C52.6627 13.4804 51.8191 12.8675 52.0586 12.1305L52.9142 9.49706C53.0213 9.16744 52.904 8.80635 52.6236 8.60263L50.3835 6.97508C49.7565 6.51956 50.0787 5.52786 50.8537 5.52786H53.6227C53.9692 5.52786 54.2764 5.3047 54.3835 4.97508L55.2392 2.34164Z" fill="#8B4513"/>
+<path d="M71.2392 2.34164C71.4786 1.60459 72.5214 1.60459 72.7608 2.34164L73.6165 4.97508C73.7236 5.3047 74.0308 5.52786 74.3773 5.52786H77.1463C77.9213 5.52786 78.2435 6.51956 77.6165 6.97508L75.3764 8.60263C75.096 8.80635 74.9787 9.16744 75.0858 9.49706L75.9414 12.1305C76.1809 12.8675 75.3373 13.4804 74.7104 13.0249L72.4702 11.3974C72.1898 11.1937 71.8102 11.1937 71.5298 11.3974L69.2896 13.0249C68.6627 13.4804 67.8191 12.8675 68.0586 12.1305L68.9142 9.49706C69.0213 9.16744 68.904 8.80635 68.6236 8.60263L66.3835 6.97508C65.7565 6.51956 66.0787 5.52786 66.8537 5.52786H69.6227C69.9692 5.52786 70.2764 5.3047 70.3835 4.97508L71.2392 2.34164Z" fill="#8B4513"/>
+</svg>
+<!-- /wp:html -->
+
+<!-- wp:group {"style":{"dimensions":{"minHeight":"156px"},"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="min-height:156px;margin-top:16px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"typography":{"fontSize":"16px","fontStyle":"normal","fontWeight":"400"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px;font-style:normal;font-weight:400">Since I got this sofa, my living room feels so much more inviting. It's perfect for lounging and entertaining guests.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-top:16px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"elements":{"link":{"color":{"text":"#28201b"}}},"typography":{"fontSize":"16px","fontStyle":"normal","fontWeight":"500"},"color":{"text":"#28201b"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px;font-style:normal;font-weight:500">Ava Thompson</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"typography":{"fontSize":"14px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"2px","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:2px;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:14px">Verified buyer</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"24px","bottom":"24px","left":"24px","right":"24px"},"margin":{"bottom":"0"}},"layout":{"selfStretch":"fixed","flexSize":"312px"},"color":{"background":"#f9f8f6"}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group has-background" style="background-color:#f9f8f6;margin-bottom:0;padding-top:24px;padding-right:24px;padding-bottom:24px;padding-left:24px"><!-- wp:html -->
+<svg width="80" height="16" viewBox="0 0 80 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M7.23916 2.34164C7.47864 1.60459 8.52136 1.60459 8.76085 2.34164L9.6165 4.97508C9.7236 5.3047 10.0308 5.52786 10.3773 5.52786H13.1463C13.9213 5.52786 14.2435 6.51956 13.6165 6.97508L11.3764 8.60263C11.096 8.80635 10.9787 9.16744 11.0858 9.49706L11.9414 12.1305C12.1809 12.8675 11.3373 13.4804 10.7104 13.0249L8.47023 11.3974C8.18984 11.1937 7.81016 11.1937 7.52977 11.3974L5.28964 13.0249C4.66266 13.4804 3.81908 12.8675 4.05856 12.1305L4.91422 9.49706C5.02132 9.16744 4.90399 8.80635 4.6236 8.60263L2.38347 6.97508C1.75649 6.51956 2.07872 5.52786 2.85369 5.52786H5.62265C5.96924 5.52786 6.2764 5.3047 6.3835 4.97508L7.23916 2.34164Z" fill="#8B4513"/>
+<path d="M23.2392 2.34164C23.4786 1.60459 24.5214 1.60459 24.7608 2.34164L25.6165 4.97508C25.7236 5.3047 26.0308 5.52786 26.3773 5.52786H29.1463C29.9213 5.52786 30.2435 6.51956 29.6165 6.97508L27.3764 8.60263C27.096 8.80635 26.9787 9.16744 27.0858 9.49706L27.9414 12.1305C28.1809 12.8675 27.3373 13.4804 26.7104 13.0249L24.4702 11.3974C24.1898 11.1937 23.8102 11.1937 23.5298 11.3974L21.2896 13.0249C20.6627 13.4804 19.8191 12.8675 20.0586 12.1305L20.9142 9.49706C21.0213 9.16744 20.904 8.80635 20.6236 8.60263L18.3835 6.97508C17.7565 6.51956 18.0787 5.52786 18.8537 5.52786H21.6227C21.9692 5.52786 22.2764 5.3047 22.3835 4.97508L23.2392 2.34164Z" fill="#8B4513"/>
+<path d="M39.2392 2.34164C39.4786 1.60459 40.5214 1.60459 40.7608 2.34164L41.6165 4.97508C41.7236 5.3047 42.0308 5.52786 42.3773 5.52786H45.1463C45.9213 5.52786 46.2435 6.51956 45.6165 6.97508L43.3764 8.60263C43.096 8.80635 42.9787 9.16744 43.0858 9.49706L43.9414 12.1305C44.1809 12.8675 43.3373 13.4804 42.7104 13.0249L40.4702 11.3974C40.1898 11.1937 39.8102 11.1937 39.5298 11.3974L37.2896 13.0249C36.6627 13.4804 35.8191 12.8675 36.0586 12.1305L36.9142 9.49706C37.0213 9.16744 36.904 8.80635 36.6236 8.60263L34.3835 6.97508C33.7565 6.51956 34.0787 5.52786 34.8537 5.52786H37.6227C37.9692 5.52786 38.2764 5.3047 38.3835 4.97508L39.2392 2.34164Z" fill="#8B4513"/>
+<path d="M55.2392 2.34164C55.4786 1.60459 56.5214 1.60459 56.7608 2.34164L57.6165 4.97508C57.7236 5.3047 58.0308 5.52786 58.3773 5.52786H61.1463C61.9213 5.52786 62.2435 6.51956 61.6165 6.97508L59.3764 8.60263C59.096 8.80635 58.9787 9.16744 59.0858 9.49706L59.9414 12.1305C60.1809 12.8675 59.3373 13.4804 58.7104 13.0249L56.4702 11.3974C56.1898 11.1937 55.8102 11.1937 55.5298 11.3974L53.2896 13.0249C52.6627 13.4804 51.8191 12.8675 52.0586 12.1305L52.9142 9.49706C53.0213 9.16744 52.904 8.80635 52.6236 8.60263L50.3835 6.97508C49.7565 6.51956 50.0787 5.52786 50.8537 5.52786H53.6227C53.9692 5.52786 54.2764 5.3047 54.3835 4.97508L55.2392 2.34164Z" fill="#8B4513"/>
+<path d="M71.2392 2.34164C71.4786 1.60459 72.5214 1.60459 72.7608 2.34164L73.6165 4.97508C73.7236 5.3047 74.0308 5.52786 74.3773 5.52786H77.1463C77.9213 5.52786 78.2435 6.51956 77.6165 6.97508L75.3764 8.60263C75.096 8.80635 74.9787 9.16744 75.0858 9.49706L75.9414 12.1305C76.1809 12.8675 75.3373 13.4804 74.7104 13.0249L72.4702 11.3974C72.1898 11.1937 71.8102 11.1937 71.5298 11.3974L69.2896 13.0249C68.6627 13.4804 67.8191 12.8675 68.0586 12.1305L68.9142 9.49706C69.0213 9.16744 68.904 8.80635 68.6236 8.60263L66.3835 6.97508C65.7565 6.51956 66.0787 5.52786 66.8537 5.52786H69.6227C69.9692 5.52786 70.2764 5.3047 70.3835 4.97508L71.2392 2.34164Z" fill="#8B4513"/>
+</svg>
+<!-- /wp:html -->
+
+<!-- wp:group {"style":{"dimensions":{"minHeight":"156px"},"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="min-height:156px;margin-top:16px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"typography":{"fontSize":"16px","fontStyle":"normal","fontWeight":"400"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px;font-style:normal;font-weight:400">I've owned several sofas, but this one is by far the best. It's durable, easy to clean, and looks fantastic in any setting.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"0","bottom":"0","left":"0","right":"0"},"margin":{"top":"16px","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical"}} -->
+<div class="wp-block-group" style="margin-top:16px;margin-bottom:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0"><!-- wp:paragraph {"style":{"elements":{"link":{"color":{"text":"#28201b"}}},"typography":{"fontSize":"16px","fontStyle":"normal","fontWeight":"500"},"color":{"text":"#28201b"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px;font-style:normal;font-weight:500">Mia Williams</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"style":{"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"typography":{"fontSize":"14px"},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"2px","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-color has-link-color" style="color:#5b5048;margin-top:2px;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:14px">Verified buyer</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+
+<!-- wp:group {"style":{"spacing":{"blockGap":"0","padding":{"top":"112px","bottom":"112px","left":"0","right":"0"},"margin":{"top":"0","bottom":"0"}}},"layout":{"type":"flex","orientation":"vertical","justifyContent":"center"}} -->
+<div class="wp-block-group" style="margin-top:0;margin-bottom:0;padding-top:112px;padding-right:0;padding-bottom:112px;padding-left:0"><!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"32px"},"color":{"text":"#28201b"},"elements":{"link":{"color":{"text":"#28201b"}}},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"0","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-align-center has-text-color has-link-color" style="color:#28201b;margin-top:0;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:32px">Get 25% off your first order</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph {"align":"center","style":{"typography":{"fontSize":"16px"},"color":{"text":"#5b5048"},"elements":{"link":{"color":{"text":"#5b5048"}}},"spacing":{"padding":{"top":"0","right":"0","bottom":"0","left":"0"},"margin":{"top":"12px","right":"0","bottom":"0","left":"0"}}}} -->
+<p class="has-text-align-center has-text-color has-link-color" style="color:#5b5048;margin-top:12px;margin-right:0;margin-bottom:0;margin-left:0;padding-top:0;padding-right:0;padding-bottom:0;padding-left:0;font-size:16px">Join our inner circle and gain access to exclusive benefits including sales, offers and events.</p>
+<!-- /wp:paragraph --></div>
+<!-- /wp:group --></div>
+<!-- /wp:group -->
+<!-- /wp:surecart/product-page -->
+```

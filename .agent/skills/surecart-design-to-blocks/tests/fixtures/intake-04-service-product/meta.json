@@ -1,0 +1,21 @@
+{
+	"fixture": "intake-04-service-product",
+	"input_mode": "questionnaire-service-skip-paths",
+	"archetype": "Service product — heaviest branching path (Q3b + Q6 both skipped)",
+	"covers": [
+		"Q1 = Service / booking",
+		"Q2 = Cool — blue / teal / cyan → surecart-blue-500 (#0EA5E9)",
+		"Q3a = None (default for Service)",
+		"Q3b = SKIPPED (Service branch)",
+		"Q4 = Reviews + How it works (Sticky bar removed — Service is non-shipping)",
+		"Q5 = Clean default → aurora-lamp exemplar",
+		"Q6 = SKIPPED (Q5=Clean default branch)"
+	],
+	"branching_exercised": [
+		"Q3b complete skip (Service is the only Q1 that fully skips Q3b)",
+		"Q4 option filter (Sticky bar removed for non-shipping product type)",
+		"Q6 complete skip (Q5=Clean default removes Q6 from Batch B)",
+		"Batch B minimum case — only Q4 remains in Batch B (since Q3b skipped + Q6 skipped)"
+	],
+	"prompt_word_count_target": "900-1,150 (lowest of the 4 fixtures — minimum-answer path with multiple skips)"
+}

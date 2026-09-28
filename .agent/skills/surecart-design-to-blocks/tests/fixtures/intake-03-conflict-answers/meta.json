@@ -1,0 +1,21 @@
+{
+	"fixture": "intake-03-conflict-answers",
+	"input_mode": "questionnaire-branching-course",
+	"archetype": "Online course with editorial mood + serif typography",
+	"covers": [
+		"Q1 = Online course",
+		"Q2 = Warm — orange / coral / amber → surecart-orange-500 (#E8643A)",
+		"Q3a = None",
+		"Q3b = One-time (Pay-what-you-want REMOVED — Q1=Course branch filter)",
+		"Q4 = Press + Comparison + How-it-works (Sticky bar REMOVED — Q1=Course branch filter)",
+		"Q5 = Earthy & organic → halcyon-field-jacket exemplar",
+		"Q6 = Serif display + sans body"
+	],
+	"branching_exercised": [
+		"Q3b option filter (Pay-what-you-want removed for Course)",
+		"Q4 option filter (Sticky bar removed for Course)",
+		"Q6 explicit override (Serif display + sans body)",
+		"Earthy mood → halcyon-field-jacket exemplar with sc-condensed display + sc-body"
+	],
+	"prompt_word_count_target": "1,300-1,600"
+}

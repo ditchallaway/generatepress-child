@@ -1,0 +1,8089 @@
+{
+	"surecart/cart-close-button": {
+		"title": "Close Cart Button",
+		"description": "Display the close cart button.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string"
+			},
+			"showLabel": {
+				"type": "boolean",
+				"default": false
+			},
+			"icon": {
+				"type": "string",
+				"default": "arrow"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-count": {
+		"title": "Cart Items Count",
+		"description": "Display the number of items in the cart.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-icon": {
+		"title": "Floating Cart Icon",
+		"description": "The cart icon that shows your cart quantity.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"inserter": false,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true
+				}
+			},
+			"color": {
+				"text": true,
+				"background": true
+			},
+			"__experimentalBorder": {
+				"width": true,
+				"color": true,
+				"__experimentalDefaultControls": {
+					"width": true,
+					"color": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-line-item-amount": {
+		"title": "Line item amount",
+		"description": "Display the product line item amount.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart-items",
+			"surecart/slide-out-cart-line-items"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-line-item-fees": {
+		"title": "Line item fees",
+		"description": "Display the product line item fees.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart-items",
+			"surecart/slide-out-cart-line-items"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-line-item-image": {
+		"title": "Line Item Image",
+		"description": "Display the product line item image.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"sizing": {
+				"type": "string",
+				"default": "cover"
+			},
+			"aspectRatio": {
+				"type": "string"
+			},
+			"width": {
+				"type": "string"
+			},
+			"height": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"align": [
+				"left",
+				"center",
+				"right",
+				"wide",
+				"full"
+			],
+			"color": {
+				"text": false,
+				"background": false
+			},
+			"filter": {
+				"duotone": true
+			},
+			"spacing": {
+				"margin": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"width": true,
+				"__experimentalSkipSerialization": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [
+			"border"
+		],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart-items",
+			"surecart/slide-out-cart-line-items"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-line-item-interval": {
+		"title": "Line item interval",
+		"description": "Display the product line item interval.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart-items",
+			"surecart/slide-out-cart-line-items"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-line-item-note": {
+		"title": "Line item note",
+		"description": "Display the product line item note.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart-items",
+			"surecart/slide-out-cart-line-items"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-line-item-price-name": {
+		"title": "Line item price name",
+		"description": "Display the product line item price name.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart-items",
+			"surecart/slide-out-cart-line-items"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-line-item-quantity": {
+		"title": "Line item quantity",
+		"description": "Display the product line item quantity.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"editable"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart-items",
+			"surecart/slide-out-cart-line-items"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-line-item-remove": {
+		"title": "Line item remove",
+		"description": "Display the product line item remove.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"show_label": {
+				"type": "boolean",
+				"default": true
+			},
+			"label": {
+				"type": "string",
+				"default": "Remove"
+			},
+			"icon": {
+				"type": "string",
+				"default": "x"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"removable"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart-items",
+			"surecart/slide-out-cart-line-items"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-line-item-scratch-amount": {
+		"title": "Line item scratch amount",
+		"description": "Display the product line item scratch amount.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart-items",
+			"surecart/slide-out-cart-line-items"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-line-item-status": {
+		"title": "Line item status",
+		"description": "Display the product line item status.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart-items",
+			"surecart/slide-out-cart-line-items"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-line-item-title": {
+		"title": "Line Item Title",
+		"description": "Display the product line item title.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart-items",
+			"surecart/slide-out-cart-line-items"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-line-item-trial": {
+		"title": "Line item trial",
+		"description": "Display the product line item trial.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart-items",
+			"surecart/slide-out-cart-line-items"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-line-item-variant": {
+		"title": "Line item variant",
+		"description": "Display the product line item variant.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart-items",
+			"surecart/slide-out-cart-line-items"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-menu-icon-button": {
+		"title": "Cart Toggle Icon",
+		"description": "The cart menu icon that shows your cart quantity.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"cart_icon": {
+				"type": "string",
+				"default": "shopping-bag"
+			},
+			"cart_menu_always_shown": {
+				"type": "boolean",
+				"default": true
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true
+				}
+			},
+			"color": {
+				"text": true,
+				"background": false
+			},
+			"__experimentalBorder": {
+				"width": true,
+				"color": true,
+				"__experimentalDefaultControls": {
+					"width": true,
+					"color": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-order-bump-add-button": {
+		"title": "Order Bump Add Button",
+		"description": "Button to add the order bump to cart.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true
+				}
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"width": true
+				}
+			},
+			"spacing": {
+				"padding": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/cart-order-bump-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-order-bump-amount": {
+		"title": "Order Bump Amount",
+		"description": "Display the order bump price.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/cart-order-bump-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-order-bump-cta": {
+		"title": "Order Bump CTA",
+		"description": "Display the order bump call to action text.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/cart-order-bump-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-order-bump-description": {
+		"title": "Order Bump Description",
+		"description": "Display the order bump description.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/cart-order-bump-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-order-bump-discount-badge": {
+		"title": "Order Bump Discount Badge",
+		"description": "Display the order bump discount badge.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true
+			},
+			"__experimentalBorder": {
+				"radius": true,
+				"width": true,
+				"color": true,
+				"style": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/cart-order-bump-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-order-bump-image": {
+		"title": "Order Bump Image",
+		"description": "Display the order bump product image.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"sizing": {
+				"type": "string",
+				"default": "cover"
+			},
+			"aspectRatio": {
+				"type": "string",
+				"default": "1"
+			},
+			"width": {
+				"type": "string"
+			},
+			"height": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"align": [
+				"left",
+				"center",
+				"right",
+				"wide",
+				"full"
+			],
+			"color": {
+				"text": false,
+				"background": false
+			},
+			"filter": {
+				"duotone": true
+			},
+			"spacing": {
+				"margin": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"width": true,
+				"__experimentalSkipSerialization": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [
+			"border"
+		],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/cart-order-bump-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-order-bump-pagination": {
+		"title": "Order Bump Pagination",
+		"description": "Pagination controls for order bumps.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"paginationArrow": {
+				"type": "string",
+				"default": "chevron"
+			},
+			"paginationArrowSize": {
+				"type": "number",
+				"default": 20
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				],
+				"blockGap": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			},
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex",
+					"justifyContent": "center"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {
+			"paginationArrow": "paginationArrow",
+			"paginationArrowSize": "paginationArrowSize"
+		},
+		"parent": null,
+		"ancestor": [
+			"surecart/cart-order-bumps"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-order-bump-pagination-next": {
+		"title": "Order Bump Next",
+		"description": "Navigate to the next page of order bumps.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"paginationArrow",
+			"paginationArrowSize"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/cart-order-bump-pagination"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-order-bump-pagination-previous": {
+		"title": "Order Bump Previous",
+		"description": "Navigate to the previous page of order bumps.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"paginationArrow",
+			"paginationArrowSize"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/cart-order-bump-pagination"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-order-bump-scratch-amount": {
+		"title": "Order Bump Scratch Amount",
+		"description": "Display the order bump original price (strikethrough).",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/cart-order-bump-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-order-bump-template": {
+		"title": "Order Bump Template",
+		"description": "Template for rendering each order bump item.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"inserter": false,
+			"layout": {
+				"default": {
+					"type": "grid",
+					"columnCount": 3
+				},
+				"allowSwitching": true
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true
+			},
+			"color": {
+				"background": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"width": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/order-bumps/perPage"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/cart-order-bumps"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-order-bump-title": {
+		"title": "Order Bump Title",
+		"description": "Display the order bump product title.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/cart-order-bump-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-order-bumps": {
+		"title": "Order Bumps",
+		"description": "Display recommended order bumps in the cart.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"hideAddedItems": {
+				"type": "boolean",
+				"default": true
+			},
+			"style": {
+				"type": "object",
+				"default": {
+					"spacing": {
+						"margin": {
+							"bottom": "1em",
+							"top": "1em"
+						},
+						"padding": {
+							"top": "1.5em",
+							"bottom": "1.5em",
+							"left": "2em",
+							"right": "2em"
+						}
+					},
+					"border": {
+						"top": {
+							"color": "#b0b0b069",
+							"width": "1px"
+						}
+					}
+				}
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"html": false,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"width": true,
+				"style": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-subtotal-amount": {
+		"title": "Cart Subtotal Amount",
+		"description": "Display the cart subtotal amount",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/cart-subtotal-scratch-amount": {
+		"title": "Cart Subtotal Scratch Amount",
+		"description": "Display the cart subtotal scratch amount (original price before discount).",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/currency-switcher": {
+		"title": "Currency Switcher",
+		"description": "Display a currency switcher dropdown.",
+		"category": "surecart",
+		"apiVersion": 3,
+		"attributes": {
+			"position": {
+				"type": "string",
+				"default": "right"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			},
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	},
+	"surecart/icon": {
+		"title": "Icon",
+		"description": "Display an icon from the SureCart icon library.",
+		"category": "surecart",
+		"apiVersion": 3,
+		"attributes": {
+			"icon_name": {
+				"type": "string",
+				"default": "star"
+			},
+			"size": {
+				"type": "number",
+				"default": 24
+			},
+			"stroke_width": {
+				"type": "number",
+				"default": 2
+			},
+			"link_url": {
+				"type": "string"
+			},
+			"link_target": {
+				"type": "string",
+				"default": "_self"
+			},
+			"link_rel": {
+				"type": "string"
+			},
+			"nofollow": {
+				"type": "boolean",
+				"default": false
+			}
+		},
+		"supports": {
+			"html": false,
+			"align": true,
+			"color": {
+				"gradients": true,
+				"link": false,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"spacing": {
+				"margin": true,
+				"padding": true,
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true
+				}
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"radius": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	},
+	"surecart/price-amount": {
+		"title": "Price Amount",
+		"description": "Displays amount of a price.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true,
+					"textAlign": true
+				}
+			},
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/priceId",
+			"surecart/price"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-price-choice-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/price-interval": {
+		"title": "Price Interval",
+		"description": "Displays the price interval.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true,
+					"textAlign": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/priceId",
+			"surecart/price"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-price-choice-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/price-name": {
+		"title": "Price Name",
+		"description": "Displays the name of a price.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/priceId",
+			"surecart/price",
+			"postId"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-price-choice-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/price-scratch-amount": {
+		"title": "Price Scratch Amount",
+		"description": "Displays scratch amount of a price.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true,
+					"textAlign": true
+				}
+			},
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/priceId",
+			"surecart/price"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-price-choice-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/price-setup-fee": {
+		"title": "Price Setup Fee",
+		"description": "Displays the setup fee of a price.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/priceId",
+			"surecart/price"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-price-choice-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/price-trial": {
+		"title": "Price Trial",
+		"description": "Displays trial of a price.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/priceId",
+			"surecart/price"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-price-choice-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-buy-button": {
+		"title": "Product Buy Button",
+		"description": "Display the product buy button.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"add_to_cart": {
+				"type": "boolean",
+				"default": false
+			},
+			"show_sticky_purchase_button": {
+				"type": "string",
+				"enum": [
+					"never",
+					"in_stock",
+					"always"
+				],
+				"default": "never"
+			},
+			"text": {
+				"type": "string"
+			},
+			"out_of_stock_text": {
+				"type": "string"
+			},
+			"unavailable_text": {
+				"type": "string"
+			},
+			"width": {
+				"type": "number",
+				"default": 100
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"spacing": {
+				"__experimentalSkipSerialization": true,
+				"padding": [
+					"horizontal",
+					"vertical"
+				],
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"color": {
+				"__experimentalSkipSerialization": true,
+				"gradients": true,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"__experimentalSelector": ".wp-block-button .wp-block-button__link",
+			"typography": {
+				"fontSize": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true
+			},
+			"reusable": false,
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalSkipSerialization": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			},
+			"__experimentalStyle": {
+				"variations": {
+					"outline": {
+						"border": {
+							"color": "currentColor",
+							"width": "2px",
+							"style": "solid"
+						},
+						"color": {
+							"text": "currentColor",
+							"gradient": "transparent none"
+						}
+					}
+				}
+			}
+		},
+		"supportsSerializationSkipped": [
+			"spacing",
+			"color",
+			"border"
+		],
+		"usesContext": [
+			"surecart/product",
+			"postId",
+			"providerBlock"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-buy-buttons"
+		],
+		"variations": [
+			{
+				"name": "cart",
+				"title": "Add To Cart Button",
+				"isDefault": true,
+				"attributes": {
+					"add_to_cart": true,
+					"text": "Add To Cart"
+				}
+			},
+			{
+				"name": "buy",
+				"title": "Buy Now Button",
+				"isDefault": false,
+				"attributes": {
+					"add_to_cart": false,
+					"text": "Buy Now"
+				}
+			}
+		],
+		"styles": [
+			{
+				"name": "fill",
+				"label": "Fill",
+				"isDefault": true
+			},
+			{
+				"name": "outline",
+				"label": "Outline",
+				"isDefault": false
+			}
+		]
+	},
+	"surecart/product-buy-buttons": {
+		"title": "Buy Buttons",
+		"description": "Displays product buy and add to cart buttons",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"align": [
+				"wide",
+				"full"
+			],
+			"html": false,
+			"__experimentalExposeControlsToChildren": true,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true,
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true,
+					"blockGap": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true
+				}
+			},
+			"__experimentalLayout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex"
+				}
+			},
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-collection-tag": {
+		"title": "Tag",
+		"description": "A product collection tag for a product.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"isLink": {
+				"type": "boolean",
+				"default": true
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"inserter": false,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				},
+				"enableContrastChecker": true
+			},
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"lineHeight": true,
+				"fontSize": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true
+			},
+			"__experimentalBorder": {
+				"width": true,
+				"color": true,
+				"radius": true,
+				"__experimentalDefaultControls": {
+					"radius": true,
+					"color": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/productCollectionTag/name"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-collection-tags"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-collection-tags": {
+		"title": "Collection Tags",
+		"description": "Displays collection selectors for a product.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"count": {
+				"type": "number",
+				"default": 1
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"html": false,
+			"anchor": true,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex"
+				}
+			},
+			"color": {
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"spacing": {
+				"blockGap": {
+					"__experimentalDefault": "3px"
+				},
+				"margin": [
+					"top",
+					"bottom"
+				],
+				"padding": [
+					"horizontal",
+					"vertical"
+				]
+			},
+			"__experimentalBorder": {
+				"width": true,
+				"color": true,
+				"radius": true,
+				"__experimentalDefaultControls": {
+					"radius": true,
+					"color": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"postId"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-template",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-description": {
+		"title": "Product Description",
+		"description": "Display the product description.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"reusable": false,
+			"html": false,
+			"color": {
+				"gradients": true,
+				"link": false,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true,
+					"link": true
+				}
+			},
+			"spacing": {
+				"margin": [
+					"top",
+					"bottom"
+				],
+				"padding": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"postId"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-template",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-image": {
+		"title": "Image",
+		"description": "Display the product image.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"sizing": {
+				"type": "string",
+				"default": "cover"
+			},
+			"aspectRatio": {
+				"type": "string"
+			},
+			"width": {
+				"type": "string"
+			},
+			"height": {
+				"type": "string"
+			},
+			"isLink": {
+				"type": "boolean",
+				"default": false
+			},
+			"rel": {
+				"type": "string",
+				"attribute": "rel",
+				"default": ""
+			},
+			"linkTarget": {
+				"type": "string",
+				"default": "_self"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"inserter": false,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true
+				}
+			},
+			"color": {
+				"text": false,
+				"background": false
+			},
+			"__experimentalBorder": {
+				"width": true,
+				"color": true,
+				"radius": true,
+				"__experimentalDefaultControls": {
+					"width": true,
+					"color": true,
+					"radius": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"postId"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-line-item-note": {
+		"title": "Product Note",
+		"description": "Allow customers to add a note to the product",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Note"
+			},
+			"placeholder": {
+				"type": "string"
+			},
+			"help_text": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"typography": {
+				"fontSize": true
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true
+				}
+			},
+			"color": {
+				"gradients": false,
+				"background": false,
+				"link": false,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"__experimentalBorder": {
+				"radius": true,
+				"__experimentalDefaultControls": {
+					"radius": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list": {
+		"title": "Product List",
+		"description": "Display a list of products.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"ids": {
+				"type": "array",
+				"default": []
+			},
+			"type": {
+				"type": "string",
+				"default": "all"
+			},
+			"limit": {
+				"type": "number"
+			},
+			"collection_id": {
+				"type": "string",
+				"default": ""
+			},
+			"query": {
+				"type": "object",
+				"default": {
+					"perPage": 15,
+					"pages": 0,
+					"offset": 0,
+					"postType": "sc_product",
+					"order": "desc",
+					"orderBy": "date",
+					"author": "",
+					"search": "",
+					"exclude": [],
+					"include": [],
+					"sticky": "",
+					"inherit": true,
+					"taxQuery": null,
+					"parents": []
+				}
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"layout": true,
+			"align": true,
+			"currencyConversion": true,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {
+			"query": "query",
+			"surecart/product-list/limit": "limit",
+			"surecart/product-list/offset": "offset",
+			"surecart/product-list/type": "type",
+			"surecart/product-list/ids": "ids"
+		},
+		"parent": null,
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-content": {
+		"title": "Content",
+		"description": "Display the product list content.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"allowSizingOnChildren": true,
+				"default": {
+					"type": "flex",
+					"orientation": "horizontal",
+					"verticalAlignment": "top",
+					"flexWrap": "nowrap"
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true,
+				"default": {
+					"blockGap": "0"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-filter": {
+		"title": "Filter (Dropdown)",
+		"description": "Display the product filter.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string"
+			},
+			"taxonomy": {
+				"type": "string",
+				"default": "sc_collection"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-filter-checkbox": {
+		"title": "Checkbox",
+		"description": "Display the filter checkbox.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/checkbox/name"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list-filter-checkboxes-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-filter-checkboxes": {
+		"title": "Filter Checkboxes",
+		"description": "Display the product list filter checkboxes.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"taxonomy": {
+				"type": "string",
+				"default": "sc_collection"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"allowSizingOnChildren": true,
+				"default": {
+					"type": "flex",
+					"orientation": "horizontal",
+					"verticalAlignment": "top",
+					"flexWrap": "nowrap"
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true,
+				"default": {
+					"blockGap": "0"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {
+			"taxonomySlug": "taxonomy"
+		},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-filter-checkboxes-label": {
+		"title": "Label",
+		"description": "Display the product list filter checkboxes label.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Filter by"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"taxonomySlug"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list-filter-checkboxes"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-filter-checkboxes-template": {
+		"title": "Template",
+		"description": "Display the filter checkboxes.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex",
+					"orientation": "vertical"
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				],
+				"blockGap": true,
+				"default": {
+					"blockGap": "0"
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			},
+			"style": {
+				"spacing": {
+					"blockGap": "0"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"taxonomySlug"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list-filter-checkboxes"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-filter-tag": {
+		"title": "Tag",
+		"description": "Display the filter tag.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/filterTag/name"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list-filter-tags-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-filter-tags": {
+		"title": "Applied Filters",
+		"description": "Display the applied filters.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"allowSizingOnChildren": true,
+				"default": {
+					"type": "flex",
+					"orientation": "horizontal",
+					"verticalAlignment": "top",
+					"flexWrap": "nowrap"
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true,
+				"default": {
+					"blockGap": "0"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-filter-tags-clear-all": {
+		"title": "Clear All",
+		"description": "Display the product list filter tags clear all link.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Clear all"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list-filter-tags"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-filter-tags-label": {
+		"title": "Label",
+		"description": "Display the product list filter tags label",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Applied Filters"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list-filter-tags"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-filter-tags-template": {
+		"title": "Template",
+		"description": "Display the filter tags.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Applied Filters"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex"
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				],
+				"blockGap": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list-filter-tags"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-no-products": {
+		"title": "No products",
+		"description": "Contains the block elements used to render content when no products are found.",
+		"category": "surecart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"align": true,
+			"reusable": false,
+			"html": false,
+			"color": {
+				"gradients": true,
+				"link": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true
+				}
+			},
+			"interactivity": {
+				"clientNavigation": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-price": {
+		"title": "Price",
+		"description": "Display the static product price.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"show_range": {
+				"type": "boolean",
+				"default": false
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			},
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"postId"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-template",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-related": {
+		"title": "Related Products",
+		"description": "Display a list of products related to the current product.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"limit": {
+				"type": "number"
+			},
+			"query": {
+				"type": "object",
+				"default": {
+					"perPage": 4,
+					"pages": 3,
+					"offset": 0,
+					"postType": "sc_product",
+					"order": "desc",
+					"orderBy": "date",
+					"taxonomy": "sc_collection",
+					"related": true,
+					"fallback": true
+				}
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"layout": true,
+			"align": true,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {
+			"query": "query",
+			"surecart/product-list/limit": "limit"
+		},
+		"parent": null,
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-search": {
+		"title": "Search",
+		"description": "Display the product search.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query",
+			"surecart/product-list/limit",
+			"surecart/product-list/type",
+			"surecart/product-list/ids"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-sidebar": {
+		"title": "Sidebar",
+		"description": "Display the product list sidebar.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Filters"
+			},
+			"open": {
+				"type": "boolean",
+				"default": true
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex",
+					"orientation": "vertical"
+				}
+			},
+			"position": {
+				"sticky": true
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true,
+				"default": {
+					"blockGap": "0"
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-sidebar-toggle": {
+		"title": "Sidebar Toggle Button",
+		"description": "Display the product list sidebar toggle.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Filter"
+			},
+			"icon": {
+				"type": "string",
+				"default": "sliders"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-sort": {
+		"title": "Sort (Dropdown)",
+		"description": "Display the product sort.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-sort-radio": {
+		"title": "Radio",
+		"description": "Display the sort radio.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/radio/name"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list-sort-radio-group-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-sort-radio-group": {
+		"title": "Sort (Radio Group)",
+		"description": "Display the Product List Sort Radio Group.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"allowSizingOnChildren": true,
+				"default": {
+					"type": "flex",
+					"orientation": "horizontal",
+					"verticalAlignment": "top",
+					"flexWrap": "nowrap"
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true,
+				"default": {
+					"blockGap": "0"
+				}
+			},
+			"style": {
+				"spacing": {
+					"blockGap": "0"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-sort-radio-group-label": {
+		"title": "Label",
+		"description": "Display the product list sort radio group label",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Sort by"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list-sort-radio-group"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-list-sort-radio-group-template": {
+		"title": "Template",
+		"description": "Display the sort radio group template.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"taxonomy": {
+				"type": "string",
+				"default": "sc_collection"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex",
+					"orientation": "vertical"
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				],
+				"blockGap": true,
+				"default": {
+					"blockGap": "0"
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			},
+			"style": {
+				"spacing": {
+					"blockGap": "0"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list-sort-radio-group"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-media": {
+		"title": "Product Media",
+		"description": "A container to display the product media",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"auto_height": {
+				"type": "boolean",
+				"default": true
+			},
+			"desktop_gallery": {
+				"type": "boolean",
+				"default": false
+			},
+			"height": {
+				"type": "string",
+				"default": "310px"
+			},
+			"width": {
+				"type": "string"
+			},
+			"show_thumbnails": {
+				"type": "boolean",
+				"default": true
+			},
+			"thumbnails_per_page": {
+				"type": "number",
+				"default": 5
+			},
+			"hide_empty": {
+				"type": "boolean",
+				"default": false
+			},
+			"lightbox": {
+				"type": "boolean",
+				"default": true
+			},
+			"id": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"reusable": false,
+			"html": false,
+			"anchor": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"postId"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-template",
+			"surecart/upsell"
+		],
+		"variations": [
+			{
+				"name": "slider",
+				"title": "Product Media Slider",
+				"isDefault": true,
+				"attributes": {
+					"desktop_gallery": false
+				}
+			},
+			{
+				"name": "gallery",
+				"title": "Product Media Gallery",
+				"isDefault": false,
+				"attributes": {
+					"desktop_gallery": true
+				}
+			}
+		],
+		"styles": []
+	},
+	"surecart/product-page": {
+		"title": "Product Form",
+		"description": "Display product form.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"product_id": {
+				"type": "string"
+			},
+			"product_post_id": {
+				"type": "integer"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"align": true,
+			"layout": true,
+			"currencyConversion": true,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"queryId",
+			"query",
+			"displayLayout",
+			"templateSlug",
+			"previewPostType",
+			"enhancedPagination",
+			"postType"
+		],
+		"providesContext": {
+			"surecart/product_id": "product_id"
+		},
+		"parent": null,
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-pagination": {
+		"title": "Pagination",
+		"description": "Display the product pagination.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"paginationArrow": {
+				"type": "string",
+				"default": "arrow"
+			},
+			"showLabel": {
+				"type": "boolean",
+				"default": true
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				],
+				"blockGap": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			},
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex",
+					"justifyContent": "space-between"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query",
+			"surecart/product-list/limit",
+			"surecart/product-list/type",
+			"surecart/product-list/ids"
+		],
+		"providesContext": {
+			"paginationArrow": "paginationArrow",
+			"showLabel": "showLabel"
+		},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list",
+			"surecart/product-list-related"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-pagination-next": {
+		"title": "Next",
+		"description": "Display the product pagination next.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query",
+			"surecart/product-list/limit",
+			"surecart/product-list/type",
+			"surecart/product-list/ids",
+			"paginationArrow",
+			"showLabel"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-pagination"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-pagination-numbers": {
+		"title": "Numbers",
+		"description": "Display the product pagination numbers.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query",
+			"surecart/product-list/limit",
+			"surecart/product-list/type",
+			"surecart/product-list/ids",
+			"paginationArrow",
+			"showLabel"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-pagination"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-pagination-previous": {
+		"title": "Previous",
+		"description": "Display the product pagination previous.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query",
+			"surecart/product-list/limit",
+			"surecart/product-list/type",
+			"surecart/product-list/ids",
+			"paginationArrow",
+			"showLabel"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-pagination"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-price-choice-template": {
+		"title": "Price",
+		"description": "Displays the price of a product with a choice of options.",
+		"category": "widgets",
+		"apiVersion": 3,
+		"attributes": {
+			"highlight_border": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true
+				}
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"width": true
+				}
+			},
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"__experimentalLayout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex"
+				}
+			},
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"allowSizingOnChildren": true,
+				"default": {
+					"type": "flex"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"postId",
+			"surecart/product",
+			"surecart/price"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-price-chooser"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-price-chooser": {
+		"title": "Price Selector",
+		"description": "Displays possible choices for product prices.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Pricing"
+			},
+			"columns": {
+				"type": "number",
+				"default": 1
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"html": false,
+			"anchor": true,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true
+				}
+			},
+			"color": {
+				"text": true,
+				"background": false
+			},
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"postId"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-quantity": {
+		"title": "Product Quantity",
+		"description": "Display the product quantity selector",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Quantity"
+			},
+			"hidden_label": {
+				"type": "boolean",
+				"default": false
+			},
+			"id": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true
+				}
+			},
+			"color": {
+				"gradients": false,
+				"background": true,
+				"link": false,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true,
+					"link": true
+				}
+			},
+			"dimensions": {
+				"minHeight": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-quantity-control": {
+		"title": "Control",
+		"description": "Display the product quantity control",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"width": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"dimensions": {
+				"minHeight": true,
+				"width": true
+			},
+			"layout": {
+				"allowSizingOnChildren": true,
+				"allowSwitching": true,
+				"allowInheriting": true,
+				"default": {
+					"type": "flex",
+					"orientation": "horizontal",
+					"verticalAlignment": "center",
+					"horizontalAlignment": "space-between",
+					"flexWrap": "nowrap",
+					"justifyContent": "space-between"
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"shadow": true,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true
+			},
+			"color": true,
+			"__experimentalBorder": {
+				"radius": true,
+				"color": true,
+				"style": true,
+				"width": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-quantity"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-quantity-input": {
+		"title": "Input",
+		"description": "Display the product quantity input",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true
+			},
+			"color": {
+				"gradients": false,
+				"background": true,
+				"border": true
+			},
+			"__experimentalBorder": {
+				"radius": true,
+				"color": true,
+				"style": true,
+				"width": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-quantity"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-quantity-input-decrease": {
+		"title": "Decrease Quantity",
+		"description": "Display the product quantity input decrease",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true
+			},
+			"color": true,
+			"__experimentalBorder": {
+				"radius": true,
+				"color": true,
+				"style": true,
+				"width": true
+			},
+			"dimensions": {
+				"minHeight": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-quantity"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-quantity-input-increase": {
+		"title": "Increase Quantity",
+		"description": "Display the product quantity input increase",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true
+			},
+			"color": true,
+			"__experimentalBorder": {
+				"radius": true,
+				"color": true,
+				"style": true,
+				"width": true
+			},
+			"dimensions": {
+				"minHeight": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-quantity"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-quick-view": {
+		"title": "Product Quick Add",
+		"description": "Display the product quick add button.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"alignment": {
+				"type": "string"
+			},
+			"width": {
+				"type": "string"
+			},
+			"height": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"inserter": false,
+			"interactivity": true,
+			"color": {
+				"__experimentalSkipSerialization": true,
+				"gradients": true,
+				"link": false,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"spacing": {
+				"__experimentalSkipSerialization": true,
+				"margin": true,
+				"padding": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			}
+		},
+		"supportsSerializationSkipped": [
+			"spacing",
+			"color"
+		],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-quick-view-button": {
+		"title": "Quick Add Button",
+		"description": "Display the product quick add to cart button.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {
+			"icon": {
+				"type": "string",
+				"default": "plus"
+			},
+			"icon_position": {
+				"type": "string",
+				"default": "before"
+			},
+			"label": {
+				"type": "string",
+				"default": "Add"
+			},
+			"quick_view_button_type": {
+				"type": "string",
+				"default": "both"
+			},
+			"width": {
+				"type": "number"
+			},
+			"direct_add_to_cart": {
+				"type": "boolean",
+				"default": true
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"color": {
+				"gradients": true,
+				"link": false,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"spacing": {
+				"margin": true,
+				"padding": true,
+				"blockGap": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			},
+			"__experimentalSelector": ".wp-block-button .wp-block-button__link"
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"postId"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-template"
+		],
+		"variations": [],
+		"styles": [
+			{
+				"name": "default",
+				"label": "Default",
+				"isDefault": true
+			},
+			{
+				"name": "show-on-hover",
+				"label": "Show on hover",
+				"isDefault": false
+			}
+		]
+	},
+	"surecart/product-quick-view-close": {
+		"title": "Close",
+		"description": "Display the product quick add close button.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"color": {
+				"gradients": true,
+				"link": false,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"spacing": {
+				"margin": true,
+				"padding": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-quick-view"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-add-button": {
+		"title": "Write a Review Button",
+		"description": "A button to open the product review form.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"icon": {
+				"type": "string",
+				"default": "edit-2"
+			},
+			"icon_position": {
+				"type": "string",
+				"default": "before"
+			},
+			"icon_size": {
+				"type": "number",
+				"default": 15
+			},
+			"label": {
+				"type": "string",
+				"default": "Write a Review"
+			},
+			"button_type": {
+				"type": "string",
+				"default": "both"
+			},
+			"width": {
+				"type": "number"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"spacing": {
+				"__experimentalSkipSerialization": true,
+				"margin": true,
+				"padding": true,
+				"blockGap": true
+			},
+			"color": {
+				"__experimentalSkipSerialization": true,
+				"gradients": true,
+				"link": false,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalSkipSerialization": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			},
+			"__experimentalStyle": {
+				"variations": {
+					"outline": {
+						"border": {
+							"color": "currentColor",
+							"width": "2px",
+							"style": "solid"
+						},
+						"color": {
+							"text": "currentColor",
+							"gradient": "transparent none"
+						}
+					}
+				}
+			},
+			"__experimentalSelector": ".wp-block-button .wp-block-button__link"
+		},
+		"supportsSerializationSkipped": [
+			"spacing",
+			"color",
+			"border"
+		],
+		"usesContext": [
+			"postId"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-template",
+			"surecart/product-quick-view",
+			"surecart/product-review-list",
+			"surecart/product-review-template",
+			"product-review-list-no-reviews",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": [
+			{
+				"name": "fill",
+				"label": "Fill",
+				"isDefault": true
+			},
+			{
+				"name": "outline",
+				"label": "Outline",
+				"isDefault": false
+			}
+		]
+	},
+	"surecart/product-review-average-rating-stars": {
+		"title": "Star Rating",
+		"description": "Display the product average rating stars.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"fill_color": {
+				"type": "string",
+				"default": ""
+			},
+			"size": {
+				"type": "string",
+				"default": "20px"
+			},
+			"link_to_reviews": {
+				"type": "boolean",
+				"default": false
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"color": {
+				"text": false,
+				"link": false,
+				"background": false,
+				"__experimentalDefaultControls": {
+					"background": false,
+					"text": false
+				}
+			},
+			"spacing": {
+				"margin": true,
+				"padding": true,
+				"blockGap": {
+					"__experimentalDefault": "2px"
+				},
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true,
+					"blockGap": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"show_value",
+			"link_to_reviews"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-average-rating-value": {
+		"title": "Average Rating",
+		"description": "Displays the average product rating value.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"link_to_reviews": {
+				"type": "boolean",
+				"default": false
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"show_value",
+			"link_to_reviews"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": null,
+		"variations": [],
+		"styles": [
+			{
+				"name": "none",
+				"label": "None",
+				"isDefault": true
+			},
+			{
+				"name": "parentheses",
+				"label": "Parentheses",
+				"isDefault": false
+			},
+			{
+				"name": "slash",
+				"label": " / 5.0",
+				"isDefault": false
+			}
+		]
+	},
+	"surecart/product-review-breakdown": {
+		"title": "Review Breakdown",
+		"description": "Displays a breakdown of product reviews by star rating.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"columns": {
+				"type": "number",
+				"default": 1
+			},
+			"row_gap": {
+				"type": "string"
+			},
+			"column_gap": {
+				"type": "string"
+			},
+			"fill_color": {
+				"type": "string"
+			},
+			"size": {
+				"type": "string"
+			},
+			"bar_fill_color": {
+				"type": "string"
+			},
+			"bar_background_color": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": false
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true
+			},
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex",
+					"justifyContent": "left"
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": {
+					"__experimentalDefault": "4px"
+				},
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true,
+					"blockGap": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"postId"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-quick-view",
+			"surecart/product-review-list",
+			"surecart/product-review-template",
+			"surecart/sticky-purchase",
+			"surecart/product-review-summary"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-confirmation-template": {
+		"title": "Confirmation",
+		"description": "Template for the review confirmation content. Shown when editing the confirmation.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"inserter": false,
+			"html": false,
+			"spacing": {
+				"margin": true,
+				"padding": true,
+				"blockGap": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true
+			},
+			"__experimentalLayout": {
+				"default": {
+					"type": "constrained"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/editingView"
+		],
+		"providesContext": {},
+		"parent": [
+			"surecart/product-review-form"
+		],
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-content": {
+		"title": "Review Content",
+		"description": "Displays the content of a product review.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": false
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": {
+					"__experimentalDefault": "4px"
+				},
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true,
+					"blockGap": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"reviewId",
+			"review"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-date": {
+		"title": "Review Date",
+		"description": "Displays the date of a product review.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"datetime": {
+				"type": "string",
+				"role": "content"
+			},
+			"textAlign": {
+				"type": "string"
+			},
+			"format": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"html": false,
+			"color": {
+				"gradients": true,
+				"link": true,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true,
+					"link": true
+				}
+			},
+			"spacing": {
+				"margin": true,
+				"padding": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true
+				}
+			},
+			"interactivity": {
+				"clientNavigation": true
+			},
+			"__experimentalBorder": {
+				"radius": true,
+				"color": true,
+				"width": true,
+				"style": true,
+				"__experimentalDefaultControls": {
+					"radius": true,
+					"color": true,
+					"width": true,
+					"style": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"reviewId",
+			"review"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-form": {
+		"title": "Product Review Form",
+		"description": "Display the product review form.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"alignment": {
+				"type": "string"
+			},
+			"width": {
+				"type": "string"
+			},
+			"height": {
+				"type": "string"
+			},
+			"editingView": {
+				"type": "string",
+				"default": "form"
+			}
+		},
+		"supports": {
+			"inserter": false,
+			"interactivity": true,
+			"color": {
+				"__experimentalSkipSerialization": true,
+				"gradients": true,
+				"link": false,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"spacing": {
+				"__experimentalSkipSerialization": true,
+				"margin": true,
+				"padding": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			}
+		},
+		"supportsSerializationSkipped": [
+			"spacing",
+			"color"
+		],
+		"usesContext": [],
+		"providesContext": {
+			"surecart/editingView": "editingView"
+		},
+		"parent": null,
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-form-close": {
+		"title": "Review Form Close Button",
+		"description": "Display the product review form close button.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"align": [
+				"left",
+				"center",
+				"right"
+			],
+			"color": {
+				"gradients": true,
+				"link": false,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"spacing": {
+				"margin": true,
+				"padding": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-form"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-form-content": {
+		"title": "Review Form Content",
+		"description": "Provide a content textarea field for product reviews.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Your review"
+			},
+			"placeholder": {
+				"type": "string",
+				"default": ""
+			},
+			"rows": {
+				"type": "number",
+				"default": 4
+			},
+			"text_align": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"color": {
+				"gradients": true,
+				"link": false,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"spacing": {
+				"margin": true,
+				"padding": true,
+				"__experimentalDefaultControls": {
+					"padding": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-form"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-form-rating": {
+		"title": "Review Form Rating",
+		"description": "Provide a star rating input for product reviews.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Your rating"
+			},
+			"size": {
+				"type": "string",
+				"default": "20px"
+			},
+			"fill_color": {
+				"type": "string"
+			},
+			"text_align": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"color": {
+				"gradients": true,
+				"link": false,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"spacing": {
+				"margin": true,
+				"padding": true,
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-form"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-form-submit-button": {
+		"title": "Review Form Submit Button",
+		"description": "Provide a submit button for the product review form.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"text": {
+				"type": "string"
+			},
+			"width": {
+				"type": "number",
+				"default": 100
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"spacing": {
+				"__experimentalSkipSerialization": true,
+				"padding": [
+					"horizontal",
+					"vertical"
+				],
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"color": {
+				"__experimentalSkipSerialization": true,
+				"gradients": true,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"__experimentalSelector": ".wp-block-button .wp-block-button__link",
+			"typography": {
+				"fontSize": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true
+			},
+			"reusable": false,
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalSkipSerialization": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			},
+			"__experimentalStyle": {
+				"variations": {
+					"outline": {
+						"border": {
+							"color": "currentColor",
+							"width": "2px",
+							"style": "solid"
+						},
+						"color": {
+							"text": "currentColor",
+							"gradient": "transparent none"
+						}
+					}
+				}
+			}
+		},
+		"supportsSerializationSkipped": [
+			"spacing",
+			"color",
+			"border"
+		],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-form"
+		],
+		"variations": [],
+		"styles": [
+			{
+				"name": "fill",
+				"label": "Fill",
+				"isDefault": true
+			},
+			{
+				"name": "outline",
+				"label": "Outline",
+				"isDefault": false
+			}
+		]
+	},
+	"surecart/product-review-form-template": {
+		"title": "Form",
+		"description": "Template for the review form content. Shown when editing the form.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"inserter": false,
+			"html": false,
+			"spacing": {
+				"margin": true,
+				"padding": true,
+				"blockGap": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true
+			},
+			"__experimentalLayout": {
+				"default": {
+					"type": "constrained"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/editingView"
+		],
+		"providesContext": {},
+		"parent": [
+			"surecart/product-review-form"
+		],
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-form-title": {
+		"title": "Review Form Title",
+		"description": "Provide a title input field for product reviews.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Title"
+			},
+			"placeholder": {
+				"type": "string",
+				"default": "Enter a title for your review"
+			},
+			"text_align": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"color": {
+				"gradients": true,
+				"link": false,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"spacing": {
+				"margin": true,
+				"padding": true,
+				"__experimentalDefaultControls": {
+					"padding": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-form"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-list": {
+		"title": "Product Review List",
+		"description": "Display a list of product reviews.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"query": {
+				"type": "object",
+				"default": {
+					"perPage": 15,
+					"pages": 0,
+					"offset": 0
+				}
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"layout": true,
+			"align": true,
+			"currencyConversion": true,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {
+			"query": "query",
+			"surecart/product-review/limit": "limit",
+			"surecart/product-review/offset": "offset"
+		},
+		"parent": null,
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-list-content": {
+		"title": "Content",
+		"description": "Display the product reviews.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"allowSwitching": true
+			},
+			"align": true,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"link": true
+			},
+			"border": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-list-filter-checkbox": {
+		"title": "Checkbox",
+		"description": "Display the product review filter checkbox.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/checkbox/name"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-list-filter-checkboxes-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-list-filter-checkboxes": {
+		"title": "Filter Checkboxes",
+		"description": "Display the product review list filter checkboxes.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"allowSizingOnChildren": true,
+				"default": {
+					"type": "flex",
+					"orientation": "horizontal",
+					"verticalAlignment": "top",
+					"flexWrap": "nowrap"
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true,
+				"default": {
+					"blockGap": "0"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-list-filter-checkboxes-label": {
+		"title": "Label",
+		"description": "Display the product review list filter checkboxes label.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Filter by"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-list-filter-checkboxes"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-list-filter-checkboxes-template": {
+		"title": "Template",
+		"description": "Display the review filter checkboxes.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex",
+					"orientation": "vertical"
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				],
+				"blockGap": true,
+				"default": {
+					"blockGap": "0"
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			},
+			"style": {
+				"spacing": {
+					"blockGap": "0"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-list-filter-checkboxes"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-list-filter-tag": {
+		"title": "Tag",
+		"description": "Display the product review filter tag.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/filterTag/name"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-list-filter-tags-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-list-filter-tags": {
+		"title": "Applied Filters",
+		"description": "Display the product review applied filters.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"allowSizingOnChildren": true,
+				"default": {
+					"type": "flex",
+					"orientation": "horizontal",
+					"verticalAlignment": "top",
+					"flexWrap": "nowrap"
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true,
+				"default": {
+					"blockGap": "0"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-list-filter-tags-clear-all": {
+		"title": "Clear All",
+		"description": "Display the product review list filter tags clear all link.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Clear all"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-list-filter-tags"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-list-filter-tags-label": {
+		"title": "Label",
+		"description": "Display the product review list filter tags label",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Applied Filters"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-list-filter-tags"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-list-filter-tags-template": {
+		"title": "Template",
+		"description": "Display the filter tags.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Applied Filters"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex"
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				],
+				"blockGap": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-list-filter-tags"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-list-no-reviews": {
+		"title": "No reviews",
+		"description": "Contains the block elements used to render content when no reviews are found.",
+		"category": "surecart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"align": true,
+			"reusable": false,
+			"html": false,
+			"color": {
+				"gradients": true,
+				"link": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true
+				}
+			},
+			"interactivity": {
+				"clientNavigation": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-list-sidebar": {
+		"title": "Sidebar",
+		"description": "Display the product review list sidebar with filters.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Filters"
+			},
+			"open": {
+				"type": "boolean",
+				"default": true
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex",
+					"orientation": "vertical"
+				}
+			},
+			"position": {
+				"sticky": true
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true,
+				"default": {
+					"blockGap": "0"
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-list-sidebar-toggle": {
+		"title": "Sidebar Toggle Button",
+		"description": "Display the product review list sidebar toggle.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Filter"
+			},
+			"icon": {
+				"type": "string",
+				"default": "sliders"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-pagination": {
+		"title": "Pagination",
+		"description": "Display the product review pagination.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"paginationArrow": {
+				"type": "string",
+				"default": "arrow"
+			},
+			"showLabel": {
+				"type": "boolean",
+				"default": true
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				],
+				"blockGap": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			},
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex",
+					"justifyContent": "space-between"
+				}
+			},
+			"align": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query",
+			"surecart/product-review/limit"
+		],
+		"providesContext": {
+			"paginationArrow": "paginationArrow",
+			"showLabel": "showLabel"
+		},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-review-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-pagination-next": {
+		"title": "Next",
+		"description": "Display the product review pagination next.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query",
+			"surecart/product-review/limit",
+			"paginationArrow",
+			"showLabel"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-pagination"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-pagination-numbers": {
+		"title": "Numbers",
+		"description": "Display the product review pagination numbers.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query",
+			"surecart/product-review/limit",
+			"paginationArrow",
+			"showLabel"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-pagination"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-pagination-previous": {
+		"title": "Previous",
+		"description": "Display the product review pagination previous.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query",
+			"surecart/product-review/limit",
+			"paginationArrow",
+			"showLabel"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-pagination"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-rating-stars": {
+		"title": "Review Rating Stars",
+		"description": "Displays the rating given by the reviewer for a product review using stars.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"fill_color": {
+				"type": "string",
+				"default": ""
+			},
+			"size": {
+				"type": "string",
+				"default": "20px"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"color": {
+				"text": false,
+				"link": false,
+				"background": false,
+				"__experimentalDefaultControls": {
+					"background": false,
+					"text": false
+				}
+			},
+			"spacing": {
+				"margin": true,
+				"padding": true,
+				"blockGap": {
+					"__experimentalDefault": "2px"
+				},
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true,
+					"blockGap": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"reviewId",
+			"review"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-reviewer-name": {
+		"title": "Reviewer Name",
+		"description": "Displays the name of the reviewer for a product review.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"format": {
+				"type": "string",
+				"default": "display_name"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": false
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": {
+					"__experimentalDefault": "4px"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"reviewId",
+			"review"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-summary": {
+		"title": "Product Review Summary",
+		"description": "Display the product review summary.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"layout": true,
+			"align": true,
+			"color": {
+				"gradients": true,
+				"link": false,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"spacing": {
+				"margin": true,
+				"padding": true,
+				"blockGap": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-template": {
+		"title": "Template",
+		"description": "Displays product review template",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"inserter": false,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex"
+				}
+			},
+			"align": true,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": {
+					"__experimentalDefault": "1.25em"
+				},
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true,
+					"blockGap": true
+				}
+			},
+			"color": {
+				"text": false,
+				"background": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query",
+			"surecart/product-review/limit"
+		],
+		"providesContext": {
+			"reviewId": "id",
+			"review": "review"
+		},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-list-content"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-title": {
+		"title": "Review Title",
+		"description": "Displays the title of a product review.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": false
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": {
+					"__experimentalDefault": "4px"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"reviewId",
+			"review"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-review-total-rating": {
+		"title": "Reviews Count",
+		"description": "Displays the total reviews count for the product.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"show_label": {
+				"type": "boolean",
+				"default": true
+			},
+			"show_for_zero_reviews": {
+				"type": "boolean",
+				"default": true
+			},
+			"link_to_reviews": {
+				"type": "boolean",
+				"default": true
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": false,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"button": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": {
+					"__experimentalDefault": "4px"
+				},
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true,
+					"blockGap": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"postId"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-quick-view",
+			"surecart/product-review-list",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": [
+			{
+				"name": "default",
+				"label": "Default",
+				"isDefault": false
+			},
+			{
+				"name": "plus-sign",
+				"label": "Plus Sign",
+				"isDefault": true
+			}
+		]
+	},
+	"surecart/product-review-verified-badge": {
+		"title": "Review Verified Badge",
+		"description": "Displays a verified badge for a product review.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"show_label": {
+				"type": "boolean",
+				"default": true
+			},
+			"label": {
+				"type": "string"
+			},
+			"icon_size": {
+				"type": "string",
+				"default": "16px"
+			},
+			"icon_color": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": false
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"default": {
+					"type": "flex",
+					"justifyContent": "center",
+					"verticalAlignment": "center"
+				}
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": {
+					"__experimentalDefault": "4px"
+				},
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true,
+					"blockGap": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"reviewId",
+			"review"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-reviews": {
+		"title": "Review Content",
+		"description": "Display the product reviews content",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"allowSwitching": true
+			},
+			"align": true,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"link": true
+			},
+			"border": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-review-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-sale-badge": {
+		"title": "Sale Badge",
+		"description": "Display a badge if the product is currently on sale",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"text": {
+				"type": "string",
+				"default": "Sale"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true
+			},
+			"spacing": {
+				"padding": true
+			},
+			"shadow": true,
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"postId"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-template",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-scratch-price": {
+		"title": "Scratch Price",
+		"description": "Display the product scratch price.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			},
+			"color": {
+				"text": true,
+				"background": false,
+				"enableContrastChecker": true
+			},
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"postId"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-template"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-selected-price-ad-hoc-amount": {
+		"title": "Selected Price Custom Amount",
+		"description": "Displays the currently selected price custom amount.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Enter an amount"
+			},
+			"width": {
+				"type": "string",
+				"default": "100%"
+			},
+			"lock": {
+				"type": "object",
+				"default": {
+					"move": false,
+					"remove": true
+				}
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": false,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"button": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true
+				}
+			},
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/has-ad-hoc-block"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-selected-price-amount": {
+		"title": "Selected Price Amount",
+		"description": "Displays the currently selected price or variant amount.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": false,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"button": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-selected-price-fees": {
+		"title": "Selected Price Fees",
+		"description": "Displays the currently selected price fees.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": false,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"button": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-selected-price-interval": {
+		"title": "Selected Price Interval",
+		"description": "Displays the currently selected price interval.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": false,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"button": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-selected-price-scratch-amount": {
+		"title": "Selected Price Scratch Amount",
+		"description": "Displays the currently selected price scratch amount.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": false,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"button": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalTextDecoration": true
+			},
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-selected-price-trial": {
+		"title": "Selected Price Trial",
+		"description": "Displays the currently selected price trial.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": false,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"button": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true
+			},
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-selected-variant": {
+		"title": "Selected Variant Display",
+		"description": "Displays the currently selected variant of a product.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"separator": {
+				"type": "string",
+				"default": " / "
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": false,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"button": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true
+			},
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-selected-variant-image": {
+		"title": "Product Selected Variant Image",
+		"description": "Shows the image for the currently selected product variant.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"sizing": {
+				"type": "string",
+				"default": "cover"
+			},
+			"aspectRatio": {
+				"type": "string"
+			},
+			"width": {
+				"type": "string"
+			},
+			"height": {
+				"type": "string"
+			},
+			"hide_on_mobile": {
+				"type": "boolean",
+				"default": false
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true
+				}
+			},
+			"color": {
+				"text": false,
+				"background": false
+			},
+			"__experimentalBorder": {
+				"width": true,
+				"color": true,
+				"radius": true,
+				"__experimentalDefaultControls": {
+					"width": true,
+					"color": true,
+					"radius": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-template",
+			"surecart/sticky-purchase",
+			"surecart/product-quick-view"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-template": {
+		"title": "Template",
+		"description": "Displays products list.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"inserter": false,
+			"layout": {
+				"__experimentalDefault": "grid",
+				"__experimentalDefaultControls": {
+					"layout": true
+				}
+			},
+			"align": true,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": {
+					"__experimentalDefault": "1.25em"
+				},
+				"__experimentalDefaultControls": {
+					"padding": true,
+					"margin": true,
+					"blockGap": true
+				}
+			},
+			"color": {
+				"text": false,
+				"background": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"query",
+			"surecart/product-list/limit",
+			"surecart/product-list/type",
+			"surecart/product-list/ids"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-template-container": {
+		"title": "Product Template Container",
+		"description": "Display the Product Template Container.",
+		"category": "surecart-product-list",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"inserter": false,
+			"align": [
+				"wide",
+				"full"
+			],
+			"layout": {
+				"allowSizingOnChildren": true
+			},
+			"position": {
+				"sticky": true
+			},
+			"dimensions": {
+				"minHeight": true
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true,
+				"default": {
+					"blockGap": "0"
+				}
+			},
+			"style": {
+				"spacing": {
+					"blockGap": "0"
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-list"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-title": {
+		"title": "Product Title",
+		"description": "Display the product title.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"level": {
+				"type": "number",
+				"default": 1
+			},
+			"isLink": {
+				"type": "boolean",
+				"default": false
+			},
+			"rel": {
+				"type": "string",
+				"attribute": "rel",
+				"default": ""
+			},
+			"linkTarget": {
+				"type": "string",
+				"default": "_self"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"color": {
+				"gradients": true,
+				"link": false,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"spacing": {
+				"margin": true,
+				"padding": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"postId"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-template",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-variant-pill": {
+		"title": "Pill",
+		"description": "Displays a product variant choice as a pill.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {
+			"highlight_text": {
+				"type": "string"
+			},
+			"highlight_background": {
+				"type": "string"
+			},
+			"highlight_border": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"inserter": false,
+			"anchor": true,
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"width": true
+				}
+			},
+			"color": {
+				"gradients": true,
+				"text": true,
+				"background": true,
+				"__experimentalDefaultControls": {
+					"text": true,
+					"background": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true
+			},
+			"shadow": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"surecart/productVariantPill/name",
+			"surecart/productVariantPill/selected"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-variant-pills"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/product-variant-pills": {
+		"title": "Variants Selector",
+		"description": "Display product variants as pills selector.",
+		"category": "surecart-product-page",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"html": false,
+			"anchor": true,
+			"spacing": {
+				"padding": true,
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"color": {
+				"text": true,
+				"background": false
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"postId"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/product-page",
+			"surecart/product-quick-view",
+			"surecart/sticky-purchase",
+			"surecart/upsell"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/slide-out-cart": {
+		"title": "Cart",
+		"description": "Display SureCart slide out cart",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"title": {
+				"type": "string",
+				"default": "Cart"
+			},
+			"width": {
+				"type": "string",
+				"default": "525px"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"layout": {
+				"__experimentalDefault": "grid",
+				"__experimentalDefaultControls": {
+					"layout": true
+				}
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			},
+			"html": false,
+			"multiple": false,
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": true
+			},
+			"currencyConversion": true,
+			"typography": {
+				"fontSize": true,
+				"lineHeight": false,
+				"textAlign": false
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	},
+	"surecart/slide-out-cart-bump-line-item": {
+		"title": "Cart Bump Line Item",
+		"description": "Display the cart bump line item",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Bundle Discount"
+			},
+			"border": {
+				"type": "boolean",
+				"default": true
+			},
+			"padding": {
+				"type": "object",
+				"default": {
+					"top": "1.25em",
+					"left": "1.25em",
+					"bottom": "1.25em",
+					"right": "1.25em"
+				}
+			},
+			"backgroundColor": {
+				"type": "string"
+			},
+			"textColor": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"html": false,
+			"multiple": false,
+			"inserter": false,
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/slide-out-cart-coupon": {
+		"title": "Cart Coupon",
+		"description": "Display a coupon form in the cart",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"text": {
+				"type": "string",
+				"default": "Add Coupon Code"
+			},
+			"button_text": {
+				"type": "string",
+				"default": "Apply"
+			},
+			"placeholder": {
+				"type": "string",
+				"default": "Enter coupon code"
+			},
+			"collapsed": {
+				"type": "boolean",
+				"default": true
+			},
+			"disabled": {
+				"type": "boolean"
+			},
+			"border": {
+				"type": "boolean",
+				"default": true
+			},
+			"padding": {
+				"type": "object",
+				"default": {
+					"top": "1.25em",
+					"left": "1.25em",
+					"bottom": "1.25em",
+					"right": "1.25em"
+				}
+			},
+			"backgroundColor": {
+				"type": "string"
+			},
+			"textColor": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"html": false,
+			"multiple": false,
+			"inserter": false,
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/slide-out-cart-header": {
+		"title": "Cart Header",
+		"description": "Display a cart header",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"text": {
+				"type": "string",
+				"default": "Cart"
+			},
+			"border": {
+				"type": "boolean",
+				"default": true
+			},
+			"padding": {
+				"type": "object",
+				"default": {
+					"top": "1.25em",
+					"left": "1.25em",
+					"bottom": "1.25em",
+					"right": "1.25em"
+				}
+			},
+			"backgroundColor": {
+				"type": "string"
+			},
+			"textColor": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"html": false,
+			"multiple": false,
+			"inserter": false
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/slide-out-cart-items": {
+		"title": "Cart Items",
+		"description": "The slide-out cart items",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"removable": {
+				"type": "boolean",
+				"default": true
+			},
+			"editable": {
+				"type": "boolean",
+				"default": true
+			},
+			"border": {
+				"type": "boolean",
+				"default": true
+			},
+			"padding": {
+				"type": "object",
+				"default": {
+					"top": "1.25em",
+					"left": "1.25em",
+					"bottom": "1.25em",
+					"right": "1.25em"
+				}
+			},
+			"backgroundColor": {
+				"type": "string"
+			},
+			"textColor": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"html": false,
+			"multiple": false,
+			"inserter": false,
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/slide-out-cart-items-submit": {
+		"title": "Cart Submit Button",
+		"description": "The cart submit button",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"text": {
+				"type": "string",
+				"default": "Checkout"
+			},
+			"width": {
+				"type": "number",
+				"default": 100
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"align": false,
+			"alignWide": false,
+			"html": false,
+			"multiple": false,
+			"__experimentalSelector": ".wp-block-button .wp-block-button__link",
+			"spacing": {
+				"__experimentalSkipSerialization": true,
+				"padding": [
+					"horizontal",
+					"vertical"
+				],
+				"margin": [
+					"top",
+					"bottom"
+				]
+			},
+			"color": {
+				"__experimentalSkipSerialization": true,
+				"gradients": true,
+				"__experimentalDefaultControls": {
+					"background": true,
+					"text": true
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true
+			},
+			"reusable": false,
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalSkipSerialization": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [
+			"spacing",
+			"color",
+			"border"
+		],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/slide-out-cart-items-subtotal": {
+		"title": "Cart Subtotal",
+		"description": "Display the cart subtotal",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {},
+		"supports": {
+			"interactivity": true,
+			"html": false,
+			"multiple": false,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"allowSizingOnChildren": true,
+				"default": {
+					"type": "flex",
+					"justifyContent": "space-between"
+				}
+			},
+			"spacing": {
+				"margin": true,
+				"padding": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/slide-out-cart-line-items": {
+		"title": "Cart Items",
+		"description": "The cart items",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"removable": {
+				"type": "boolean",
+				"default": true
+			},
+			"editable": {
+				"type": "boolean",
+				"default": true
+			},
+			"border": {
+				"type": "boolean",
+				"default": true
+			},
+			"padding": {
+				"type": "object",
+				"default": {
+					"top": "1.25em",
+					"left": "1.25em",
+					"bottom": "1.25em",
+					"right": "1.25em"
+				}
+			},
+			"backgroundColor": {
+				"type": "string"
+			},
+			"textColor": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"html": false,
+			"multiple": false,
+			"layout": {
+				"allowSizingOnChildren": false
+			},
+			"spacing": {
+				"padding": true,
+				"margin": true,
+				"blockGap": {
+					"__experimentalDefault": "1.25em"
+				}
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true
+			},
+			"color": {
+				"text": true,
+				"background": true,
+				"enableContrastChecker": true
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {
+			"editable": "editable",
+			"removable": "removable"
+		},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/slide-out-cart-message": {
+		"title": "Cart Message",
+		"description": "Display a custom message in the cart",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"text": {
+				"type": "string"
+			},
+			"border": {
+				"type": "boolean",
+				"default": true
+			},
+			"padding": {
+				"type": "object",
+				"default": {
+					"top": "1.25em",
+					"left": "1.25em",
+					"bottom": "1.25em",
+					"right": "1.25em"
+				}
+			},
+			"backgroundColor": {
+				"type": "string"
+			},
+			"textColor": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"html": false,
+			"multiple": false,
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"textAlign": true,
+				"__experimentalFontFamily": true,
+				"__experimentalFontWeight": true,
+				"__experimentalFontStyle": true,
+				"__experimentalTextTransform": true,
+				"__experimentalTextDecoration": true,
+				"__experimentalLetterSpacing": true,
+				"__experimentalDefaultControls": {
+					"fontSize": true,
+					"fontAppearance": true,
+					"textTransform": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/slide-out-cart-submit": {
+		"title": "Cart Submit Button",
+		"description": "The cart submit button",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"text": {
+				"type": "string",
+				"default": "Checkout"
+			},
+			"border": {
+				"type": "boolean"
+			},
+			"sectionBackgroundColor": {
+				"type": "string"
+			},
+			"padding": {
+				"type": "object",
+				"default": {
+					"top": "1.25em",
+					"left": "1.25em",
+					"bottom": "1.25em",
+					"right": "1.25em"
+				}
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"anchor": true,
+			"align": false,
+			"alignWide": false,
+			"html": false,
+			"inserter": false,
+			"multiple": false,
+			"__experimentalSelector": ".wp-block-button .wp-block-button__link",
+			"color": {
+				"__experimentalSkipSerialization": true,
+				"background": true,
+				"text": true
+			}
+		},
+		"supportsSerializationSkipped": [
+			"color"
+		],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/slide-out-cart-subtotal": {
+		"title": "Cart Subtotal",
+		"description": "Display the cart subtotal",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"label": {
+				"type": "string",
+				"default": "Subtotal"
+			},
+			"border": {
+				"type": "boolean",
+				"default": true
+			},
+			"padding": {
+				"type": "object",
+				"default": {
+					"top": "1.25em",
+					"left": "1.25em",
+					"bottom": "1.25em",
+					"right": "1.25em"
+				}
+			},
+			"backgroundColor": {
+				"type": "string"
+			},
+			"textColor": {
+				"type": "string"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"html": false,
+			"multiple": false,
+			"inserter": false,
+			"currencyConversion": true
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": [
+			"surecart/slide-out-cart"
+		],
+		"variations": [],
+		"styles": []
+	},
+	"surecart/sticky-purchase": {
+		"title": "Sticky purchase",
+		"description": "Display the sticky purchase.",
+		"category": "surecart-cart",
+		"apiVersion": 3,
+		"attributes": {
+			"width": {
+				"type": "string",
+				"default": "600px"
+			}
+		},
+		"supports": {
+			"interactivity": true,
+			"multiple": false,
+			"currencyConversion": true,
+			"layout": {
+				"allowSwitching": false,
+				"allowInheriting": false,
+				"allowSizingOnChildren": true,
+				"default": {
+					"type": "flex",
+					"orientation": "horizontal",
+					"verticalAlignment": "top",
+					"flexWrap": "nowrap",
+					"wideSize": "full"
+				}
+			},
+			"anchor": true,
+			"color": {
+				"gradients": true
+			},
+			"spacing": {
+				"margin": true,
+				"padding": true
+			},
+			"typography": {
+				"fontSize": true,
+				"lineHeight": true,
+				"__experimentalFontWeight": true
+			},
+			"__experimentalBorder": {
+				"color": true,
+				"radius": true,
+				"style": true,
+				"width": true,
+				"__experimentalDefaultControls": {
+					"color": true,
+					"radius": true,
+					"style": true,
+					"width": true
+				}
+			}
+		},
+		"supportsSerializationSkipped": [],
+		"usesContext": [
+			"showStickyPurchaseButton"
+		],
+		"providesContext": {},
+		"parent": null,
+		"ancestor": null,
+		"variations": [],
+		"styles": []
+	}
+}

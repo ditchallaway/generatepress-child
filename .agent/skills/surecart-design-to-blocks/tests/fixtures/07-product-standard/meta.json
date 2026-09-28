@@ -1,0 +1,14 @@
+{
+	"archetype": "classic 2-col product page (media left + info 36% right)",
+	"input_mode": "zip",
+	"covers": [
+		"surecart/product-page outer with align:wide + layout:constrained",
+		"core/columns 2-col with blockGap top:30px / left:60px and right column width:36%",
+		"surecart/product-collection-tags + product-review-average-rating-stars + total-rating row",
+		"price-stack: scratch / amount / interval / sale-badge in flex-wrap, trial+fees in flex-nowrap below",
+		"surecart/product-price-chooser + product-price-choice-template emit-once pattern (50/50 name + price split)",
+		"surecart/product-quantity stepper + ad-hoc-amount + variant-pills",
+		"surecart/product-buy-buttons wrapper with add_to_cart:true and is-style-outline siblings"
+	],
+	"notes": "The classic baseline product page. Tests price-chooser template emit-once semantics, buy-buttons mandatory wrapper classes, and the price-stack two-row layout."
+}

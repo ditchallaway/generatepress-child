@@ -1,0 +1,16 @@
+{
+	"SQ1_CATALOG_TYPE": "Physical goods",
+	"SQ2_ACCENT_DESCRIPTION": "SureCart default (sage green)",
+	"SQ3_GRID_LAYOUT": "3-up grid",
+	"SQ4_FILTER_UI": "Tag chips",
+	"SQ5_CARD_CONTENT": [
+		"Rating stars (review summary)",
+		"Numbered pagination"
+	],
+	"_resolved": {
+		"ACCENT_PRESET_SLUG": "surecart-brand",
+		"ACCENT_RESOLVED_HEX": "#01824C",
+		"GRID_COLS": "3",
+		"EXEMPLAR_HANDLE": "aurora-lamp"
+	}
+}

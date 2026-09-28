@@ -1,0 +1,20 @@
+{
+	"fixture": "intake-02-full-answers",
+	"input_mode": "questionnaire-full",
+	"archetype": "SaaS subscription with variants and tech-SaaS mood",
+	"covers": [
+		"Q1 = SaaS / software",
+		"Q2 = Cool blue → surecart-blue-500 preset (#0EA5E9)",
+		"Q3a = 1-axis variants",
+		"Q3b = Subscription monthly + yearly toggle",
+		"Q4 = Reviews + Comparison + How-it-works (NO sticky bar — Q4 filter on SaaS)",
+		"Q5 = Tech-SaaS → northwind-kettle exemplar",
+		"Q6 = Mono accents → sc-mono font slug"
+	],
+	"branching_exercised": [
+		"Q3b option filter (no Pay-what-you-want for SaaS)",
+		"Q4 option filter (no Sticky bar for SaaS)",
+		"Q6 mono-accent override (overrides Q5 default font pairing)"
+	],
+	"prompt_word_count_target": "1,400-1,700 (upper end of Tier I-7 range)"
+}

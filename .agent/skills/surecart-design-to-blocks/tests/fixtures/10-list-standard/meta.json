@@ -1,0 +1,14 @@
+{
+	"archetype": "product list (header + grid + pagination)",
+	"input_mode": "zip",
+	"covers": [
+		"surecart/product-list outer with full query attribute set (perPage, postType, order, etc.)",
+		"surecart/product-list-sort + surecart/product-list-filter + surecart/product-list-search controls row",
+		"surecart/product-list-filter-tags row",
+		"surecart/product-template emit-once card pattern (server iterates)",
+		"per-card: core/cover with useFeaturedImage:true + surecart/product-sale-badge + surecart/product-title + surecart/product-list-price + surecart/product-scratch-price",
+		"surecart/product-list-no-products fallback paragraph",
+		"surecart/product-pagination with -previous + -numbers + -next children"
+	],
+	"notes": "Tests product-template emit-once semantics — the .map over products in JSX must collapse to a single product-template block in the golden, not N expanded cards. v7.18.3: corrected meta.json to reference real block names (was previously: product-list-header, product-list-template, product-cover, product-list-pagination — none of which exist)."
+}

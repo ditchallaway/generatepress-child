@@ -1,0 +1,14 @@
+{
+	"archetype": "minimal hero + CTA",
+	"input_mode": "zip",
+	"covers": [
+		"surecart/product-page outer wrapper with metadata",
+		"core/columns 2-col with verticalAlignment:center",
+		".sc-display-1 + .sc-lead title/subhead",
+		"core/buttons with primary + secondary core/button",
+		"core/image right column with placeholder URL + width/height/alt",
+		"D7 dual-emit on heading + paragraph + button",
+		"single section — minimum viable page"
+	],
+	"notes": "Smallest possible fixture. If this passes, the outer-wrapper rules + Step 4 emit + columns vertical alignment work end-to-end."
+}

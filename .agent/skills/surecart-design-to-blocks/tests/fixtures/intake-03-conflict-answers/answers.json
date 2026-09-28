@@ -1,0 +1,18 @@
+{
+	"Q1_PRODUCT_TYPE": "Online course",
+	"Q2_ACCENT_DESCRIPTION": "Warm — orange / coral / amber",
+	"Q3A_VARIANTS": "None",
+	"Q3B_PRICING": "One-time",
+	"Q4_SECTIONS": [
+		"Press / quotes band",
+		"Comparison table",
+		"How it works (steps)"
+	],
+	"Q5_VISUAL_MOOD": "Earthy & organic",
+	"Q6_TYPOGRAPHY": "Serif display + sans body",
+	"_branching": {
+		"Q3b_option_filter_applied": "Pay-what-you-want removed (Q1=Course branch)",
+		"Q4_option_filter_applied": "Sticky bar removed (Q1=Course branch)",
+		"Q6_skipped_reason": null
+	}
+}

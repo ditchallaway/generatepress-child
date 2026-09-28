@@ -1,0 +1,12 @@
+{
+	"archetype": "sticky purchase bar (variant image + title/price + add-to-cart)",
+	"input_mode": "zip",
+	"covers": [
+		"surecart/sticky-purchase outer wrapper with horizontal flex layout (no product-page wrapper)",
+		"left zone: surecart/product-variant-image (80px) + stacked surecart/product-title + variant label + price",
+		"right zone: single surecart/product-buy-button add_to_cart:true",
+		"layout:flex orientation:horizontal verticalAlignment:top justifyContent:space-between flexWrap:nowrap",
+		"em-relative price-row spacing"
+	],
+	"notes": "Outer block is not surecart/product-page; the diff harness's extractGutenbergPayload falls through to whole-content diff. JSON-key-order normalization still applies."
+}

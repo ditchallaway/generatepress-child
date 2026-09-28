@@ -1,0 +1,77 @@
+{
+	"_doc": "Detection-conservatism audit for shop-page Step 0 mode router. Mirrors the master skill's intake-00-mode-detection.json with shop-page-specific input examples.",
+	"_signal_legend": {
+		"attachment": "Step 0 rule 1 — file attached",
+		"jsx_paste": "Step 0 rule 1 — pasted JSX/HTML/CSS",
+		"url_non_figma": "Step 0 rule 1 — non-Figma URL",
+		"4_file_marker": "Step 0 rule 1 — references product-page.jsx + colors_and_type.css",
+		"design_phrase": "Step 0 rule 2 — merchant says 'I have a design'",
+		"empty": "Step 0 rule 3 — no design content; defaults to intake",
+		"figma_url": "Step 0 rule 3 — bare figma.com URL with no other design content"
+	},
+	"fixtures": [
+		{
+			"_note": "Shop-page skill currently has no convert-mode fixtures committed (pre-1.0; fixtures land after first merchant uses v0.8 flow end-to-end). When fixtures land, add one row per fixture here with expected_mode='convert' and signal_tripped='attachment'."
+		}
+	],
+	"typical_inputs": [
+		{
+			"input_kind": "empty invocation",
+			"example": "",
+			"expected_mode": "intake",
+			"signal_tripped": "empty",
+			"notes": "Bare skill activation. Today: undefined behavior. After v0.8: intake."
+		},
+		{
+			"input_kind": "vague shop prose",
+			"example": "I want to build a shop page",
+			"expected_mode": "intake",
+			"signal_tripped": "empty",
+			"notes": "Free-text intent without design content."
+		},
+		{
+			"input_kind": "collection name only",
+			"example": "Build me a shop page for my candle collection",
+			"expected_mode": "intake",
+			"signal_tripped": "empty",
+			"notes": "Catalog hint present but no design. Intake captures product type via SQ1=Physical."
+		},
+		{
+			"input_kind": "merchant claim only",
+			"example": "I have a design for my shop page",
+			"expected_mode": "convert",
+			"signal_tripped": "design_phrase",
+			"notes": "Rule 2 trips. Opener asks merchant to paste."
+		},
+		{
+			"input_kind": "JSX paste with grid",
+			"example": "export default function ShopPage() { return (<Grid>{products.map(...)}</Grid>); }",
+			"expected_mode": "convert",
+			"signal_tripped": "jsx_paste",
+			"notes": "Pasted JSX with .map() pattern → Step 1.A path."
+		},
+		{
+			"input_kind": "bare collection URL",
+			"example": "https://example.com/shop",
+			"expected_mode": "convert",
+			"signal_tripped": "url_non_figma",
+			"notes": "Non-Figma URL → Step 1.D WebFetch path."
+		},
+		{
+			"input_kind": "bare figma URL",
+			"example": "https://figma.com/design/abc123/Catalog",
+			"expected_mode": "intake",
+			"signal_tripped": "figma_url",
+			"notes": "Figma URLs deferred. Intake opener asks for PNG export."
+		},
+		{
+			"input_kind": "ambiguous shop request",
+			"example": "Show me how SureCart catalogs work",
+			"expected_mode": "intake",
+			"signal_tripped": "empty",
+			"notes": "Q&A about the skill, not an invocation. Intake opener explains the flow."
+		}
+	],
+	"_test_oracle_usage": "Walk through each row mentally and confirm Step 0 routes per expected_mode. Add fixture rows once shop-page convert-mode fixtures exist.",
+	"_contract": "Any future shop-page convert fixture MUST route to 'convert' — false-positive intake on a fixture is a P0 regression. Currently no fixtures exist so this contract is trivially satisfied."
+}

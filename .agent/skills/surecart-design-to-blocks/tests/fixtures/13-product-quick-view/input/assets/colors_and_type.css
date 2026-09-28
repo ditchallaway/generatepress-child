@@ -1,0 +1,15 @@
+:root {
+	--fg-1: #111827; /* primary text — heading, link, active */
+	--fg-2: #4b5563; /* secondary text — variant label, body */
+	--fg-mute: #686868; /* muted — strikethrough, helper */
+	--brand: #000000; /* primary action — Add To Cart, sale badge */
+	--accent-4: #4b5563; /* interval color (theme accent slug) */
+	--border-1: #e5e7eb; /* borders — pills, choice rows, outline buttons */
+	--bg-1: #ffffff; /* card / modal background */
+	--bg-page: #ffffff; /* page background (modal sits on overlay) */
+	--sale-red: #dc2626; /* sale strikethrough emphasis (unused in this fixture) */
+
+	/* Typography */
+	--font-display: "Inter", system-ui, sans-serif;
+	--font-body: "Inter", system-ui, sans-serif;
+}

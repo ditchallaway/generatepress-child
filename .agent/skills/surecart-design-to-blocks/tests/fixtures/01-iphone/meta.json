@@ -1,0 +1,15 @@
+{
+	"archetype": "full product detail page",
+	"input_mode": "zip",
+	"covers": [
+		"hero (2-col with media + title + price + buy buttons)",
+		"highlights grid (.map() expansion to 4 cards with literal-bg chrome)",
+		"features (3x media-text alternating)",
+		"specs list",
+		"FAQ (6x core/details with summary attr)",
+		"surecart/product-list-related",
+		"final CTA banner",
+		"surecart/sticky-purchase"
+	],
+	"notes": "Empirical baseline. Mirrors examples/iphone-input/ + examples/iphone-output.html. Every Rule 0-10 correction was diagnosed against this fixture. Any divergence here is treated as a regression."
+}

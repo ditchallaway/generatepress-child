@@ -1,0 +1,14 @@
+{
+	"archetype": "product quick-view modal",
+	"input_mode": "zip",
+	"covers": [
+		"surecart/product-quick-view outer wrapper (NOT surecart/product-page) — diff harness falls through to whole-content compare",
+		"em-relative typography rooted at fontSize:16px on the wrapper (1.2em title, 1em body, 0.88em interval, 0.75em trial/fees)",
+		"surecart/product-selected-variant-image with explicit width/height/aspectRatio + hide_on_mobile",
+		"surecart/product-quick-view-close trailing the top row",
+		"surecart/product-variant-pills + surecart/product-price-chooser inside the modal body",
+		"two surecart/product-buy-button children with width:50 (50/50 split) — Add To Cart filled + Buy Now is-style-outline",
+		"slug-only color hooks (textColor:'contrast', textColor:'accent-4') with elements.link.color.text mirrors"
+	],
+	"notes": "Outer block is surecart/product-quick-view, not surecart/product-page; the diff harness's extractGutenbergPayload falls through to whole-content diff. JSON-key-order normalization still applies. This fixture stress-tests the em-relative typography pattern unique to quick-view."
+}

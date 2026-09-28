@@ -1,0 +1,83 @@
+{
+	"$schema-comment": "Base SureCart theme.json preset namespace (SUR-5186). Registered via theme_json_data_default filter by SureCartThemeJsonFilterServiceProvider so AI-generated patterns use preset slugs (var:preset|color|surecart-brand) that resolve in any active theme. Mirrors the SureCart design system in app/data/samples/claude-design/assets/colors_and_type.css. Per-design overrides emitted by DesignTokenExtractor are merged into this base at runtime.",
+	"version": 2,
+	"settings": {
+		"color": {
+			"palette": [
+				{ "slug": "surecart-brand",          "color": "#01824C", "name": "SureCart Brand" },
+				{ "slug": "surecart-brand-deep",     "color": "#004C3F", "name": "SureCart Brand Deep" },
+				{ "slug": "surecart-brand-soft",     "color": "#ECFDF5", "name": "SureCart Brand Soft" },
+				{ "slug": "surecart-green-50",       "color": "#ECFDF5", "name": "SureCart Green 50" },
+				{ "slug": "surecart-green-100",      "color": "#D1FAE5", "name": "SureCart Green 100" },
+				{ "slug": "surecart-green-200",      "color": "#A7F3D0", "name": "SureCart Green 200" },
+				{ "slug": "surecart-green-300",      "color": "#6EE7B7", "name": "SureCart Green 300" },
+				{ "slug": "surecart-green-400",      "color": "#34D399", "name": "SureCart Green 400" },
+				{ "slug": "surecart-green-500",      "color": "#04AB7D", "name": "SureCart Green 500" },
+				{ "slug": "surecart-green-600",      "color": "#01824C", "name": "SureCart Green 600" },
+				{ "slug": "surecart-green-700",      "color": "#15803D", "name": "SureCart Green 700" },
+				{ "slug": "surecart-green-800",      "color": "#04573D", "name": "SureCart Green 800" },
+				{ "slug": "surecart-green-900",      "color": "#004C3F", "name": "SureCart Green 900" },
+				{ "slug": "surecart-green-950",      "color": "#042F2E", "name": "SureCart Green 950" },
+				{ "slug": "surecart-neon",           "color": "#2FFF7B", "name": "SureCart Neon" },
+				{ "slug": "surecart-peach",          "color": "#FFBC9F", "name": "SureCart Peach" },
+				{ "slug": "surecart-yellow",         "color": "#FFDB95", "name": "SureCart Yellow" },
+				{ "slug": "surecart-yellow-bright",  "color": "#FFF74B", "name": "SureCart Yellow Bright" },
+				{ "slug": "surecart-white",          "color": "#FFFFFF", "name": "SureCart White" },
+				{ "slug": "surecart-gray-25",        "color": "#FCFCFD", "name": "SureCart Gray 25" },
+				{ "slug": "surecart-gray-50",        "color": "#F9FAFB", "name": "SureCart Gray 50" },
+				{ "slug": "surecart-gray-100",       "color": "#F3F4F6", "name": "SureCart Gray 100" },
+				{ "slug": "surecart-gray-200",       "color": "#E5E7EB", "name": "SureCart Gray 200" },
+				{ "slug": "surecart-gray-300",       "color": "#D1D5DB", "name": "SureCart Gray 300" },
+				{ "slug": "surecart-gray-400",       "color": "#9CA3AF", "name": "SureCart Gray 400" },
+				{ "slug": "surecart-gray-500",       "color": "#6B7280", "name": "SureCart Gray 500" },
+				{ "slug": "surecart-gray-600",       "color": "#4B5563", "name": "SureCart Gray 600" },
+				{ "slug": "surecart-gray-700",       "color": "#374151", "name": "SureCart Gray 700" },
+				{ "slug": "surecart-gray-800",       "color": "#1F2937", "name": "SureCart Gray 800" },
+				{ "slug": "surecart-gray-900",       "color": "#111827", "name": "SureCart Gray 900" },
+				{ "slug": "surecart-gray-950",       "color": "#030712", "name": "SureCart Gray 950" },
+				{ "slug": "surecart-black",          "color": "#000000", "name": "SureCart Black" },
+				{ "slug": "surecart-success",        "color": "#16A34A", "name": "SureCart Success" },
+				{ "slug": "surecart-warning",        "color": "#F59E0B", "name": "SureCart Warning" },
+				{ "slug": "surecart-danger",         "color": "#DC2626", "name": "SureCart Danger" },
+				{ "slug": "surecart-info",           "color": "#0972CC", "name": "SureCart Info" },
+				{ "slug": "surecart-bg-dark",        "color": "#042F2E", "name": "SureCart Dark Background" },
+				{ "slug": "surecart-bg-dark-alt",    "color": "#004C3F", "name": "SureCart Dark Alt Background" }
+			]
+		},
+		"spacing": {
+			"spacingSizes": [
+				{ "slug": "surecart-1",  "size": "4px",  "name": "1" },
+				{ "slug": "surecart-2",  "size": "8px",  "name": "2" },
+				{ "slug": "surecart-3",  "size": "12px", "name": "3" },
+				{ "slug": "surecart-4",  "size": "16px", "name": "4" },
+				{ "slug": "surecart-5",  "size": "20px", "name": "5" },
+				{ "slug": "surecart-6",  "size": "24px", "name": "6" },
+				{ "slug": "surecart-8",  "size": "32px", "name": "8" },
+				{ "slug": "surecart-10", "size": "40px", "name": "10" },
+				{ "slug": "surecart-12", "size": "48px", "name": "12" },
+				{ "slug": "surecart-16", "size": "64px", "name": "16" },
+				{ "slug": "surecart-20", "size": "80px", "name": "20" },
+				{ "slug": "surecart-24", "size": "96px", "name": "24" }
+			]
+		},
+		"typography": {
+			"fontFamilies": [
+				{
+					"slug":       "surecart-display",
+					"fontFamily": "\"Geist\", \"Inter\", ui-sans-serif, system-ui, sans-serif",
+					"name":       "SureCart Display"
+				},
+				{
+					"slug":       "surecart-body",
+					"fontFamily": "\"Figtree\", \"Inter\", ui-sans-serif, system-ui, sans-serif",
+					"name":       "SureCart Body"
+				},
+				{
+					"slug":       "surecart-mono",
+					"fontFamily": "\"Kode Mono\", \"JetBrains Mono\", ui-monospace, monospace",
+					"name":       "SureCart Mono"
+				}
+			]
+		}
+	}
+}

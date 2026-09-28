@@ -1,0 +1,14 @@
+:root {
+	--fg-1: #28201b; /* dark text */
+	--fg-2: #5b5048; /* body / muted */
+	--fg-mute: #8a8a8a;
+	--brand: #8b4513; /* saddle brown action */
+	--brand-mute: #8b451340;
+	--border-1: #e5e0d8;
+	--bg-1: #ffffff;
+	--bg-page: #f3f0ec; /* cream page bg */
+	--sale-red: #dc2626;
+
+	--font-display: "Playfair Display", Georgia, serif;
+	--font-body: "Inter", system-ui, -apple-system, sans-serif;
+}

@@ -1,0 +1,14 @@
+{
+	"archetype": "themed product page (cream bg + saddle brown accents)",
+	"input_mode": "zip",
+	"covers": [
+		"surecart/product-page with align:full + layout:constrained contentSize:1320px",
+		"flex-nowrap 2-col fixed widths (800px media + 424px info, 96px gap)",
+		"price-row: amount + interval + scratch with brown + sale-red palette",
+		"surecart/product-quantity-control with explicit decrease/input/increase children (full stepper anatomy)",
+		"pill-rounded buttons via per-corner border.radius (all 4 corners 999px)",
+		"two product-buy-buttons instances (outline + filled) in saddle brown",
+		"core/html SVG icon rows for shipping + returns benefits (L1-safe, stroke-only)"
+	],
+	"notes": "Brown / earth-tone palette. Tests themed product page with literal-byte contentSize, fixed flexSize columns, and the quantity-stepper anatomy with per-corner border radii."
+}

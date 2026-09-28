@@ -1,0 +1,18 @@
+{
+	"fixture": "intake-01-minimal-answers",
+	"input_mode": "questionnaire-defaults",
+	"archetype": "minimum-answer intake path",
+	"covers": [
+		"Q1 = Physical default → standard physical-product path",
+		"Q2 = SureCart default → surecart-brand preset (#01824C)",
+		"Q3a = None → VARIANT_BLOCK empty",
+		"Q3b = One-time → no subscription chrome",
+		"Q4 = Reviews + FAQ + Related (defaults)",
+		"Q5 = Clean default → aurora-lamp exemplar",
+		"Q6 = skipped (branched out by Q5=Clean default) → surecart-display/surecart-body slugs"
+	],
+	"branching_exercised": [
+		"Q6 skip-on-clean-default branch"
+	],
+	"prompt_word_count_target": "1,000-1,300 (lower end of Tier I-7 range)"
+}

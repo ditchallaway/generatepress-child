@@ -1,0 +1,13 @@
+:root {
+	--fg-1: #111827; /* heading + price */
+	--fg-2: #4b5563; /* body */
+	--fg-mute: #8a8a8a;
+	--brand: #000000; /* primary action */
+	--border-1: #e5e7eb;
+	--bg-1: #ffffff;
+	--bg-page: #ffffff;
+	--sale-red: #dc2626;
+
+	--font-display: "Inter", system-ui, -apple-system, sans-serif;
+	--font-body: "Inter", system-ui, -apple-system, sans-serif;
+}

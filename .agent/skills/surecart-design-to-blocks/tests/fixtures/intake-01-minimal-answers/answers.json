@@ -1,0 +1,18 @@
+{
+	"Q1_PRODUCT_TYPE": "Physical product",
+	"Q2_ACCENT_DESCRIPTION": "SureCart default (sage green)",
+	"Q3A_VARIANTS": "None",
+	"Q3B_PRICING": "One-time",
+	"Q4_SECTIONS": [
+		"Reviews (full section + ratings histogram)",
+		"FAQ (accordion)",
+		"Related products (4-up grid)"
+	],
+	"Q5_VISUAL_MOOD": "Clean default",
+	"Q6_TYPOGRAPHY": null,
+	"_branching": {
+		"Q6_skipped_reason": "Q5 = Clean default — typography branch filtered out per questions.md branching rules",
+		"Q3b_included": true,
+		"Q3b_option_filter_applied": false
+	}
+}

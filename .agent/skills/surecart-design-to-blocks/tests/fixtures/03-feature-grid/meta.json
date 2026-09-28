@@ -1,0 +1,13 @@
+{
+	"archetype": "feature grid",
+	"input_mode": "zip",
+	"covers": [
+		"4-column .map() expansion to concrete siblings",
+		"literal-bg card chrome (Exemplar 3.5)",
+		"surecart/icon usage (if Stencil icon library)",
+		"explicit-per-block typography (B-18) on heading + paragraph leaves",
+		"D7 dual-emit on text leaves",
+		"section padding 96px desktop"
+	],
+	"notes": "Tests .map() full expansion + literal-bg card chrome. Smaller than iPhone fixture — focus on a single section pattern."
+}

@@ -1,0 +1,14 @@
+{
+	"archetype": "custom-html L2 Interactivity API piggyback",
+	"input_mode": "zip",
+	"covers": [
+		"core/html block at L2 — design has a custom 'View cart' hero pill that toggles the slide-out cart drawer",
+		"data-wp-interactive='{\"namespace\":\"surecart/cart\"}' outer root with actions.toggle + state.isOpen (cart namespace owns these)",
+		"nested data-wp-interactive='{\"namespace\":\"surecart/checkout\"}' on the count span — itemsCount is owned by checkout, not cart (cross-namespace correctness, v7.1.1)",
+		"sibling surecart/cart-icon block on the same emit — required for the surecart/cart module to load",
+		"drift report includes dropped_features.type='raw_html_interactive', level='L2', namespace='surecart/cart', dependency_block='surecart/cart-icon'",
+		"merchant-facing unfiltered_html capability warning appended to copy-paste instructions",
+		"rubric items A-15 (L2 directives + namespace allowlist + balanced HTML) and B-20 (dependency_block presence in markup) both pass"
+	],
+	"notes": "Demonstrates the v7.1 contract: custom interactive HTML piggybacks on a SureCart Interactivity store that a sibling block triggers. If surecart/cart-icon were removed from the emit, B-20 should fail."
+}

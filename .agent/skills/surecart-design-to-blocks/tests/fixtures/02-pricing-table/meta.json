@@ -1,0 +1,14 @@
+{
+	"archetype": "pricing table",
+	"input_mode": "zip",
+	"covers": [
+		"3-column core/columns (equal width, isStackedOnMobile default)",
+		"literal-bg cards with border + radius + padding (Exemplar 3.5 Variant A)",
+		"recommended-plan emphasis (thicker accent border on middle card)",
+		"core/list feature bullets",
+		"core/buttons + core/button per plan",
+		".sc-h3 plan names + .sc-display-4 price + .sc-small interval",
+		"section-intro pattern (eyebrow + h2 + lead)"
+	],
+	"notes": "Static marketing pricing — not product-driven. Tests recommended-plan visual emphasis without surecart/product-* blocks."
+}

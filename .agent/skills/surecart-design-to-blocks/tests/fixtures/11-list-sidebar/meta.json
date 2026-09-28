@@ -1,0 +1,14 @@
+{
+	"archetype": "sidebar product list (sort + checkbox filters left, grid right)",
+	"input_mode": "zip",
+	"covers": [
+		"surecart/product-list with sidebar layout (controls bar + filter tags + 2-col flex body)",
+		"surecart/product-list-sidebar with style.position.{type:sticky,top:0px} + flexSize:225px",
+		"surecart/product-list-sort-radio-group + surecart/product-list-filter-checkboxes facet groups",
+		"surecart/product-template emit-once card pattern",
+		"top controls bar (surecart/product-list-sort + surecart/product-list-search) + surecart/product-list-filter-tags row",
+		"surecart/product-pagination with -previous + -numbers + -next children",
+		"flex layout: nowrap, sidebar fixed flexSize:225px"
+	],
+	"notes": "Sidebar variant. Tests sticky sidebar positioning (HC#33 — is-position-sticky class only, no inline position-mirror) + multi-facet filter sidebar pattern (radios for sort, checkboxes for facets). v7.18.3: corrected meta.json to reference real block names (was previously: product-list-template, product-list-pagination — neither exists)."
+}

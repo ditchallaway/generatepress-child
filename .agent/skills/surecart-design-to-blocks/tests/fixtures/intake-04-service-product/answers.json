@@ -1,0 +1,19 @@
+{
+	"Q1_PRODUCT_TYPE": "Service / booking",
+	"Q2_ACCENT_DESCRIPTION": "Cool — blue / teal / cyan",
+	"Q3A_VARIANTS": "None",
+	"Q3B_PRICING": null,
+	"Q4_SECTIONS": [
+		"Reviews (full section + ratings histogram)",
+		"How it works (steps)"
+	],
+	"Q5_VISUAL_MOOD": "Clean default",
+	"Q6_TYPOGRAPHY": null,
+	"_branching": {
+		"Q3b_skipped_reason": "Q1 = Service — pricing model branch removed entirely (services bill ad-hoc per questions.md branching rules)",
+		"Q4_option_filter_applied": "Sticky bar removed (Q1=Service non-shipping branch)",
+		"Q6_skipped_reason": "Q5 = Clean default — typography branch filtered out",
+		"batch_b_call_size": 1,
+		"batch_b_questions_asked": ["Q4 only"]
+	}
+}

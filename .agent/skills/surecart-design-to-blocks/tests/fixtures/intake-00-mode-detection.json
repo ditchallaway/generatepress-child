@@ -1,0 +1,103 @@
+{
+	"_doc": "Detection-conservatism audit for Step 0 mode router. Each row declares an input shape and the mode Step 0 must route it to. All 14 existing convert fixtures MUST route to 'convert' (false-positive intake on a fixture is a P0 bug). All ambiguous/empty inputs route to 'intake'. See SKILL.md Step 0 decision tree.",
+	"_signal_legend": {
+		"attachment": "Step 0 rule 1 — file attached",
+		"jsx_paste": "Step 0 rule 1 — pasted JSX/HTML/CSS",
+		"url_non_figma": "Step 0 rule 1 — non-Figma URL",
+		"4_file_marker": "Step 0 rule 1 — references product-page.jsx + colors_and_type.css",
+		"design_phrase": "Step 0 rule 2 — merchant says 'I have a design'",
+		"structured_paste": "Step 0 rule 2 — pasted structured design output",
+		"empty": "Step 0 rule 3 — no design content; defaults to intake",
+		"figma_url": "Step 0 rule 3 — bare figma.com URL with no other design content"
+	},
+	"fixtures": [
+		{ "fixture": "01-iphone", "input_kind": "zip attachment", "expected_mode": "convert", "signal_tripped": "attachment" },
+		{ "fixture": "02-pricing-table", "input_kind": "zip attachment", "expected_mode": "convert", "signal_tripped": "attachment" },
+		{ "fixture": "03-feature-grid", "input_kind": "zip attachment", "expected_mode": "convert", "signal_tripped": "attachment" },
+		{ "fixture": "04-faq", "input_kind": "zip attachment", "expected_mode": "convert", "signal_tripped": "attachment" },
+		{ "fixture": "05-hero-cta", "input_kind": "zip attachment", "expected_mode": "convert", "signal_tripped": "attachment" },
+		{ "fixture": "06-custom-html-l2", "input_kind": "zip attachment", "expected_mode": "convert", "signal_tripped": "attachment" },
+		{ "fixture": "07-product-standard", "input_kind": "zip attachment", "expected_mode": "convert", "signal_tripped": "attachment" },
+		{ "fixture": "08-product-physical", "input_kind": "zip attachment", "expected_mode": "convert", "signal_tripped": "attachment" },
+		{ "fixture": "09-product-course", "input_kind": "zip attachment", "expected_mode": "convert", "signal_tripped": "attachment" },
+		{ "fixture": "10-list-standard", "input_kind": "zip attachment", "expected_mode": "convert", "signal_tripped": "attachment" },
+		{ "fixture": "11-list-sidebar", "input_kind": "zip attachment", "expected_mode": "convert", "signal_tripped": "attachment" },
+		{ "fixture": "12-sticky-purchase", "input_kind": "zip attachment", "expected_mode": "convert", "signal_tripped": "attachment" },
+		{ "fixture": "13-product-quick-view", "input_kind": "zip attachment", "expected_mode": "convert", "signal_tripped": "attachment" },
+		{ "fixture": "14-screenshot-northwind", "input_kind": "png attachment", "expected_mode": "convert", "signal_tripped": "attachment" }
+	],
+	"typical_inputs": [
+		{
+			"input_kind": "empty invocation",
+			"example": "",
+			"expected_mode": "intake",
+			"signal_tripped": "empty",
+			"notes": "Bare skill activation with no message body. Today: undefined behavior. After v7.22: intake."
+		},
+		{
+			"input_kind": "vague prose",
+			"example": "I want to build a product page",
+			"expected_mode": "intake",
+			"signal_tripped": "empty",
+			"notes": "Free-text intent without design content."
+		},
+		{
+			"input_kind": "vague prose, merchant primed",
+			"example": "Help me get started with a SureCart page",
+			"expected_mode": "intake",
+			"signal_tripped": "empty",
+			"notes": "Same as above; intake opener will explain the path."
+		},
+		{
+			"input_kind": "merchant claim only",
+			"example": "I have a design",
+			"expected_mode": "convert",
+			"signal_tripped": "design_phrase",
+			"notes": "Rule 2 trips on the verbal claim even without paste. The opener asks the merchant to paste — this matches today's Step 1.0 behavior where it would error on missing input. Acceptable false-positive convert: merchant gets a 'paste your design' prompt, not garbage HTML."
+		},
+		{
+			"input_kind": "JSX paste no attachment",
+			"example": "import React from 'react';\nexport default function ProductPage() { return (<div>...</div>); }",
+			"expected_mode": "convert",
+			"signal_tripped": "jsx_paste",
+			"notes": "Pasted JSX with import/export header → Step 1.A path."
+		},
+		{
+			"input_kind": "HTML+CSS paste",
+			"example": "<section><h1>Product</h1></section>\n<style>h1 { color: red; }</style>",
+			"expected_mode": "convert",
+			"signal_tripped": "jsx_paste",
+			"notes": "Pasted HTML + inline CSS → Step 1.C path."
+		},
+		{
+			"input_kind": "bare design URL",
+			"example": "https://example.com/products/widget",
+			"expected_mode": "convert",
+			"signal_tripped": "url_non_figma",
+			"notes": "Non-Figma URL → Step 1.D WebFetch path."
+		},
+		{
+			"input_kind": "bare figma URL",
+			"example": "https://figma.com/design/abc123/MyDesign",
+			"expected_mode": "intake",
+			"signal_tripped": "figma_url",
+			"notes": "Figma URLs are deferred (per Step 1.0 Figma policy v7.18.3). Step 0 routes to intake; intake opener asks for PNG export or HTML+CSS instead. Figma MCP server is NOT called."
+		},
+		{
+			"input_kind": "4-file marker reference",
+			"example": "I'm working with product-page.jsx and colors_and_type.css",
+			"expected_mode": "convert",
+			"signal_tripped": "4_file_marker",
+			"notes": "Verbal reference to the canonical 4-file structure → convert. Opener asks for the actual paste."
+		},
+		{
+			"input_kind": "design system question",
+			"example": "What blocks does SureCart have for variants?",
+			"expected_mode": "intake",
+			"signal_tripped": "empty",
+			"notes": "Q&A about the skill, not an invocation. Intake opener explains the two-path flow."
+		}
+	],
+	"_test_oracle_usage": "This file is the test oracle for the Step 0 router. To verify: walk through each row in this file mentally (or via grep-based heuristic regex matchers in the future) and confirm Step 0's decision tree routes the input to expected_mode. Any disagreement is a Step 0 spec bug, not a fixture bug.",
+	"_contract": "ANY row in 'fixtures' that routes to 'intake' is a P0 regression. Convert-mode flow MUST be preserved byte-for-byte (defense layer 3 in the plan)."
+}

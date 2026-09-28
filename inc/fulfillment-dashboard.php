@@ -20,6 +20,37 @@ add_action('rest_api_init', function () {
     ));
 });
 
+/**
+ * Extract parcel number from a checkout's metadata.
+ */
+function btx_extract_parcel_from_metadata($checkout) {
+    if (!isset($checkout->metadata)) return '';
+
+    $meta = $checkout->metadata;
+    if (is_object($meta) && isset($meta->parcel)) {
+        return $meta->parcel;
+    }
+    if (is_array($meta) && isset($meta['parcel'])) {
+        return $meta['parcel'];
+    }
+    return '';
+}
+
+/**
+ * Try to get parcel number from an order's checkout (if already expanded).
+ * Does NOT make extra API calls — only reads data already on the order object.
+ */
+function btx_try_get_parcel_from_order($order) {
+    try {
+        if (isset($order->checkout) && is_object($order->checkout)) {
+            return btx_extract_parcel_from_metadata($order->checkout);
+        }
+    } catch (\Exception $e) {
+        // Silently fail — parcel is optional
+    }
+    return '';
+}
+
 function btx_get_fulfillment_files($request) {
     // Get comma-separated tokens or single token
     $tokens_str = $request->get_param('tokens');
@@ -34,21 +65,26 @@ function btx_get_fulfillment_files($request) {
     $tokens = array_unique($tokens);
     
     // We must have the SureCart plugin active
-    if (!class_exists('\SureCart\Models\Checkout')) {
+    if (!class_exists('\\SureCart\\Models\\Checkout')) {
         return new WP_Error('surecart_missing', 'SureCart plugin is not active.', array('status' => 500));
     }
     
     $orders_to_process = [];
+    $checkout_parcel_map = [];
     
     if (!empty($tokens)) {
         // 1. Fetch by checkout tokens (bypasses WordPress authentication entirely)
         foreach ($tokens as $t) {
             $checkout = \SureCart\Models\Checkout::find($t);
             if ($checkout) {
+                // Extract parcel from checkout metadata
+                $parcel = btx_extract_parcel_from_metadata($checkout);
+
                 $order_id = is_object($checkout->order) ? $checkout->order->id : $checkout->order;
                 if (!empty($order_id)) {
                     $order = \SureCart\Models\Order::find($order_id);
                     if ($order) {
+                        $checkout_parcel_map[$order->id] = $parcel;
                         $orders_to_process[] = $order;
                     }
                 }
@@ -100,12 +136,20 @@ function btx_get_fulfillment_files($request) {
                 }
             }
         }
+
+        // Get parcel: prefer the checkout map (token path), fall back to order's checkout (if expanded)
+        $parcel = $checkout_parcel_map[$order->id] ?? '';
+        if (empty($parcel)) {
+            $parcel = btx_try_get_parcel_from_order($order);
+        }
         
         $result_orders[] = array(
             'id' => $order->id,
             'order_number' => $order->number,
             'fulfillment_status' => $order->fulfillment_status,
-            'metadata' => $download_note
+            'metadata' => $download_note,
+            'parcel' => $parcel,
+            'created_at' => $order->created_at ?? null,
         );
     }
     
@@ -120,103 +164,228 @@ function btx_render_fulfillment_dashboard_script() {
     <!-- The script will populate any div with id="btx-fulfillment-dashboard" on the page -->
     
     <style>
-        .btx-dashboard-container {
-            margin-top: 20px;
-            font-family: sans-serif;
-        }
-        .btx-order-card {
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 24px;
-            background: #ffffff;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        .btx-order-header {
-            border-bottom: 1px solid #e2e8f0;
-            padding-bottom: 12px;
-            margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .btx-order-header h3 {
-            margin: 0;
-            font-size: 1.25rem;
+        /* ===== Fulfillment Dashboard: Files List ===== */
+
+        .btx-files-heading {
+            font-size: 1.5rem;
+            font-weight: 700;
             color: #1e293b;
+            margin-bottom: 16px;
+            font-family: inherit;
         }
-        .btx-gallery-grid {
+
+        /* Card container — matches sc-card no-padding */
+        .btx-files-card {
+            background: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        /* List row — matches sc-stacked-list-row with 4 columns */
+        .btx-files-row {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+            grid-template-columns: 2fr 1.5fr 1fr 1fr;
+            align-items: center;
+            padding: 16px 20px;
+            border-top: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+            gap: 12px;
         }
-        .btx-file-card {
-            border: 1px solid #cbd5e1;
-            border-radius: 8px;
-            padding: 16px;
-            text-align: center;
-            background: #f8fafc;
+        .btx-files-row:first-child {
+            border-top: none;
         }
-        .btx-file-card strong {
-            display: block;
-            margin-bottom: 12px;
-            color: #334155;
+        .btx-files-row:hover {
+            background-color: #f8fafc;
+        }
+
+        /* Non-clickable processing rows */
+        .btx-files-row--processing {
+            cursor: default;
+        }
+        .btx-files-row--processing:hover {
+            background-color: transparent;
+        }
+
+        /* Row cells */
+        .btx-files-row__id {
+            font-weight: 500;
+            color: #1e293b;
             font-size: 0.95rem;
         }
-        .btx-btn {
+        .btx-files-row__date {
+            color: var(--sc-color-gray-500, #64748b);
+            font-size: 0.9rem;
+        }
+        .btx-files-row__count {
+            color: var(--sc-color-gray-500, #64748b);
+            font-size: 0.9rem;
+        }
+        .btx-files-row__status {
+            text-align: right;
+        }
+
+        /* Badges — matches sc-order-status-badge appearance */
+        .btx-badge {
             display: inline-block;
-            background: #2563eb;
-            color: #ffffff;
-            padding: 10px 16px;
-            text-decoration: none;
-            border-radius: 6px;
-            font-size: 0.9em;
-            margin: 4px;
-            transition: background 0.2s;
-            font-weight: 500;
-        }
-        .btx-btn:hover {
-            background: #1d4ed8;
-            color: #ffffff;
-        }
-        .btx-btn-secondary {
-            background: #475569;
-        }
-        .btx-btn-secondary:hover {
-            background: #334155;
-        }
-        .btx-status-processing {
-            color: #d97706;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
             font-weight: 600;
-            margin: 0;
+            line-height: 1.5;
+            white-space: nowrap;
         }
-        .btx-status-processing-subtitle {
-            font-size: 0.85em;
-            color: #64748b;
-            margin-top: 4px;
+        .btx-badge--fulfilled {
+            background-color: #dcfce7;
+            color: #166534;
         }
+        .btx-badge--processing {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        /* Spinner for processing orders */
         .btx-spinner {
             display: inline-block;
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border: 2px solid rgba(217, 119, 6, 0.3);
             border-radius: 50%;
             border-top-color: #d97706;
-            animation: spin 1s ease-in-out infinite;
-            margin-right: 8px;
+            animation: btx-spin 1s ease-in-out infinite;
+            margin-right: 6px;
             vertical-align: middle;
         }
-        @keyframes spin {
+        @keyframes btx-spin {
             to { transform: rotate(360deg); }
         }
-        /* Mobile adjustments */
+
+        /* Note text below list for processing orders */
+        .btx-processing-note {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin-top: 12px;
+        }
+
+        /* ===== Download Modal ===== */
+        .btx-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+        }
+        .btx-modal-overlay.btx-active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .btx-modal {
+            background: #fff;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 480px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            transform: translateY(12px);
+            transition: transform 0.2s ease;
+        }
+        .btx-modal-overlay.btx-active .btx-modal {
+            transform: translateY(0);
+        }
+        .btx-modal__header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .btx-modal__title {
+            margin: 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+        .btx-modal__close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #94a3b8;
+            padding: 0 0 0 12px;
+            line-height: 1;
+            transition: color 0.15s;
+        }
+        .btx-modal__close:hover {
+            color: #1e293b;
+            background: none;
+        }
+        .btx-modal__subtitle {
+            padding: 12px 24px 0;
+            margin: 0;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        .btx-modal__body {
+            padding: 16px 24px 24px;
+        }
+
+        /* Download items inside modal */
+        .btx-download-item {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            text-decoration: none;
+            color: #1e293b;
+            transition: background-color 0.15s ease, border-color 0.15s ease;
+        }
+        .btx-download-item:last-child {
+            margin-bottom: 0;
+        }
+        .btx-download-item:hover {
+            background-color: #f1f5f9;
+            border-color: #cbd5e1;
+            color: #1e293b;
+            text-decoration: none;
+        }
+        .btx-download-icon {
+            font-size: 1.3rem;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .btx-download-label {
+            flex: 1;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+        .btx-download-action {
+            color: #2563eb;
+            font-size: 0.85rem;
+            font-weight: 500;
+            flex-shrink: 0;
+            margin-left: 12px;
+        }
+
+        /* Mobile adjustments — stack to 2-column on small screens */
         @media (max-width: 600px) {
-            .btx-order-header {
-                flex-direction: column;
-                align-items: flex-start;
+            .btx-files-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 4px 12px;
+                padding: 14px 16px;
             }
-            .btx-order-header small {
-                margin-top: 4px;
+            .btx-files-row__status {
+                text-align: left;
+            }
+            .btx-modal {
+                width: 95%;
             }
         }
     </style>
@@ -254,7 +423,149 @@ function btx_render_fulfillment_dashboard_script() {
         let pollCount = 0;
         
         const wpNonce = "<?php echo esc_js(wp_create_nonce('wp_rest')); ?>";
-        
+
+        // ── Data store for modal access ──
+        const orderDataStore = [];
+
+        // ── Create modal element (once) ──
+        const modalOverlay = document.createElement('div');
+        modalOverlay.className = 'btx-modal-overlay';
+        modalOverlay.id = 'btx-modal';
+        modalOverlay.innerHTML = `
+            <div class="btx-modal">
+                <div class="btx-modal__header">
+                    <h3 class="btx-modal__title"></h3>
+                    <button class="btx-modal__close" aria-label="Close">&times;</button>
+                </div>
+                <p class="btx-modal__subtitle"></p>
+                <div class="btx-modal__body"></div>
+            </div>
+        `;
+        document.body.appendChild(modalOverlay);
+
+        // ── Helpers for building download links from metadata ──
+
+        /**
+         * Human-readable label for a metadata URL key.
+         * Keys follow the pattern: overhead_url, north_url, kml_url, shot_2_url, etc.
+         */
+        function labelForKey(key) {
+            const map = {
+                'overhead_url': 'Overhead Aerial',
+                'north_url':    'North View',
+                'east_url':     'East View',
+                'south_url':    'South View',
+                'west_url':     'West View',
+                'kml_url':      'Boundary Coordinates (KML)',
+                'map_url':      'Static Context Map'
+            };
+            if (map[key]) return map[key];
+            // Fallback for shot_N_url keys
+            const shotMatch = key.match(/^shot_(\d+)_url$/);
+            if (shotMatch) return `Photo ${shotMatch[1]}`;
+            // Generic fallback: strip _url, capitalize
+            return key.replace(/_url$/, '').replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        /** Icon for a metadata URL key. */
+        function iconForKey(key) {
+            if (key === 'kml_url') return '📍';
+            if (key === 'map_url') return '🗺️';
+            return '🖼️';
+        }
+
+        /**
+         * Extract all downloadable URL entries from the metadata object.
+         * Returns an array of { key, url, label, icon }.
+         * Ordered: overhead first, then named shots, then numbered shots, then kml/map.
+         */
+        function extractDownloads(meta) {
+            if (!meta) return [];
+
+            const downloads = [];
+            const ordering = ['overhead_url'];
+            const namedShots = ['north_url', 'east_url', 'south_url', 'west_url'];
+            const tail = ['map_url', 'kml_url'];
+
+            // Collect all *_url keys present in the metadata
+            const allKeys = Object.keys(meta).filter(k => k.endsWith('_url'));
+
+            // Numbered shot keys (shot_2_url, shot_3_url, …) sorted numerically
+            const numberedKeys = allKeys
+                .filter(k => /^shot_\d+_url$/.test(k))
+                .sort((a, b) => {
+                    const na = parseInt(a.match(/\d+/)[0], 10);
+                    const nb = parseInt(b.match(/\d+/)[0], 10);
+                    return na - nb;
+                });
+
+            // Build ordered key list
+            const orderedKeys = [
+                ...ordering.filter(k => allKeys.includes(k)),
+                ...namedShots.filter(k => allKeys.includes(k)),
+                ...numberedKeys,
+                ...tail.filter(k => allKeys.includes(k)),
+            ];
+
+            // Catch any remaining keys we haven't handled
+            const handled = new Set(orderedKeys);
+            const remaining = allKeys.filter(k => !handled.has(k));
+
+            const finalKeys = [...orderedKeys, ...remaining];
+
+            for (const key of finalKeys) {
+                downloads.push({
+                    key,
+                    url: meta[key],
+                    label: labelForKey(key),
+                    icon: iconForKey(key)
+                });
+            }
+
+            return downloads;
+        }
+
+        // ── Modal helpers ──
+        function openModal(index) {
+            const data = orderDataStore[index];
+            const modal = document.getElementById('btx-modal');
+
+            modal.querySelector('.btx-modal__title').textContent = data.identifier;
+            modal.querySelector('.btx-modal__subtitle').textContent =
+                'Fulfilled ' + data.fulfilledDate;
+
+            let html = '';
+            for (const dl of data.downloads) {
+                html += `<a href="${dl.url}" class="btx-download-item" target="_blank" download>
+                    <span class="btx-download-icon">${dl.icon}</span>
+                    <span class="btx-download-label">${dl.label}</span>
+                    <span class="btx-download-action">Download ↓</span>
+                </a>`;
+            }
+
+            modal.querySelector('.btx-modal__body').innerHTML = html;
+            modal.classList.add('btx-active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('btx-modal');
+            modal.classList.remove('btx-active');
+            document.body.style.overflow = '';
+        }
+
+        // Close on X button
+        modalOverlay.querySelector('.btx-modal__close').addEventListener('click', closeModal);
+        // Close on backdrop click
+        modalOverlay.addEventListener('click', function(e) {
+            if (e.target === modalOverlay) closeModal();
+        });
+        // Close on Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') closeModal();
+        });
+
+        // ── Fetch & render ──
         async function fetchAndRenderFiles() {
             try {
                 console.log(`Fetching orders via custom endpoint... Tokens: ${tokens.join(',') || 'None (Using WP Session)'}`);
@@ -301,78 +612,90 @@ function btx_render_fulfillment_dashboard_script() {
                     container.innerHTML = '<p>You have no orders yet.</p>';
                     return false;
                 }
-                
-                container.innerHTML = '<h2 style="margin-bottom:20px; color: #1e293b;">My Files</h2>';
-                let fileCount = 0;
+
+                // ── Build the list ──
+                container.innerHTML = '';
+                orderDataStore.length = 0;
+
+                const heading = document.createElement('h2');
+                heading.className = 'btx-files-heading';
+                heading.textContent = 'My Files';
+                container.appendChild(heading);
+
+                const card = document.createElement('div');
+                card.className = 'btx-files-card';
+                container.appendChild(card);
+
+                let visibleCount = 0;
                 let isWaitingForFiles = false;
                 
                 for (const order of orders) {
-                    const card = document.createElement('div');
-                    card.className = 'btx-order-card';
-                    let orderTitle = `Order #${order.order_number}`;
-                    
-                    if (order.metadata && order.metadata.fulfilled_at) {
-                        fileCount++;
-                        const meta = order.metadata;
-                        console.log("Valid fulfillment metadata found!", meta);
-                        
-                        let filesHtml = '';
-                        
-                        if (meta.overhead_url) {
-                            filesHtml += `
-                                <div class="btx-file-card">
-                                    <strong>Overhead Aerial</strong>
-                                    <a href="${meta.overhead_url}" class="btx-btn" target="_blank" download>Print Size</a>
-                                </div>
-                            `;
-                        }
-                        if (meta.map_url) {
-                            filesHtml += `
-                                <div class="btx-file-card">
-                                    <strong>Static Context Map</strong>
-                                    <a href="${meta.map_url}" class="btx-btn" target="_blank" download>Print Size</a>
-                                </div>
-                            `;
-                        }
-                        if (meta.kml_url) {
-                            filesHtml += `
-                                <div class="btx-file-card">
-                                    <strong>Boundary Coordinates</strong>
-                                    <a href="${meta.kml_url}" class="btx-btn" target="_blank" download>Download KML</a>
-                                </div>
-                            `;
-                        }
-                        
-                        card.innerHTML = `
-                            <div class="btx-order-header">
-                                <h3>${orderTitle}</h3>
-                                <small>Fulfilled: ${new Date(meta.fulfilled_at).toLocaleDateString()}</small>
-                            </div>
-                            <div class="btx-gallery-grid">
-                                ${filesHtml}
+                    const meta = order.metadata;
+                    const isFulfilled = meta && meta.fulfilled_at;
+                    const isProcessing = order.fulfillment_status === 'unfulfilled';
+
+                    if (!isFulfilled && !isProcessing) continue;
+
+                    visibleCount++;
+                    const row = document.createElement('div');
+                    row.className = 'btx-files-row';
+
+                    // Prefer parcel number over order number for the identifier
+                    const identifier = order.parcel
+                        ? `Parcel ${order.parcel}`
+                        : `Order #${order.order_number}`;
+
+                    if (isFulfilled) {
+                        // Extract downloads dynamically from metadata keys
+                        const downloads = extractDownloads(meta);
+
+                        const fulfilledDate = new Date(meta.fulfilled_at)
+                            .toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+
+                        row.innerHTML = `
+                            <div class="btx-files-row__id">${identifier}</div>
+                            <div class="btx-files-row__date">${fulfilledDate}</div>
+                            <div class="btx-files-row__count">${downloads.length} file${downloads.length !== 1 ? 's' : ''}</div>
+                            <div class="btx-files-row__status">
+                                <span class="btx-badge btx-badge--fulfilled">Fulfilled</span>
                             </div>
                         `;
-                        container.appendChild(card);
-                        
-                    } else if (order.fulfillment_status === 'unfulfilled') {
-                        console.log("Order is unfulfilled. Waiting for files...");
+
+                        const dataIndex = orderDataStore.length;
+                        orderDataStore.push({ identifier, meta, fulfilledDate, downloads });
+                        row.addEventListener('click', function() { openModal(dataIndex); });
+
+                        console.log("Fulfilled order rendered:", identifier, meta);
+
+                    } else if (isProcessing) {
                         isWaitingForFiles = true;
-                        fileCount++;
-                        card.innerHTML = `
-                            <div class="btx-order-header">
-                                <h3>${orderTitle}</h3>
-                                <div>
-                                    <p class="btx-status-processing"><span class="btx-spinner"></span>Generating your custom files...</p>
-                                    <p class="btx-status-processing-subtitle">This usually takes 1-3 minutes. We will also email you the links when they are ready.</p>
-                                </div>
+                        row.classList.add('btx-files-row--processing');
+
+                        row.innerHTML = `
+                            <div class="btx-files-row__id">${identifier}</div>
+                            <div class="btx-files-row__date"><span class="btx-spinner"></span>Generating...</div>
+                            <div class="btx-files-row__count">ETA: 1-3 min</div>
+                            <div class="btx-files-row__status">
+                                <span class="btx-badge btx-badge--processing">Processing</span>
                             </div>
                         `;
-                        container.appendChild(card);
+
+                        console.log("Processing order rendered:", identifier);
                     }
+
+                    card.appendChild(row);
                 }
                 
-                if (fileCount === 0) {
+                if (visibleCount === 0) {
                     container.innerHTML += '<p>No files available for your orders.</p>';
+                }
+
+                // Show a helpful note if files are still being generated
+                if (isWaitingForFiles) {
+                    const note = document.createElement('p');
+                    note.className = 'btx-processing-note';
+                    note.textContent = 'Files are being generated. We will also email you the download links when they are ready.';
+                    container.appendChild(note);
                 }
                 
                 // If we are waiting for files and we have tokens, we should poll.

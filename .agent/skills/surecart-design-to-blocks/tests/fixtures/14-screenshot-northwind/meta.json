@@ -1,0 +1,48 @@
+{
+	"archetype": "full product detail page (screenshot input)",
+	"input_mode": "screenshot",
+	"product": "Northwind Pour-Over Kettle — matte-black gooseneck coffee kettle with walnut handle (Northwind & Co.)",
+	"source": "northwind-kettle.png — page 1 of testnorth.pdf (Claude Design full-page export, rasterized via sips at 1080x4050px). Source PDF (northwind-kettle.source.pdf) included for reproducibility. Generated from the Claude Design prompt drafted in the SUR-5186 PR review thread.",
+	"long_edge_px": 4050,
+	"covers": [
+		"Step 1.B vision extraction path (section detection, typography inference, color snap, spacing inference, layout inference, asset extraction)",
+		"Tier C rubric activation (C-17 resolution gate, C-18 confidence dimension, C-19 color_snap_misses, C-20 section-count plausibility, C-21 family-only typography)",
+		"drift-report shape unique to Mode B (confidence object on 5 dimensions + merchant_verify[] + color_snap_misses[])",
+		"off-palette color extraction — warm cream #f6f0e6 body, deep forest green #1f3a2d accents, walnut brown #7a4a2a headings, soft black #1a1a1a body — none snap to a SureCart palette slug within ΔE 6, so every color must log a color_snap_misses[] entry",
+		"family-only typography emission — source uses Instrument Serif (display), Kode Mono (eyebrow caps), Figtree (body); the skill must NOT claim any of these by name from the image (C-21) and instead emit surecart-display / surecart-mono / surecart-body slugs",
+		"placeholder asset URL emission — the kettle is rendered as an SVG in the source; Mode B extracts as a single core/image with placeholder URL https://cdn.example.com/inferred-hero-1.jpg"
+	],
+	"sections_visible": [
+		"1. Top nav (Northwind & Co wordmark + Shop/Story/Journal/Contact + cart icon)",
+		"2. Hero (2-col: kettle photo left, title stack right with BREW SLOWLY eyebrow + H1 + italic serif subhead + $148.00 / SAVE $20 / $168 strike-through + Add to bag + Buy now + 4.8 stars / 324 reviews / free shipping / lifetime warranty row)",
+		"3. Variant chips (FINISH: Matte Black active / Olive / Bone)",
+		"4. Three-up benefit strip (Counter-balanced spout / Cool-touch walnut handle / Induction-safe base — each with icon + 2-line body)",
+		"5. Spec table (THE PARTICULARS — Built once, kept for years. — 6 rows 2-col: Capacity / Material / Weight / Spout / Origin / Warranty)",
+		"6. Editorial story (full-width walnut-tinted image overlay + 'From a workshop in Portland.' 80-word paragraph + founder signoff)",
+		"7. Reviews summary (4.8 large + 5 stars + 98% would buy again + 5-row histogram + 3 review cards: Margaux L. Brooklyn / Theo R. Asheville / Anya P. Toronto)",
+		"8. FAQ (5 items: induction-safe / boil time / dishwasher / international ship / lifetime craft warranty)"
+	],
+	"sections_added_from_page_2_of_source_pdf": [
+		"9. Related products grid (Pairs well with — Ceramic Brew Mug / Slow Drip Carafe / Walnut Hand Grinder / Pour-Over Server) — emitted as surecart/product-list-related with full A-28 Start-Basic template",
+		"10. Footer (newsletter signup core/html L1 raw-html-static + Shop/Workshop/Care link columns + copyright + Privacy/Terms/Accessibility) — emitted as align:full core/group on literal #1f3a2d forest-green bg"
+	],
+	"page_2_audit_rationale": "PNG fixture is page 1 only (sips can't natively multi-page rasterize on macOS without poppler-utils). At v7.11.0 paste-test, the merchant flagged the missing footer; re-reading the .source.pdf revealed page 2 with Related Products + Footer. Both sections were added to golden.html post-page-1-capture via the PDF audit. This established the v7.11 'Mode B multi-page detection' workflow rule (rubric C-22): when source materials sit alongside the screenshot (.source.pdf, .psd, .ai), the skill MUST scan them for additional sections OR ask the merchant about extra pages. PNG-only inputs with no sibling source files should prompt the merchant for the full page set.",
+	"tier_c_expectations": {
+		"confidence_keys_required": ["typography", "color", "spacing", "layout", "assets"],
+		"min_sections_detected": 2,
+		"actual_sections_visible": 8,
+		"long_edge_px": 4050,
+		"long_edge_min": 1200,
+		"merchant_verify_required_for": ["any dimension scored low"],
+		"color_snap_misses_required_for": "every literal-hex color emitted — palette is intentionally off-slug, so expect at least 4 entries (cream / forest green / walnut / soft black)",
+		"expected_palette_misses": ["#f6f0e6", "#1f3a2d", "#7a4a2a", "#1a1a1a"]
+	},
+	"notes": "Byte-perfect compare against any Mode A golden is NOT expected — Mode B emits literal hex where Mode A emits slug, snapped 4px spacing where Mode A preserves exact JSX margins, and family-only fontFamily slugs where Mode A may carry exact family literals. Structural compare (block names + nesting parity vs the conceptual Mode A baseline) is the acceptance criterion; attribute drift is acceptable when justified by the Tier C drift report. The .source.pdf is included so the rasterization can be reproduced if the PNG is ever lost or needs regeneration at a different resolution.",
+	"golden_paste_tested_at_version": "7.11.0",
+	"golden_paste_test_date": "2026-05-13",
+	"golden_paste_test_history": [
+		"v7.10.0 round 1 — 3 save() rules discovered (buy-buttons margin parity, core/image width/height inline, font-style:normal JSON-inline parity); HC#28/29/31 + A-29/30/31",
+		"v7.10.0 round 2 — added 'Pairs well with' related products (surecart/product-list-related + Start-Basic template) + footer (align:full core/group + 4-col layout + core/html newsletter L1 fallback); page 1 content drifts corrected against PDF source",
+		"v7.11.0 round 3 — 1 additional save() rule discovered (core/cover aspect-ratio JSON path fork: top-level aspectRatio inline-mirrors, style.dimensions.aspectRatio does NOT); HC#30 + A-32. Zero recovery prompts post-fix."
+	]
+}
