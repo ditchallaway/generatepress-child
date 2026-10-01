@@ -141,48 +141,22 @@ function btx_inject_portal_tweaks() {
     // Only needed on /dash/ where the SureCart customer portal lives
     if ( ! is_page( [ 'dash', 'dashboard' ] ) ) return;
     ?>
+<style>
+/* Hide the Downloads tab (#tab-3) from the SureCart customer portal nav */
+#tab-3 { display: none !important; }
+</style>
 <script>
 (function () {
     'use strict';
 
-    // ── 1. Remove "Downloads" tab from SureCart portal nav ────────────────────
-    // SureCart renders its portal in shadow DOM. We recurse through all shadow
-    // roots to find nav items with the text "Downloads" and hide them.
-    // We stop observing once we've found and hidden it (avoids ongoing cost).
-
-    var downloadsHidden = false;
-
-    function searchAndHideDownloadsTab(root) {
-        if (!root) return;
-        root.querySelectorAll('a, button, [role="tab"]').forEach(function (el) {
-            if (el.textContent.trim() === 'Downloads' && !downloadsHidden) {
-                var target = el.closest('li, [role="listitem"], nav > *') || el;
-                target.style.setProperty('display', 'none', 'important');
-                downloadsHidden = true;
-            }
-        });
-        // Recurse into any shadow roots present under this root
-        root.querySelectorAll('*').forEach(function (el) {
-            if (el.shadowRoot) searchAndHideDownloadsTab(el.shadowRoot);
-        });
-    }
-
-    var tabObserver = new MutationObserver(function () {
-        searchAndHideDownloadsTab(document.body);
-        if (downloadsHidden) tabObserver.disconnect();
-    });
-    tabObserver.observe(document.body, { childList: true, subtree: true });
-    // Also run immediately in case portal is already in the DOM
-    searchAndHideDownloadsTab(document.body);
-
-    // ── 2. Intercept download links → redirect to our fulfillment dashboard ───
+    // ── Intercept download links → redirect to our fulfillment dashboard ───────
     // When a customer is viewing an order detail:
     //   current URL:  /dash/?action=show&model=order&id=ORDER_ID
     //   clicked link: /dash/?action=show&model=download&id=DOWNLOAD_ID
     // We grab the ORDER_ID from the current page URL and redirect to:
     //   /dash/?order=ORDER_ID
     //
-    // event.composedPath() lets us see inside shadow DOM event paths.
+    // event.composedPath() lets us see links inside SureCart's shadow DOM.
 
     document.addEventListener('click', function (e) {
         var path   = e.composedPath ? e.composedPath() : [];
@@ -213,6 +187,7 @@ function btx_inject_portal_tweaks() {
 }
 
 // ── Front-end ─────────────────────────────────────────────────────────────────
+
 function btx_render_fulfillment_dashboard_script() {
     if ( ! is_page( [ 'dash', 'dashboard' ] ) ) return;
     ?>
