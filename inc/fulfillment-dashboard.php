@@ -748,6 +748,14 @@ function btx_render_fulfillment_dashboard_script() {
                     return false;
                 }
 
+                // Sort newest first — prefer fulfilled_at from metadata, fall back to created_at
+                orders.sort(function (a, b) {
+                    var dateA = new Date((a.metadata && a.metadata.fulfilled_at) || a.created_at || 0).getTime();
+                    var dateB = new Date((b.metadata && b.metadata.fulfilled_at) || b.created_at || 0).getTime();
+                    return dateB - dateA;
+                });
+
+
                 // ── Rebuild list ─────────────────────────────────
                 container.innerHTML = '';
                 orderDataStore = [];
