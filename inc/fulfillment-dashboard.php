@@ -723,11 +723,24 @@ function btx_render_fulfillment_dashboard_script() {
                     return false;
                 }
 
-                // Sort newest first — prefer fulfilled_at from metadata, fall back to created_at
+                // Sort: processing (still generating) orders always on top,
+                // then newest first — prefer fulfilled_at, fall back to created_at.
+                function orderTime(o) {
+                    var v = (o.metadata && o.metadata.fulfilled_at) || o.created_at || 0;
+                    // SureCart created_at is a unix timestamp in seconds
+                    if (typeof v === 'number' || /^\d+$/.test(String(v))) {
+                        v = Number(v);
+                        return v < 1e12 ? v * 1000 : v;
+                    }
+                    return new Date(v).getTime() || 0;
+                }
+                function isPending(o) {
+                    return !(o.metadata && o.metadata.fulfilled_at) && o.fulfillment_status === 'unfulfilled';
+                }
                 orders.sort(function (a, b) {
-                    var dateA = new Date((a.metadata && a.metadata.fulfilled_at) || a.created_at || 0).getTime();
-                    var dateB = new Date((b.metadata && b.metadata.fulfilled_at) || b.created_at || 0).getTime();
-                    return dateB - dateA;
+                    var pa = isPending(a), pb = isPending(b);
+                    if (pa !== pb) return pa ? -1 : 1;
+                    return orderTime(b) - orderTime(a);
                 });
 
 
