@@ -17,6 +17,16 @@ function brokertricks_enqueue_custom_styles() {
         array(),
         filemtime( get_stylesheet_directory() . '/css/custom.css' )
     );
+
+    // Fulfillment dashboard + SureCart portal tweaks (only on the dashboard pages)
+    if ( is_page( array( 'dash', 'dashboard' ) ) ) {
+        wp_enqueue_style(
+            'brokertricks-fulfillment-dashboard',
+            get_stylesheet_directory_uri() . '/css/fulfillment-dashboard.css',
+            array(),
+            filemtime( get_stylesheet_directory() . '/css/fulfillment-dashboard.css' )
+        );
+    }
 }
 add_action( 'wp_enqueue_scripts', 'brokertricks_enqueue_custom_styles' );
 

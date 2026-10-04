@@ -141,10 +141,6 @@ function btx_inject_portal_tweaks() {
     // Only needed on /dash/ where the SureCart customer portal lives
     if ( ! is_page( [ 'dash', 'dashboard' ] ) ) return;
     ?>
-<style>
-/* Hide the Downloads tab (#tab-3) from the SureCart customer portal nav */
-#tab-3 { display: none !important; }
-</style>
 <script>
 (function () {
     'use strict';
@@ -181,6 +177,50 @@ function btx_inject_portal_tweaks() {
         }
     }, true); // capture phase — fires before SureCart's own handlers
 
+    // ── Hide the Downloads tab in the portal nav ──────────────────────────────
+    // Don't rely on #tab-N: SureCart renumbers tabs on some views
+    // (e.g. ?action=index&model=order). Match by link target instead and
+    // re-apply whenever SureCart re-renders the nav.
+    function isDownloadsIndexLink(href) {
+        if (!href) return false;
+        try {
+            var p = new URL(href, window.location.href).searchParams;
+            return p.get('model') === 'download' && p.get('action') !== 'show';
+        } catch (err) { return false; }
+    }
+
+    function hideDownloadsTab(root) {
+        var nodes = root.querySelectorAll('sc-tab, .sc-tab, [role="tab"], nav a, a[href*="model=download"]');
+        nodes.forEach(function (el) {
+            var href = el.getAttribute('href') || (el.querySelector('a') && el.querySelector('a').getAttribute('href'));
+            if (!isDownloadsIndexLink(href)) return;
+            var tab = el.closest('sc-tab, .sc-tab, [role="tab"], li') || el;
+            tab.classList.add('btx-hide-downloads-tab');
+            tab.style.setProperty('display', 'none', 'important');
+        });
+        // Also look inside open shadow roots (SureCart web components)
+        root.querySelectorAll('*').forEach(function (el) {
+            if (el.shadowRoot) hideDownloadsTab(el.shadowRoot);
+        });
+    }
+
+    var hideQueued = false;
+    function queueHide() {
+        if (hideQueued) return;
+        hideQueued = true;
+        requestAnimationFrame(function () {
+            hideQueued = false;
+            hideDownloadsTab(document);
+        });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', queueHide);
+    } else {
+        queueHide();
+    }
+    new MutationObserver(queueHide).observe(document.documentElement, { childList: true, subtree: true });
+
 }());
 </script>
     <?php
@@ -192,267 +232,6 @@ function btx_render_fulfillment_dashboard_script() {
     if ( ! is_page( [ 'dash', 'dashboard' ] ) ) return;
     ?>
 <!-- btx-fulfillment-dashboard: populated by the script below -->
-<style>
-/* ================================================================
-   Fulfillment Dashboard — base reset
-   ================================================================ */
-#btx-fulfillment-dashboard * { box-sizing: border-box; }
-
-/* ── Heading ──────────────────────────────────────────────────── */
-.btx-files-heading {
-    font-size: 1.5rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 0 0 16px;
-}
-
-/* ── List view ────────────────────────────────────────────────── */
-.btx-files-card {
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    overflow: hidden;
-}
-.btx-files-row {
-    display: grid;
-    grid-template-columns: 2fr 1.5fr 1fr 1fr;
-    align-items: center;
-    padding: 16px 20px;
-    gap: 12px;
-    border-top: 1px solid #e2e8f0;
-    cursor: pointer;
-    transition: background-color .15s;
-}
-.btx-files-row:first-child { border-top: none; }
-.btx-files-row:hover        { background: #f8fafc; }
-.btx-files-row--processing  { cursor: default; }
-.btx-files-row--processing:hover { background: transparent; }
-
-.btx-files-row__id    { font-weight: 500; color: #1e293b; font-size: .95rem; }
-.btx-files-row__date  { color: #64748b; font-size: .9rem; }
-.btx-files-row__count { color: #64748b; font-size: .9rem; }
-.btx-files-row__status { text-align: right; }
-
-/* ── Badges ───────────────────────────────────────────────────── */
-.btx-badge {
-    display: inline-block;
-    padding: 3px 10px;
-    border-radius: 9999px;
-    font-size: .8rem;
-    font-weight: 600;
-    line-height: 1.5;
-    white-space: nowrap;
-}
-.btx-badge--fulfilled  { background: #dcfce7; color: #166534; }
-.btx-badge--processing { background: #fef3c7; color: #92400e; }
-
-/* ── Spinner ──────────────────────────────────────────────────── */
-.btx-spinner {
-    display: inline-block;
-    width: 14px; height: 14px;
-    border: 2px solid rgba(217,119,6,.3);
-    border-radius: 50%;
-    border-top-color: #d97706;
-    animation: btx-spin 1s linear infinite;
-    margin-right: 6px;
-    vertical-align: middle;
-}
-@keyframes btx-spin { to { transform: rotate(360deg); } }
-
-.btx-processing-note {
-    font-size: .85rem;
-    color: #64748b;
-    margin-top: 12px;
-}
-
-/* ================================================================
-   Detail panel (replaces modal)
-   ================================================================ */
-.btx-detail {
-    display: none;
-    flex-direction: column;
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    overflow: hidden;
-}
-.btx-detail--open { display: flex; }
-
-/* Sticky header */
-.btx-detail__header {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 16px 20px;
-    background: #fff;
-    border-bottom: 1px solid #e2e8f0;
-}
-.btx-detail__back {
-    background: none;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-    padding: 6px 12px;
-    cursor: pointer;
-    font-size: .9rem;
-    color: #475569;
-    transition: background .15s, color .15s;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-.btx-detail__back:hover { background: #f1f5f9; color: #1e293b; }
-.btx-detail__title {
-    margin: 0;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #1e293b;
-    flex: 1;
-}
-.btx-detail__subtitle {
-    font-size: .85rem;
-    color: #64748b;
-    white-space: nowrap;
-}
-
-/* Body */
-.btx-detail__body { padding: 20px; display: flex; flex-direction: column; gap: 16px; }
-
-/* ── Image card ───────────────────────────────────────────────── */
-.btx-img-card {
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    overflow: hidden;
-}
-.btx-img-card__image-wrap {
-    width: 100%;
-    background: #f1f5f9;
-    min-height: 180px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-}
-.btx-img-card__image-wrap img {
-    width: 100%;
-    height: auto;
-    display: block;
-    max-height: 520px;
-    object-fit: cover;
-}
-/* Loading skeleton shimmer */
-.btx-img-card__image-wrap::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
-    background-size: 200% 100%;
-    animation: btx-shimmer 1.4s infinite;
-    z-index: 0;
-}
-.btx-img-card__image-wrap.btx-loaded::before { display: none; }
-.btx-img-card__image-wrap img { position: relative; z-index: 1; }
-@keyframes btx-shimmer { to { background-position: -200% 0; } }
-
-.btx-img-card__footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
-    border-top: 1px solid #e2e8f0;
-    gap: 12px;
-}
-.btx-img-card__label {
-    font-weight: 500;
-    font-size: .95rem;
-    color: #1e293b;
-    flex: 1;
-}
-.btx-img-card__btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    padding: 8px 16px;
-    background: #1e3a5f;
-    color: #fff !important;
-    border: none;
-    border-radius: 6px;
-    font-size: .85rem;
-    font-weight: 600;
-    text-decoration: none !important;
-    cursor: pointer;
-    transition: background .15s;
-    white-space: nowrap;
-    flex-shrink: 0;
-}
-.btx-img-card__btn:hover { background: #162d4a; }
-
-/* ── Image grid ───────────────────────────────────────────────── */
-.btx-img-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-}
-/* 5 images: row 1 full width, rows 2 & 3 split */
-.btx-img-grid--count-5 { grid-template-columns: 1fr 1fr; }
-.btx-img-grid--count-5 > .btx-img-card:first-child { grid-column: 1 / -1; }
-.btx-img-grid--count-5 > .btx-img-card:not(:first-child) .btx-img-card__image-wrap img {
-    aspect-ratio: 4 / 3;
-    height: 100%;
-}
-
-/* ── KML row ──────────────────────────────────────────────────── */
-.btx-kml-row {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 14px 16px;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    text-decoration: none;
-    color: #1e293b !important;
-    transition: background .15s, border-color .15s;
-}
-.btx-kml-row:hover { background: #f8fafc; border-color: #cbd5e1; text-decoration: none !important; }
-.btx-kml-row__icon { font-size: 1.4rem; flex-shrink: 0; }
-.btx-kml-row__label { flex: 1; font-weight: 500; font-size: .95rem; }
-.btx-kml-row__action { color: #2563eb; font-size: .85rem; font-weight: 500; flex-shrink: 0; }
-
-/* ── Download all ─────────────────────────────────────────────── */
-.btx-download-all {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 12px 20px;
-    border: 1.5px solid #cbd5e1;
-    border-radius: 8px;
-    background: #fff;
-    color: #475569 !important;
-    font-size: .9rem;
-    font-weight: 600;
-    cursor: pointer;
-    text-decoration: none !important;
-    transition: background .15s, border-color .15s, color .15s;
-}
-.btx-download-all:hover { background: #f8fafc; border-color: #94a3b8; color: #1e293b !important; }
-.btx-download-all:disabled { opacity: .6; cursor: wait; }
-
-/* ── Mobile ───────────────────────────────────────────────────── */
-@media (max-width: 600px) {
-    .btx-files-row {
-        grid-template-columns: 1fr 1fr;
-        gap: 4px 12px;
-        padding: 14px 16px;
-    }
-    .btx-files-row__status { text-align: left; }
-    .btx-detail__body { padding: 12px; }
-    .btx-detail__subtitle { display: none; }
-    .btx-img-grid--count-5 { grid-template-columns: 1fr; }
-}
-</style>
 
 <script>
 (function () {
