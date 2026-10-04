@@ -390,16 +390,16 @@ function btx_render_fulfillment_dashboard_script() {
                 grid.appendChild(card);
             }
 
-            // KML row (below images)
+            // KML row (below images) — uses the same Download button as image cards
             if (kml) {
-                const kmlRow = document.createElement('a');
-                kmlRow.href      = kml.url;
-                kmlRow.download  = '';
+                const kmlRow = document.createElement('div');
                 kmlRow.className = 'btx-kml-row';
                 kmlRow.innerHTML = `
                     <span class="btx-kml-row__icon">📍</span>
                     <span class="btx-kml-row__label">Boundary Coordinates (KML)</span>
-                    <span class="btx-kml-row__action">Download &#8595;</span>
+                    <a href="${kml.url}" class="btx-img-card__btn" download>
+                        &#8595; Download
+                    </a>
                 `;
                 body.appendChild(kmlRow);
             }
