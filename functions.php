@@ -34,3 +34,8 @@ add_action( 'wp_enqueue_scripts', 'brokertricks_enqueue_custom_styles' );
  * Require custom fulfillment dashboard script
  */
 require_once get_stylesheet_directory() . '/inc/fulfillment-dashboard.php';
+
+/**
+ * Theme hooks (e.g. no header/footer on product pages)
+ */
+require_once get_stylesheet_directory() . '/inc/hooks.php';
