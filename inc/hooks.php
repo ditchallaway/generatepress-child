@@ -1,6 +1,8 @@
 <?php
 /**
  * Theme hooks — Brokertricks
+ *
+ * @package GeneratePressChild
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -8,10 +10,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * No header or footer on SureCart product pages (/products/...).
- *
- * SureCart renders products through GeneratePress's get_header()/get_footer(),
- * so we unhook GeneratePress's header + footer pieces on sc_product singles.
+ * 1. Remove header and footer on SureCart product pages (/products/...)
  */
 add_action( 'wp', function () {
     if ( ! is_singular( 'sc_product' ) ) {
@@ -27,4 +26,27 @@ add_action( 'wp', function () {
     // Footer widgets + copyright bar.
     remove_action( 'generate_footer', 'generate_construct_footer_widgets', 5 );
     remove_action( 'generate_footer', 'generate_construct_footer' );
+} );
+
+/**
+ * 2. Layout & Sidebar overrides for Custom Templates
+ *
+ * Forces full width (no sidebars) and removes default GeneratePress padding
+ * when using our custom clean canvas or full width templates.
+ */
+add_filter( 'generate_sidebar_layout', function ( $layout ) {
+    if ( is_page_template( array( 'template-clean-canvas.php', 'template-full-width.php' ) ) ) {
+        return 'no-sidebar';
+    }
+    return $layout;
+} );
+
+/**
+ * Clean Canvas template: option to remove default GP header/footer if requested or blank canvas
+ */
+add_action( 'wp', function () {
+    if ( is_page_template( 'template-clean-canvas.php' ) ) {
+        // Remove standard sidebar widgets just in case
+        remove_action( 'generate_sidebars', 'generate_construct_sidebars' );
+    }
 } );

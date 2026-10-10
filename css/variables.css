@@ -1,0 +1,100 @@
+:root {
+  /* ================================================================
+     Color Palette (Modern Indigo / Slate Theme)
+     ================================================================ */
+  --btx-color-primary-50:  #eef2ff;
+  --btx-color-primary-100: #e0e7ff;
+  --btx-color-primary-200: #c7d2fe;
+  --btx-color-primary-300: #a5b4fc;
+  --btx-color-primary-400: #818cf8;
+  --btx-color-primary-500: #6366f1;
+  --btx-color-primary-600: #4f46e5;
+  --btx-color-primary-700: #4338ca;
+  --btx-color-primary-800: #3730a3;
+  --btx-color-primary-900: #312e81;
+
+  --btx-color-brand:       #1e3a5f;
+  --btx-color-brand-dark:  #162d4a;
+  --btx-color-brand-light: #2c5282;
+
+  /* Neutrals / Slate */
+  --btx-gray-50:  #f8fafc;
+  --btx-gray-100: #f1f5f9;
+  --btx-gray-200: #e2e8f0;
+  --btx-gray-300: #cbd5e1;
+  --btx-gray-400: #94a3b8;
+  --btx-gray-500: #64748b;
+  --btx-gray-600: #475569;
+  --btx-gray-700: #334155;
+  --btx-gray-800: #1e293b;
+  --btx-gray-900: #0f172a;
+
+  /* Semantics */
+  --btx-color-success:     #166534;
+  --btx-color-success-bg:  #dcfce7;
+  --btx-color-warning:     #92400e;
+  --btx-color-warning-bg:  #fef3c7;
+  --btx-color-danger:      #991b1b;
+  --btx-color-danger-bg:   #fee2e2;
+
+  /* Backgrounds & Text */
+  --btx-bg-page:           #f8fafc;
+  --btx-bg-surface:        #ffffff;
+  --btx-text-main:         #1e293b;
+  --btx-text-muted:        #64748b;
+  --btx-text-inverse:      #ffffff;
+  --btx-border-color:      #e2e8f0;
+
+  /* ================================================================
+     Typography Scale (Mobile-first fluid sizing)
+     ================================================================ */
+  --btx-font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --btx-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+
+  --btx-text-xs:   0.75rem;    /* 12px */
+  --btx-text-sm:   0.875rem;   /* 14px */
+  --btx-text-base: 1rem;       /* 16px */
+  --btx-text-lg:   1.125rem;   /* 18px */
+  --btx-text-xl:   1.25rem;    /* 20px */
+  --btx-text-2xl:  clamp(1.25rem, 2vw + 1rem, 1.5rem);   /* 24px */
+  --btx-text-3xl:  clamp(1.5rem, 3vw + 1rem, 1.875rem);  /* 30px */
+  --btx-text-4xl:  clamp(1.875rem, 4vw + 1rem, 2.25rem); /* 36px */
+
+  /* ================================================================
+     Spacing & Layout
+     ================================================================ */
+  --btx-space-1: 0.25rem;  /* 4px */
+  --btx-space-2: 0.5rem;   /* 8px */
+  --btx-space-3: 0.75rem;  /* 12px */
+  --btx-space-4: 1rem;     /* 16px */
+  --btx-space-5: 1.25rem;  /* 20px */
+  --btx-space-6: 1.5rem;   /* 24px */
+  --btx-space-8: 2rem;     /* 32px */
+  --btx-space-10: 2.5rem;  /* 40px */
+  --btx-space-12: 3rem;    /* 48px */
+  --btx-space-16: 4rem;    /* 64px */
+
+  /* Container Widths */
+  --btx-container-sm: 640px;
+  --btx-container-md: 768px;
+  --btx-container-lg: 1024px;
+  --btx-container-xl: 1200px;
+  --btx-container-full: 100%;
+
+  /* ================================================================
+     Borders, Shadows & Transitions
+     ================================================================ */
+  --btx-radius-sm: 4px;
+  --btx-radius-md: 8px;
+  --btx-radius-lg: 12px;
+  --btx-radius-xl: 16px;
+  --btx-radius-full: 9999px;
+
+  --btx-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --btx-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --btx-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --btx-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+
+  --btx-transition-fast: 0.15s ease;
+  --btx-transition-base: 0.25s ease;
+}

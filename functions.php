@@ -1,41 +1,25 @@
-<?php  
-
-function enqueue_jquery() {
-        // Enqueue jQuery (WordPress's built-in version)
-        wp_enqueue_script('jquery');
-    }
-
- add_action('wp_enqueue_scripts', 'enqueue_jquery');
-
+<?php
 /**
- * Enqueue child theme custom styles
+ * GeneratePress child theme functions and definitions.
+ *
+ * @package GeneratePressChild
  */
-function brokertricks_enqueue_custom_styles() {
-    wp_enqueue_style(
-        'brokertricks-custom',
-        get_stylesheet_directory_uri() . '/css/custom.css',
-        array(),
-        filemtime( get_stylesheet_directory() . '/css/custom.css' )
-    );
 
-    // Fulfillment dashboard + SureCart portal tweaks (only on the dashboard pages)
-    if ( is_page( array( 'dash', 'dashboard' ) ) ) {
-        wp_enqueue_style(
-            'brokertricks-fulfillment-dashboard',
-            get_stylesheet_directory_uri() . '/css/fulfillment-dashboard.css',
-            array(),
-            filemtime( get_stylesheet_directory() . '/css/fulfillment-dashboard.css' )
-        );
-    }
+if ( ! defined( 'ABSPATH' ) ) {
+    exit;
 }
-add_action( 'wp_enqueue_scripts', 'brokertricks_enqueue_custom_styles' );
 
 /**
- * Require custom fulfillment dashboard script
+ * Enqueue scripts and styles (modular asset loader)
+ */
+require_once get_stylesheet_directory() . '/inc/enqueue.php';
+
+/**
+ * Custom fulfillment dashboard logic & endpoints
  */
 require_once get_stylesheet_directory() . '/inc/fulfillment-dashboard.php';
 
 /**
- * Theme hooks (e.g. no header/footer on product pages)
+ * Theme hooks, filters, and template layout overrides
  */
 require_once get_stylesheet_directory() . '/inc/hooks.php';
