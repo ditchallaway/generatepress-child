@@ -213,7 +213,7 @@ function btx_get_fulfillment_files( $request ) {
     } catch ( \Throwable $e ) {}
 
     foreach ( $orders_to_process as $order ) {
-        if ( ( $order->status ?? '' ) === 'draft' ) continue;
+        if ( in_array( $order->status ?? '', [ 'draft', 'canceled', 'void' ], true ) ) continue;
 
         $download_note = null;
         if ( ! empty( $api_token ) ) {
@@ -245,7 +245,7 @@ function btx_get_fulfillment_files( $request ) {
         if ( empty( $parcel ) && is_array( $download_note ) && ! empty( $download_note['parcel_number'] ) ) {
             $parcel = $download_note['parcel_number'];
         }
-        if ( empty( $parcel ) && ( $order->fulfillment_status ?? '' ) === 'unfulfilled' && ! empty( $order->checkout ) && is_string( $order->checkout ) ) {
+        if ( empty( $parcel ) && empty( $download_note ) && ! empty( $order->checkout ) && is_string( $order->checkout ) ) {
             try {
                 $chk = \SureCart\Models\Checkout::find( $order->checkout );
                 if ( $chk && ! is_wp_error( $chk ) && is_object( $chk ) ) {
@@ -256,7 +256,8 @@ function btx_get_fulfillment_files( $request ) {
 
         $result_orders[] = [
             'id'                 => $order->id,
-            'order_number'       => $order->number ?? '',
+            'order_number'       => $order->number ?? $order->order_number ?? '',
+            'status'             => $order->status ?? '',
             'fulfillment_status' => $order->fulfillment_status ?? 'unfulfilled',
             'metadata'           => $download_note,
             'parcel'             => $parcel,
@@ -517,67 +518,83 @@ function btx_render_fulfillment_dashboard_script() {
             const data = orderDataStore[index];
             if (!data) return;
 
-            const images  = data.downloads.filter(d => isImageKey(d.key));
-            const kml     = data.downloads.find(d => d.key === 'kml_url');
-            const hasZip  = images.length > 1;
+            detailEl.querySelector('#btx-detail-title').textContent = data.identifier;
+            const subtitleEl = detailEl.querySelector('#btx-detail-subtitle');
+            const body       = detailEl.querySelector('#btx-detail-body');
+            body.innerHTML   = '';
 
-            detailEl.querySelector('#btx-detail-title').textContent    = data.identifier;
-            detailEl.querySelector('#btx-detail-subtitle').textContent = 'Fulfilled ' + data.fulfilledDate;
-
-            const body = detailEl.querySelector('#btx-detail-body');
-            body.innerHTML = '';
-
-            // Image cards (wrapped in a grid; layout varies by image count)
-            const grid = document.createElement('div');
-            grid.className = `btx-img-grid btx-img-grid--count-${images.length}`;
-            if (images.length) body.appendChild(grid);
-
-            for (const img of images) {
-                const card = document.createElement('div');
-                card.className = 'btx-img-card';
-                card.innerHTML = `
-                    <div class="btx-img-card__image-wrap" id="wrap-${img.key}">
-                        <img src="${img.url}" alt="${img.label}" loading="lazy">
+            if (!data.isFulfilled) {
+                subtitleEl.innerHTML = '<span class="btx-badge btx-badge--processing">Processing</span>';
+                body.innerHTML = `
+                    <div class="btx-processing-banner">
+                        <div class="btx-processing-banner__header">
+                            <span class="btx-spinner btx-spinner--lg"></span>
+                            <div>
+                                <div class="btx-processing-banner__title">Generating your parcel visuals…</div>
+                                <div class="btx-processing-banner__sub">Estimated time: 1–3 minutes. This page will update automatically as soon as your files are ready, and we'll also email you the download links.</div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="btx-img-card__footer">
-                        <span class="btx-img-card__label">${img.label}</span>
-                        <a href="${img.url}" class="btx-img-card__btn" download>
+                `;
+            } else {
+                const images = data.downloads.filter(d => isImageKey(d.key));
+                const kml    = data.downloads.find(d => d.key === 'kml_url');
+                const hasZip = images.length > 1;
+
+                subtitleEl.textContent = 'Fulfilled ' + data.fulfilledDate;
+
+                // Image cards (wrapped in a grid; layout varies by image count)
+                const grid = document.createElement('div');
+                grid.className = `btx-img-grid btx-img-grid--count-${images.length}`;
+                if (images.length) body.appendChild(grid);
+
+                for (const img of images) {
+                    const card = document.createElement('div');
+                    card.className = 'btx-img-card';
+                    card.innerHTML = `
+                        <div class="btx-img-card__image-wrap" id="wrap-${img.key}">
+                            <img src="${img.url}" alt="${img.label}" loading="lazy">
+                        </div>
+                        <div class="btx-img-card__footer">
+                            <span class="btx-img-card__label">${img.label}</span>
+                            <a href="${img.url}" class="btx-img-card__btn" download>
+                                &#8595; Download
+                            </a>
+                        </div>
+                    `;
+                    const wrap  = card.querySelector('.btx-img-card__image-wrap');
+                    const imgEl = card.querySelector('img');
+                    imgEl.addEventListener('load',  () => wrap.classList.add('btx-loaded'));
+                    imgEl.addEventListener('error', () => {
+                        wrap.classList.add('btx-loaded');
+                        wrap.style.minHeight = '0';
+                        wrap.innerHTML = '';   // hide broken image wrapper
+                    });
+                    grid.appendChild(card);
+                }
+
+                // KML row (below images) — uses the same Download button as image cards
+                if (kml) {
+                    const kmlRow = document.createElement('div');
+                    kmlRow.className = 'btx-kml-row';
+                    kmlRow.innerHTML = `
+                        <span class="btx-kml-row__icon">📍</span>
+                        <span class="btx-kml-row__label">Boundary Coordinates (KML)</span>
+                        <a href="${kml.url}" class="btx-img-card__btn" download>
                             &#8595; Download
                         </a>
-                    </div>
-                `;
-                const wrap  = card.querySelector('.btx-img-card__image-wrap');
-                const imgEl = card.querySelector('img');
-                imgEl.addEventListener('load',  () => wrap.classList.add('btx-loaded'));
-                imgEl.addEventListener('error', () => {
-                    wrap.classList.add('btx-loaded');
-                    wrap.style.minHeight = '0';
-                    wrap.innerHTML = '';   // hide broken image wrapper
-                });
-                grid.appendChild(card);
-            }
+                    `;
+                    body.appendChild(kmlRow);
+                }
 
-            // KML row (below images) — uses the same Download button as image cards
-            if (kml) {
-                const kmlRow = document.createElement('div');
-                kmlRow.className = 'btx-kml-row';
-                kmlRow.innerHTML = `
-                    <span class="btx-kml-row__icon">📍</span>
-                    <span class="btx-kml-row__label">Boundary Coordinates (KML)</span>
-                    <a href="${kml.url}" class="btx-img-card__btn" download>
-                        &#8595; Download
-                    </a>
-                `;
-                body.appendChild(kmlRow);
-            }
-
-            // Download All (optional — only when >1 image)
-            if (hasZip) {
-                const zipBtn = document.createElement('button');
-                zipBtn.className = 'btx-download-all';
-                zipBtn.innerHTML = '&#128230; Download All Images as ZIP';
-                zipBtn.addEventListener('click', () => downloadAllAsZip(images, data.identifier, zipBtn));
-                body.appendChild(zipBtn);
+                // Download All (optional — only when >1 image)
+                if (hasZip) {
+                    const zipBtn = document.createElement('button');
+                    zipBtn.className = 'btx-download-all';
+                    zipBtn.innerHTML = '&#128230; Download All Images as ZIP';
+                    zipBtn.addEventListener('click', () => downloadAllAsZip(images, data.identifier, zipBtn));
+                    body.appendChild(zipBtn);
+                }
             }
 
             // Show detail, hide list
@@ -659,6 +676,42 @@ function btx_render_fulfillment_dashboard_script() {
             }
         }
 
+        // ── Render helpers ───────────────────────────────────────
+        function renderStatusShell(titleText, subtitleText, rowIdText, rowDateText, rowCountText, badgeText) {
+            return `
+                <h2 class="btx-files-heading">My Files</h2>
+                <div class="btx-processing-banner">
+                    <div class="btx-processing-banner__header">
+                        <span class="btx-spinner btx-spinner--lg"></span>
+                        <div>
+                            <div class="btx-processing-banner__title">${titleText}</div>
+                            <div class="btx-processing-banner__sub">${subtitleText}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="btx-files-card">
+                    <div class="btx-files-row btx-files-row--processing">
+                        <div class="btx-files-row__id">${rowIdText}</div>
+                        <div class="btx-files-row__date"><span class="btx-spinner"></span>${rowDateText}</div>
+                        <div class="btx-files-row__count">${rowCountText}</div>
+                        <div class="btx-files-row__status">
+                            <span class="btx-badge btx-badge--processing">${badgeText}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render initial status immediately so the dashboard is never blank
+        container.innerHTML = renderStatusShell(
+            'Checking order fulfillment status…',
+            'Connecting to your account and checking for parcel files…',
+            'Loading orders…',
+            'Checking status…',
+            'Please wait',
+            'Checking'
+        );
+
         // ── Fetch & render ───────────────────────────────────────
         async function fetchAndRenderFiles() {
             try {
@@ -673,33 +726,32 @@ function btx_render_fulfillment_dashboard_script() {
                 });
 
                 if (res.status === 401) {
-                    container.innerHTML = '<p>Please log in to view your files.</p>';
+                    container.innerHTML = '<h2 class="btx-files-heading">My Files</h2><p>Please log in to view your files.</p>';
                     return false;
                 }
                 if (res.status === 404) {
                     if (!lastRenderKey) {
-                        container.innerHTML = `
-                            <h2 class="btx-files-heading">My Files</h2>
-                            <p class="btx-processing-note">Files are being generated. We will also email you the download links when ready.</p>
-                            <div class="btx-files-card">
-                                <div class="btx-files-row btx-files-row--processing">
-                                    <div class="btx-files-row__id">New Order</div>
-                                    <div class="btx-files-row__date"><span class="btx-spinner"></span>Generating…</div>
-                                    <div class="btx-files-row__count">ETA: 1–3 min</div>
-                                    <div class="btx-files-row__status">
-                                        <span class="btx-badge btx-badge--processing">Processing</span>
-                                    </div>
-                                </div>
-                            </div>
-                        `;
+                        container.innerHTML = renderStatusShell(
+                            'Order received — generating your parcel visuals…',
+                            'Your order is being processed. Estimated time: 1–3 minutes. This page will update automatically when your files are ready, and we will also email you the download links.',
+                            'New Order',
+                            'Generating files…',
+                            'ETA: 1–3 min',
+                            'Processing'
+                        );
                     }
                     return true; // not ready yet — keep polling
                 }
                 if (!res.ok) {
-                    let msg = `Error ${res.status}`;
-                    try { const e = await res.json(); if (e.message) msg += ': ' + e.message; } catch(_){}
                     if (!lastRenderKey) {
-                        container.innerHTML = `<p>${msg}</p>`;
+                        container.innerHTML = renderStatusShell(
+                            'Checking order fulfillment status…',
+                            'Your order is being finalized. This page will update automatically as soon as your files are ready.',
+                            'Recent Order',
+                            'Syncing status…',
+                            'Retrying…',
+                            'Processing'
+                        );
                     }
                     return pollCount < MAX_POLLS;
                 }
@@ -707,11 +759,24 @@ function btx_render_fulfillment_dashboard_script() {
                 const data   = await res.json();
                 const orders = data.orders || [];
                 if (orders.length === 0) {
-                    container.innerHTML = '<p>You have no orders yet.</p>';
+                    if (tokens.length > 0 && pollCount < 12) {
+                        if (!lastRenderKey) {
+                            container.innerHTML = renderStatusShell(
+                                'Order received — preparing your parcel visuals…',
+                                'Your order is being finalized. Estimated time: 1–3 minutes. This page will update automatically when your files are ready.',
+                                'New Order',
+                                'Generating files…',
+                                'ETA: 1–3 min',
+                                'Processing'
+                            );
+                        }
+                        return true;
+                    }
+                    container.innerHTML = '<h2 class="btx-files-heading">My Files</h2><p>You have no orders yet.</p>';
                     return pollCount < 6;
                 }
 
-                // Sort: processing (still generating) orders always on top,
+                // Sort: unfulfilled (still generating) orders always on top,
                 // then newest first — prefer fulfilled_at, fall back to created_at.
                 function orderTime(o) {
                     var v = (o.metadata && o.metadata.fulfilled_at) || o.created_at || 0;
@@ -723,7 +788,7 @@ function btx_render_fulfillment_dashboard_script() {
                     return new Date(v).getTime() || 0;
                 }
                 function isPending(o) {
-                    return !(o.metadata && o.metadata.fulfilled_at) && o.fulfillment_status === 'unfulfilled';
+                    return !(o.metadata && o.metadata.fulfilled_at);
                 }
                 orders.sort(function (a, b) {
                     var pa = isPending(a), pb = isPending(b);
@@ -760,9 +825,17 @@ function btx_render_fulfillment_dashboard_script() {
                 container.appendChild(detailEl);
 
                 if (isWaitingForFiles) {
-                    noteEl = document.createElement('p');
-                    noteEl.className   = 'btx-processing-note';
-                    noteEl.textContent = 'Files are being generated. We will also email you the download links when ready.';
+                    noteEl = document.createElement('div');
+                    noteEl.className = 'btx-processing-banner';
+                    noteEl.innerHTML = `
+                        <div class="btx-processing-banner__header">
+                            <span class="btx-spinner btx-spinner--lg"></span>
+                            <div>
+                                <div class="btx-processing-banner__title">Generating your parcel visuals…</div>
+                                <div class="btx-processing-banner__sub">Estimated time: 1–3 minutes. This page updates automatically as soon as your files are ready, and we'll also email you the download links.</div>
+                            </div>
+                        </div>
+                    `;
                     container.appendChild(noteEl);
                 }
 
@@ -773,10 +846,8 @@ function btx_render_fulfillment_dashboard_script() {
                 let visibleCount = 0;
 
                 for (const order of orders) {
-                    const meta         = order.metadata;
-                    const isFulfilled  = meta && meta.fulfilled_at;
-                    const isProcessing = order.fulfillment_status === 'unfulfilled';
-                    if (!isFulfilled && !isProcessing) continue;
+                    const meta        = order.metadata;
+                    const isFulfilled = Boolean(meta && meta.fulfilled_at);
 
                     visibleCount++;
                     const row = document.createElement('div');
@@ -784,7 +855,9 @@ function btx_render_fulfillment_dashboard_script() {
 
                     const identifier = order.parcel
                         ? `Parcel ${order.parcel}`
-                        : `Order #${order.order_number}`;
+                        : (order.order_number ? `Order #${order.order_number}` : 'New Order');
+
+                    const dataIndex = orderDataStore.length;
 
                     if (isFulfilled) {
                         const downloads = extractDownloads(meta);
@@ -801,25 +874,26 @@ function btx_render_fulfillment_dashboard_script() {
                             </div>
                         `;
 
-                        const dataIndex = orderDataStore.length;
-                        orderDataStore.push({ id: order.id, identifier, meta, fulfilledDate, downloads });
-
-                        row.addEventListener('click', function () {
-                            pushOrderUrl(order.id);
-                            openDetail(dataIndex);
-                        });
-
+                        orderDataStore.push({ id: order.id, identifier, isFulfilled: true, meta, fulfilledDate, downloads });
                     } else {
                         row.classList.add('btx-files-row--processing');
                         row.innerHTML = `
                             <div class="btx-files-row__id">${identifier}</div>
-                            <div class="btx-files-row__date"><span class="btx-spinner"></span>Generating…</div>
+                            <div class="btx-files-row__date"><span class="btx-spinner"></span>Generating files…</div>
                             <div class="btx-files-row__count">ETA: 1–3 min</div>
                             <div class="btx-files-row__status">
                                 <span class="btx-badge btx-badge--processing">Processing</span>
                             </div>
                         `;
+
+                        orderDataStore.push({ id: order.id, identifier, isFulfilled: false, meta: null, fulfilledDate: '', downloads: [] });
                     }
+
+                    row.addEventListener('click', function () {
+                        pushOrderUrl(order.id);
+                        openDetail(dataIndex);
+                    });
+
                     listEl.appendChild(row);
                 }
 
@@ -841,7 +915,14 @@ function btx_render_fulfillment_dashboard_script() {
 
             } catch (err) {
                 if (!lastRenderKey) {
-                    container.innerHTML = `<p>Error loading your files: ${err.message}</p>`;
+                    container.innerHTML = renderStatusShell(
+                        'Checking order fulfillment status…',
+                        'Connecting to server… This page will update automatically as soon as your files are ready.',
+                        'Recent Order',
+                        'Reconnecting…',
+                        'Retrying…',
+                        'Processing'
+                    );
                 }
                 return pollCount < MAX_POLLS;
             }
