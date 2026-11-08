@@ -250,19 +250,24 @@ a[href*="action=index"][href*="model=download"],
     grid-template-columns: 1fr;
     gap: 16px;
 }
-/* 2 images (two_pack) & 6 images (six_pack): 2-column grid */
+/* 2, 4, or 6 images: 2-column grid */
 .btx-img-grid--count-2,
+.btx-img-grid--count-4,
 .btx-img-grid--count-6 {
     grid-template-columns: 1fr 1fr;
 }
 .btx-img-grid--count-2 .btx-img-card__image-wrap img,
+.btx-img-grid--count-4 .btx-img-card__image-wrap img,
 .btx-img-grid--count-6 .btx-img-card__image-wrap img {
     aspect-ratio: 4 / 3;
     height: 100%;
 }
-/* 5 images (legacy): row 1 full width, rows 2 & 3 split */
+/* 3 or 5 images (odd count): row 1 full width, remaining rows split */
+.btx-img-grid--count-3,
 .btx-img-grid--count-5 { grid-template-columns: 1fr 1fr; }
+.btx-img-grid--count-3 > .btx-img-card:first-child,
 .btx-img-grid--count-5 > .btx-img-card:first-child { grid-column: 1 / -1; }
+.btx-img-grid--count-3 > .btx-img-card:not(:first-child) .btx-img-card__image-wrap img,
 .btx-img-grid--count-5 > .btx-img-card:not(:first-child) .btx-img-card__image-wrap img {
     aspect-ratio: 4 / 3;
     height: 100%;
@@ -312,6 +317,8 @@ a[href*="action=index"][href*="model=download"],
     .btx-detail__body { padding: 12px; }
     .btx-detail__subtitle { display: none; }
     .btx-img-grid--count-2,
+    .btx-img-grid--count-3,
+    .btx-img-grid--count-4,
     .btx-img-grid--count-5,
     .btx-img-grid--count-6 { grid-template-columns: 1fr; }
 }

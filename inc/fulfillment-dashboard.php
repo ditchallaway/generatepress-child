@@ -231,10 +231,14 @@ function btx_get_fulfillment_files( $request ) {
                 if ( is_array( $body ) ) {
                     $notes = isset( $body['data'] ) && is_array( $body['data'] ) ? $body['data'] : $body;
                 }
+                $latest_ts = -1;
                 foreach ( $notes as $note ) {
                     if ( is_array( $note ) && ! empty( $note['metadata'] ) && is_array( $note['metadata'] ) && isset( $note['metadata']['fulfilled_at'] ) ) {
-                        $download_note = $note['metadata'];
-                        break;
+                        $ts = intval( $note['updated_at'] ?? $note['created_at'] ?? 0 );
+                        if ( $download_note === null || $ts >= $latest_ts ) {
+                            $download_note = $note['metadata'];
+                            $latest_ts     = $ts;
+                        }
                     }
                 }
             }
@@ -566,6 +570,11 @@ function btx_render_fulfillment_dashboard_script() {
                     const imgEl = card.querySelector('img');
                     imgEl.addEventListener('load',  () => wrap.classList.add('btx-loaded'));
                     imgEl.addEventListener('error', () => {
+                        if (!imgEl.dataset.retried) {
+                            imgEl.dataset.retried = '1';
+                            setTimeout(() => { imgEl.src = img.url; }, 1200);
+                            return;
+                        }
                         wrap.classList.add('btx-loaded');
                         wrap.style.minHeight = '0';
                         wrap.innerHTML = '';   // hide broken image wrapper
@@ -801,8 +810,7 @@ function btx_render_fulfillment_dashboard_script() {
                     o.id,
                     o.fulfillment_status,
                     o.parcel,
-                    o.metadata && o.metadata.fulfilled_at,
-                    o.metadata && o.metadata.pack,
+                    o.metadata,
                 ]));
 
                 if (renderKey === lastRenderKey) {
