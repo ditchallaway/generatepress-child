@@ -58,41 +58,106 @@ function btx_get_fulfillment_files( $request ) {
         return new WP_Error( 'surecart_missing', 'SureCart plugin is not active.', [ 'status' => 500 ] );
     }
 
-    $orders_to_process    = [];
+    $orders_by_id         = [];
     $checkout_parcel_map  = [];
+    $pending_checkouts    = [];
+    $customer_emails      = [];
+    $matched_checkout_ids = [];
 
+    // 1. Resolve checkout tokens from URL / localStorage
     if ( ! empty( $tokens ) ) {
         foreach ( $tokens as $t ) {
-            $checkout = \SureCart\Models\Checkout::find( $t );
-            if ( $checkout ) {
-                $parcel   = btx_extract_parcel_from_metadata( $checkout );
-                $order_id = is_object( $checkout->order ) ? $checkout->order->id : $checkout->order;
-                if ( ! empty( $order_id ) ) {
+            try {
+                $checkout = \SureCart\Models\Checkout::find( $t );
+            } catch ( \Exception $e ) {
+                $checkout = null;
+            }
+            if ( ! $checkout || is_wp_error( $checkout ) ) {
+                continue;
+            }
+
+            $parcel = btx_extract_parcel_from_metadata( $checkout );
+            if ( ! empty( $checkout->email ) && is_string( $checkout->email ) ) {
+                $customer_emails[] = $checkout->email;
+            }
+
+            $order_id = is_object( $checkout->order ) ? ( $checkout->order->id ?? '' ) : ( $checkout->order ?? '' );
+            $order    = null;
+            if ( ! empty( $order_id ) ) {
+                try {
                     $order = \SureCart\Models\Order::find( $order_id );
-                    if ( $order ) {
-                        $checkout_parcel_map[ $order->id ] = $parcel;
-                        $orders_to_process[] = $order;
+                } catch ( \Exception $e ) {
+                    $order = null;
+                }
+            }
+
+            if ( $order && ! is_wp_error( $order ) && ( $order->status ?? '' ) !== 'draft' ) {
+                $checkout_parcel_map[ $order->id ]     = $parcel;
+                $orders_by_id[ $order->id ]            = $order;
+                $matched_checkout_ids[ $checkout->id ] = true;
+            } else {
+                // Checkout completed on client, but its Order is still being finalized in SureCart.
+                // Include a pending entry so repeat buyers immediately see "Generating…" even
+                // when a previous fulfilled order already exists.
+                $pending_checkouts[ $checkout->id ] = [
+                    'id'                 => 'pending_' . $checkout->id,
+                    'order_number'       => ! empty( $checkout->number ) ? $checkout->number : 'Pending',
+                    'fulfillment_status' => 'unfulfilled',
+                    'metadata'           => null,
+                    'parcel'             => $parcel,
+                    'created_at'         => $checkout->updated_at ?? $checkout->created_at ?? time(),
+                ];
+            }
+        }
+    }
+
+    // 2. Also include orders for the logged-in user and any customer email found on the checkouts
+    $user_id = get_current_user_id();
+    if ( $user_id ) {
+        $current_user = wp_get_current_user();
+        if ( ! empty( $current_user->user_email ) ) {
+            $customer_emails[] = $current_user->user_email;
+        }
+    }
+
+    if ( empty( $tokens ) && ! $user_id ) {
+        return new WP_Error( 'unauthorized', 'You must be logged in.', [ 'status' => 401 ] );
+    }
+
+    $customer_emails = array_unique( array_filter( $customer_emails ) );
+
+    foreach ( $customer_emails as $email ) {
+        try {
+            $user_orders = \SureCart\Models\Order::where( 'customer.email', $email )
+                                ->orderBy( 'created_at', 'desc' )
+                                ->get();
+            if ( ! is_wp_error( $user_orders ) && is_array( $user_orders ) ) {
+                foreach ( $user_orders as $uo ) {
+                    if ( ! empty( $uo->id ) && ! isset( $orders_by_id[ $uo->id ] ) ) {
+                        $orders_by_id[ $uo->id ] = $uo;
+                    }
+                    $uo_chk_id = is_object( $uo->checkout ?? null ) ? ( $uo->checkout->id ?? '' ) : ( $uo->checkout ?? '' );
+                    if ( ! empty( $uo_chk_id ) ) {
+                        $matched_checkout_ids[ $uo_chk_id ] = true;
                     }
                 }
             }
-        }
-        if ( empty( $orders_to_process ) ) {
-            return new WP_Error( 'no_order', 'Orders not found or not created yet.', [ 'status' => 404 ] );
-        }
-    } else {
-        $user_id = get_current_user_id();
-        if ( ! $user_id ) {
-            return new WP_Error( 'unauthorized', 'You must be logged in.', [ 'status' => 401 ] );
-        }
-        $current_user      = wp_get_current_user();
-        $orders            = \SureCart\Models\Order::where( 'customer.email', $current_user->user_email )
-                                ->orderBy( 'created_at', 'desc' )
-                                ->get();
-        if ( empty( $orders ) ) return [ 'orders' => [] ];
-        $orders_to_process = $orders;
+        } catch ( \Exception $e ) {}
     }
 
-    $result_orders = [];
+    foreach ( array_keys( $matched_checkout_ids ) as $chk_id ) {
+        unset( $pending_checkouts[ $chk_id ] );
+    }
+
+    if ( empty( $orders_by_id ) && empty( $pending_checkouts ) ) {
+        if ( ! empty( $tokens ) ) {
+            return new WP_Error( 'no_order', 'Orders not found or not created yet.', [ 'status' => 404 ] );
+        }
+        return [ 'orders' => [] ];
+    }
+
+    $orders_to_process = array_values( $orders_by_id );
+    $result_orders     = array_values( $pending_checkouts );
 
     foreach ( $orders_to_process as $order ) {
         if ( $order->status === 'draft' ) continue;
@@ -120,6 +185,17 @@ function btx_get_fulfillment_files( $request ) {
 
         $parcel = $checkout_parcel_map[ $order->id ] ?? '';
         if ( empty( $parcel ) ) $parcel = btx_try_get_parcel_from_order( $order );
+        if ( empty( $parcel ) && is_array( $download_note ) && ! empty( $download_note['parcel_number'] ) ) {
+            $parcel = $download_note['parcel_number'];
+        }
+        if ( empty( $parcel ) && $order->fulfillment_status === 'unfulfilled' && ! empty( $order->checkout ) && is_string( $order->checkout ) ) {
+            try {
+                $chk = \SureCart\Models\Checkout::find( $order->checkout );
+                if ( $chk && ! is_wp_error( $chk ) ) {
+                    $parcel = btx_extract_parcel_from_metadata( $chk );
+                }
+            } catch ( \Exception $e ) {}
+        }
 
         $result_orders[] = [
             'id'                 => $order->id,
@@ -252,19 +328,32 @@ function btx_render_fulfillment_dashboard_script() {
         let orderDataStore = [];   // populated after fetch
         let listEl         = null; // .btx-files-card
         let detailEl       = null; // .btx-detail
+        let noteEl         = null; // .btx-processing-note
+        let lastRenderKey  = '';
 
         // ── Checkout tokens ──────────────────────────────────────
-        const urlParams = new URLSearchParams(window.location.search);
-        let tokens = [];
-        if (urlParams.get('sc_order')) tokens.push(urlParams.get('sc_order'));
-        try {
-            const ls = JSON.parse(localStorage.getItem('scCompletedCheckouts') || '[]');
-            if (Array.isArray(ls)) tokens = tokens.concat(ls);
-        } catch (e) {}
-        tokens = [...new Set(tokens)];
+        function getTokens() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let list = [];
+            if (urlParams.get('sc_order')) list.push(urlParams.get('sc_order'));
+            try {
+                const ls = JSON.parse(localStorage.getItem('scCompletedCheckouts') || '[]');
+                if (Array.isArray(ls)) {
+                    ls.forEach(item => {
+                        if (typeof item === 'string' && item) list.push(item);
+                        else if (item && typeof item === 'object' && item.id) list.push(item.id);
+                    });
+                }
+            } catch (e) {}
+            return [...new Set(list)];
+        }
 
         // ── Key helpers ──────────────────────────────────────────
-        const IMAGE_KEY_ORDER = ['overhead_url','north_url','east_url','south_url','west_url'];
+        const PACK_SLOTS = {
+            two_pack : ['overhead_url', 'wide_url'],
+            six_pack : ['overhead_url', 'wide_url', 'north_url', 'south_url', 'east_url', 'west_url'],
+        };
+        const IMAGE_KEY_ORDER = ['overhead_url', 'wide_url', 'north_url', 'south_url', 'east_url', 'west_url'];
 
         function isImageKey(key) {
             return key.endsWith('_url') && key !== 'kml_url' && key !== 'map_url';
@@ -272,10 +361,11 @@ function btx_render_fulfillment_dashboard_script() {
 
         function labelForKey(key) {
             const MAP = {
-                overhead_url : 'Overhead Aerial',
+                overhead_url : 'Close-Up Overhead',
+                wide_url     : 'Wide-Angle Overhead',
                 north_url    : 'North View',
-                east_url     : 'East View',
                 south_url    : 'South View',
+                east_url     : 'East View',
                 west_url     : 'West View',
                 kml_url      : 'Boundary Coordinates (KML)',
                 map_url      : 'Static Context Map',
@@ -289,7 +379,27 @@ function btx_render_fulfillment_dashboard_script() {
 
         function extractDownloads(meta) {
             if (!meta) return [];
-            const allKeys = Object.keys(meta).filter(k => k.endsWith('_url'));
+            const packSlots = PACK_SLOTS[meta.pack];
+            if (packSlots) {
+                const items = packSlots
+                    .filter(k => Boolean(meta[k]))
+                    .map(k => ({
+                        key   : k,
+                        url   : meta[k],
+                        label : labelForKey(k),
+                    }));
+                if (meta.kml_url) {
+                    items.push({
+                        key   : 'kml_url',
+                        url   : meta.kml_url,
+                        label : labelForKey('kml_url'),
+                    });
+                }
+                return items;
+            }
+
+            // Fallback for older orders without meta.pack
+            const allKeys = Object.keys(meta).filter(k => k.endsWith('_url') && Boolean(meta[k]));
             const numbered = allKeys
                 .filter(k => /^shot_\d+_url$/.test(k))
                 .sort((a, b) => parseInt(a.match(/\d+/)[0]) - parseInt(b.match(/\d+/)[0]));
@@ -415,6 +525,7 @@ function btx_render_fulfillment_dashboard_script() {
 
             // Show detail, hide list
             if (listEl) listEl.style.display = 'none';
+            if (noteEl) noteEl.style.display = 'none';
             detailEl.classList.add('btx-detail--open');
             window.scrollTo({ top: container.offsetTop - 24, behavior: 'smooth' });
         }
@@ -423,6 +534,7 @@ function btx_render_fulfillment_dashboard_script() {
             detailEl.classList.remove('btx-detail--open');
             detailEl.querySelector('#btx-detail-body').innerHTML = '';
             if (listEl) listEl.style.display = '';
+            if (noteEl) noteEl.style.display = '';
         }
 
         // ── Browser back / forward ───────────────────────────────
@@ -493,6 +605,7 @@ function btx_render_fulfillment_dashboard_script() {
         // ── Fetch & render ───────────────────────────────────────
         async function fetchAndRenderFiles() {
             try {
+                const tokens   = getTokens();
                 const endpoint = tokens.length > 0
                     ? `/wp-json/btx/v1/fulfillment?tokens=${encodeURIComponent(tokens.join(','))}`
                     : '/wp-json/btx/v1/fulfillment';
@@ -506,7 +619,25 @@ function btx_render_fulfillment_dashboard_script() {
                     container.innerHTML = '<p>Please log in to view your files.</p>';
                     return false;
                 }
-                if (res.status === 404) return true; // not ready yet — keep polling
+                if (res.status === 404) {
+                    if (!lastRenderKey) {
+                        container.innerHTML = `
+                            <h2 class="btx-files-heading">My Files</h2>
+                            <p class="btx-processing-note">Files are being generated. We will also email you the download links when ready.</p>
+                            <div class="btx-files-card">
+                                <div class="btx-files-row btx-files-row--processing">
+                                    <div class="btx-files-row__id">New Order</div>
+                                    <div class="btx-files-row__date"><span class="btx-spinner"></span>Generating…</div>
+                                    <div class="btx-files-row__count">ETA: 1–3 min</div>
+                                    <div class="btx-files-row__status">
+                                        <span class="btx-badge btx-badge--processing">Processing</span>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                    return true; // not ready yet — keep polling
+                }
                 if (!res.ok) {
                     let msg = `Error ${res.status}`;
                     try { const e = await res.json(); if (e.message) msg += ': ' + e.message; } catch(_){}
@@ -518,7 +649,7 @@ function btx_render_fulfillment_dashboard_script() {
                 const orders = data.orders || [];
                 if (orders.length === 0) {
                     container.innerHTML = '<p>You have no orders yet.</p>';
-                    return false;
+                    return pollCount < 6;
                 }
 
                 // Sort: processing (still generating) orders always on top,
@@ -541,10 +672,24 @@ function btx_render_fulfillment_dashboard_script() {
                     return orderTime(b) - orderTime(a);
                 });
 
+                const isWaitingForFiles = orders.some(isPending);
+                const renderKey = JSON.stringify(orders.map(o => [
+                    o.id,
+                    o.fulfillment_status,
+                    o.parcel,
+                    o.metadata && o.metadata.fulfilled_at,
+                    o.metadata && o.metadata.pack,
+                ]));
+
+                if (renderKey === lastRenderKey) {
+                    return isWaitingForFiles || pollCount < 6;
+                }
+                lastRenderKey = renderKey;
 
                 // ── Rebuild list ─────────────────────────────────
                 container.innerHTML = '';
                 orderDataStore = [];
+                noteEl         = null;
 
                 const heading = document.createElement('h2');
                 heading.className   = 'btx-files-heading';
@@ -555,17 +700,23 @@ function btx_render_fulfillment_dashboard_script() {
                 detailEl = buildDetailPanel();
                 container.appendChild(detailEl);
 
+                if (isWaitingForFiles) {
+                    noteEl = document.createElement('p');
+                    noteEl.className   = 'btx-processing-note';
+                    noteEl.textContent = 'Files are being generated. We will also email you the download links when ready.';
+                    container.appendChild(noteEl);
+                }
+
                 listEl = document.createElement('div');
                 listEl.className = 'btx-files-card';
                 container.appendChild(listEl);
 
-                let visibleCount      = 0;
-                let isWaitingForFiles = false;
+                let visibleCount = 0;
 
                 for (const order of orders) {
-                    const meta        = order.metadata;
-                    const isFulfilled = meta && meta.fulfilled_at;
-                    const isProcessing= order.fulfillment_status === 'unfulfilled';
+                    const meta         = order.metadata;
+                    const isFulfilled  = meta && meta.fulfilled_at;
+                    const isProcessing = order.fulfillment_status === 'unfulfilled';
                     if (!isFulfilled && !isProcessing) continue;
 
                     visibleCount++;
@@ -600,7 +751,6 @@ function btx_render_fulfillment_dashboard_script() {
                         });
 
                     } else {
-                        isWaitingForFiles = true;
                         row.classList.add('btx-files-row--processing');
                         row.innerHTML = `
                             <div class="btx-files-row__id">${identifier}</div>
@@ -618,13 +768,6 @@ function btx_render_fulfillment_dashboard_script() {
                     container.innerHTML += '<p>No files available for your orders.</p>';
                 }
 
-                if (isWaitingForFiles) {
-                    const note = document.createElement('p');
-                    note.className   = 'btx-processing-note';
-                    note.textContent = 'Files are being generated. We will also email you the download links when ready.';
-                    container.appendChild(note);
-                }
-
                 // ── Restore URL state (deep link / page refresh) ─
                 const deepLinkId = getOrderIdFromUrl();
                 if (deepLinkId) {
@@ -632,7 +775,10 @@ function btx_render_fulfillment_dashboard_script() {
                     if (idx > -1) openDetail(idx);
                 }
 
-                return isWaitingForFiles && tokens.length > 0;
+                // Keep polling while any order is generating, and always poll for the
+                // first ~30s (pollCount < 6) in case a repeat buyer's new order is still
+                // being created by SureCart alongside their previous fulfilled order.
+                return isWaitingForFiles || pollCount < 6;
 
             } catch (err) {
                 container.innerHTML = `<p>Error loading your files: ${err.message}</p>`;
