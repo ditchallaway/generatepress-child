@@ -61,6 +61,7 @@ function btx_get_fulfillment_files( $request ) {
     $orders_by_id         = [];
     $checkout_parcel_map  = [];
     $pending_checkouts    = [];
+    $customer_ids         = [];
     $customer_emails      = [];
     $matched_checkout_ids = [];
 
@@ -81,10 +82,22 @@ function btx_get_fulfillment_files( $request ) {
                 $customer_emails[] = $checkout->email;
             }
             if ( isset( $checkout->customer ) ) {
-                if ( is_object( $checkout->customer ) && ! empty( $checkout->customer->email ) && is_string( $checkout->customer->email ) ) {
-                    $customer_emails[] = $checkout->customer->email;
-                } elseif ( is_array( $checkout->customer ) && ! empty( $checkout->customer['email'] ) && is_string( $checkout->customer['email'] ) ) {
-                    $customer_emails[] = $checkout->customer['email'];
+                if ( is_string( $checkout->customer ) && ! empty( $checkout->customer ) ) {
+                    $customer_ids[] = $checkout->customer;
+                } elseif ( is_object( $checkout->customer ) ) {
+                    if ( ! empty( $checkout->customer->id ) && is_string( $checkout->customer->id ) ) {
+                        $customer_ids[] = $checkout->customer->id;
+                    }
+                    if ( ! empty( $checkout->customer->email ) && is_string( $checkout->customer->email ) ) {
+                        $customer_emails[] = $checkout->customer->email;
+                    }
+                } elseif ( is_array( $checkout->customer ) ) {
+                    if ( ! empty( $checkout->customer['id'] ) && is_string( $checkout->customer['id'] ) ) {
+                        $customer_ids[] = $checkout->customer['id'];
+                    }
+                    if ( ! empty( $checkout->customer['email'] ) && is_string( $checkout->customer['email'] ) ) {
+                        $customer_emails[] = $checkout->customer['email'];
+                    }
                 }
             }
 
@@ -118,26 +131,51 @@ function btx_get_fulfillment_files( $request ) {
         }
     }
 
-    // 2. Also include orders for the logged-in user and any customer email found on the checkouts
+    // 2. Also include orders for the logged-in user and any customer found on the checkouts
     $user_id = get_current_user_id();
     if ( $user_id ) {
         $current_user = wp_get_current_user();
         if ( ! empty( $current_user->user_email ) ) {
             $customer_emails[] = $current_user->user_email;
         }
+        try {
+            if ( class_exists( '\\SureCart\\Models\\User' ) ) {
+                $sc_user = \SureCart\Models\User::current();
+                if ( $sc_user && is_object( $sc_user ) && method_exists( $sc_user, 'customerIds' ) ) {
+                    $ids = $sc_user->customerIds();
+                    if ( is_array( $ids ) ) {
+                        $customer_ids = array_merge( $customer_ids, array_values( $ids ) );
+                    }
+                }
+            }
+        } catch ( \Throwable $e ) {}
     }
 
     if ( empty( $tokens ) && ! $user_id ) {
         return new WP_Error( 'unauthorized', 'You must be logged in.', [ 'status' => 401 ] );
     }
 
+    // Resolve any customer emails into SureCart customer IDs
     $customer_emails = array_unique( array_filter( $customer_emails ) );
+    if ( ! empty( $customer_emails ) && class_exists( '\\SureCart\\Models\\Customer' ) ) {
+        foreach ( $customer_emails as $email ) {
+            try {
+                $customers = \SureCart\Models\Customer::where( [ 'email' => $email ] )->get();
+                if ( ! is_wp_error( $customers ) && is_array( $customers ) ) {
+                    foreach ( $customers as $c ) {
+                        if ( is_object( $c ) && ! empty( $c->id ) && is_string( $c->id ) ) {
+                            $customer_ids[] = $c->id;
+                        }
+                    }
+                }
+            } catch ( \Throwable $e ) {}
+        }
+    }
 
-    foreach ( $customer_emails as $email ) {
+    $customer_ids = array_values( array_unique( array_filter( $customer_ids ) ) );
+    if ( ! empty( $customer_ids ) ) {
         try {
-            $user_orders = \SureCart\Models\Order::where( 'customer.email', $email )
-                                ->orderBy( 'created_at', 'desc' )
-                                ->get();
+            $user_orders = \SureCart\Models\Order::where( [ 'customer_ids' => $customer_ids ] )->get();
             if ( ! is_wp_error( $user_orders ) && is_array( $user_orders ) ) {
                 foreach ( $user_orders as $uo ) {
                     if ( ! is_object( $uo ) || empty( $uo->id ) ) continue;
