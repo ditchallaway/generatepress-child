@@ -40,7 +40,7 @@ function btx_try_get_parcel_from_order( $order ) {
         if ( isset( $order->checkout ) && is_object( $order->checkout ) ) {
             return btx_extract_parcel_from_metadata( $order->checkout );
         }
-    } catch ( \Exception $e ) {}
+    } catch ( \Throwable $e ) {}
     return '';
 }
 
@@ -69,10 +69,10 @@ function btx_get_fulfillment_files( $request ) {
         foreach ( $tokens as $t ) {
             try {
                 $checkout = \SureCart\Models\Checkout::find( $t );
-            } catch ( \Exception $e ) {
+            } catch ( \Throwable $e ) {
                 $checkout = null;
             }
-            if ( ! $checkout || is_wp_error( $checkout ) ) {
+            if ( ! $checkout || is_wp_error( $checkout ) || ! is_object( $checkout ) || empty( $checkout->id ) ) {
                 continue;
             }
 
@@ -80,18 +80,25 @@ function btx_get_fulfillment_files( $request ) {
             if ( ! empty( $checkout->email ) && is_string( $checkout->email ) ) {
                 $customer_emails[] = $checkout->email;
             }
+            if ( isset( $checkout->customer ) ) {
+                if ( is_object( $checkout->customer ) && ! empty( $checkout->customer->email ) && is_string( $checkout->customer->email ) ) {
+                    $customer_emails[] = $checkout->customer->email;
+                } elseif ( is_array( $checkout->customer ) && ! empty( $checkout->customer['email'] ) && is_string( $checkout->customer['email'] ) ) {
+                    $customer_emails[] = $checkout->customer['email'];
+                }
+            }
 
-            $order_id = is_object( $checkout->order ) ? ( $checkout->order->id ?? '' ) : ( $checkout->order ?? '' );
+            $order_id = is_object( $checkout->order ?? null ) ? ( $checkout->order->id ?? '' ) : ( $checkout->order ?? '' );
             $order    = null;
-            if ( ! empty( $order_id ) ) {
+            if ( ! empty( $order_id ) && is_string( $order_id ) ) {
                 try {
                     $order = \SureCart\Models\Order::find( $order_id );
-                } catch ( \Exception $e ) {
+                } catch ( \Throwable $e ) {
                     $order = null;
                 }
             }
 
-            if ( $order && ! is_wp_error( $order ) && ( $order->status ?? '' ) !== 'draft' ) {
+            if ( $order && ! is_wp_error( $order ) && is_object( $order ) && ! empty( $order->id ) && ( $order->status ?? '' ) !== 'draft' ) {
                 $checkout_parcel_map[ $order->id ]     = $parcel;
                 $orders_by_id[ $order->id ]            = $order;
                 $matched_checkout_ids[ $checkout->id ] = true;
@@ -133,16 +140,17 @@ function btx_get_fulfillment_files( $request ) {
                                 ->get();
             if ( ! is_wp_error( $user_orders ) && is_array( $user_orders ) ) {
                 foreach ( $user_orders as $uo ) {
-                    if ( ! empty( $uo->id ) && ! isset( $orders_by_id[ $uo->id ] ) ) {
+                    if ( ! is_object( $uo ) || empty( $uo->id ) ) continue;
+                    if ( ! isset( $orders_by_id[ $uo->id ] ) ) {
                         $orders_by_id[ $uo->id ] = $uo;
                     }
                     $uo_chk_id = is_object( $uo->checkout ?? null ) ? ( $uo->checkout->id ?? '' ) : ( $uo->checkout ?? '' );
-                    if ( ! empty( $uo_chk_id ) ) {
+                    if ( ! empty( $uo_chk_id ) && is_string( $uo_chk_id ) ) {
                         $matched_checkout_ids[ $uo_chk_id ] = true;
                     }
                 }
             }
-        } catch ( \Exception $e ) {}
+        } catch ( \Throwable $e ) {}
     }
 
     foreach ( array_keys( $matched_checkout_ids ) as $chk_id ) {
@@ -159,26 +167,37 @@ function btx_get_fulfillment_files( $request ) {
     $orders_to_process = array_values( $orders_by_id );
     $result_orders     = array_values( $pending_checkouts );
 
-    foreach ( $orders_to_process as $order ) {
-        if ( $order->status === 'draft' ) continue;
+    $api_token = '';
+    try {
+        if ( class_exists( '\\SureCart\\Models\\ApiToken' ) ) {
+            $api_token = \SureCart\Models\ApiToken::get();
+        }
+    } catch ( \Throwable $e ) {}
 
-        $api_token = \SureCart\Models\ApiToken::get();
-        $response  = wp_remote_get(
-            "https://api.surecart.com/v1/notes?notable_id={$order->id}&notable_type=order",
-            [ 'headers' => [
-                'Authorization' => 'Bearer ' . $api_token,
-                'Content-Type'  => 'application/json',
-            ] ]
-        );
+    foreach ( $orders_to_process as $order ) {
+        if ( ( $order->status ?? '' ) === 'draft' ) continue;
 
         $download_note = null;
-        if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
-            $body  = json_decode( wp_remote_retrieve_body( $response ), true );
-            $notes = $body['data'] ?? [];
-            foreach ( $notes as $note ) {
-                if ( ! empty( $note['metadata'] ) && isset( $note['metadata']['fulfilled_at'] ) ) {
-                    $download_note = $note['metadata'];
-                    break;
+        if ( ! empty( $api_token ) ) {
+            $response = wp_remote_get(
+                "https://api.surecart.com/v1/notes?notable_id={$order->id}&notable_type=order",
+                [ 'headers' => [
+                    'Authorization' => 'Bearer ' . $api_token,
+                    'Content-Type'  => 'application/json',
+                ] ]
+            );
+
+            if ( ! is_wp_error( $response ) && wp_remote_retrieve_response_code( $response ) === 200 ) {
+                $body  = json_decode( wp_remote_retrieve_body( $response ), true );
+                $notes = [];
+                if ( is_array( $body ) ) {
+                    $notes = isset( $body['data'] ) && is_array( $body['data'] ) ? $body['data'] : $body;
+                }
+                foreach ( $notes as $note ) {
+                    if ( is_array( $note ) && ! empty( $note['metadata'] ) && is_array( $note['metadata'] ) && isset( $note['metadata']['fulfilled_at'] ) ) {
+                        $download_note = $note['metadata'];
+                        break;
+                    }
                 }
             }
         }
@@ -188,19 +207,19 @@ function btx_get_fulfillment_files( $request ) {
         if ( empty( $parcel ) && is_array( $download_note ) && ! empty( $download_note['parcel_number'] ) ) {
             $parcel = $download_note['parcel_number'];
         }
-        if ( empty( $parcel ) && $order->fulfillment_status === 'unfulfilled' && ! empty( $order->checkout ) && is_string( $order->checkout ) ) {
+        if ( empty( $parcel ) && ( $order->fulfillment_status ?? '' ) === 'unfulfilled' && ! empty( $order->checkout ) && is_string( $order->checkout ) ) {
             try {
                 $chk = \SureCart\Models\Checkout::find( $order->checkout );
-                if ( $chk && ! is_wp_error( $chk ) ) {
+                if ( $chk && ! is_wp_error( $chk ) && is_object( $chk ) ) {
                     $parcel = btx_extract_parcel_from_metadata( $chk );
                 }
-            } catch ( \Exception $e ) {}
+            } catch ( \Throwable $e ) {}
         }
 
         $result_orders[] = [
             'id'                 => $order->id,
-            'order_number'       => $order->number,
-            'fulfillment_status' => $order->fulfillment_status,
+            'order_number'       => $order->number ?? '',
+            'fulfillment_status' => $order->fulfillment_status ?? 'unfulfilled',
             'metadata'           => $download_note,
             'parcel'             => $parcel,
             'created_at'         => $order->created_at ?? null,
@@ -641,8 +660,10 @@ function btx_render_fulfillment_dashboard_script() {
                 if (!res.ok) {
                     let msg = `Error ${res.status}`;
                     try { const e = await res.json(); if (e.message) msg += ': ' + e.message; } catch(_){}
-                    container.innerHTML = `<p>${msg}</p>`;
-                    return false;
+                    if (!lastRenderKey) {
+                        container.innerHTML = `<p>${msg}</p>`;
+                    }
+                    return pollCount < MAX_POLLS;
                 }
 
                 const data   = await res.json();
@@ -781,8 +802,10 @@ function btx_render_fulfillment_dashboard_script() {
                 return isWaitingForFiles || pollCount < 6;
 
             } catch (err) {
-                container.innerHTML = `<p>Error loading your files: ${err.message}</p>`;
-                return false;
+                if (!lastRenderKey) {
+                    container.innerHTML = `<p>Error loading your files: ${err.message}</p>`;
+                }
+                return pollCount < MAX_POLLS;
             }
         }
 
