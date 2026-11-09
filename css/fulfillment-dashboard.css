@@ -14,6 +14,36 @@ sc-tab[href*="model=download"],
 a[href*="action=index"][href*="model=download"],
 .btx-hide-downloads-tab { display: none !important; }
 
+/* Order detail (?action=show&model=order&id=...) → Fulfillment page button */
+.btx-order-fulfillment-cta {
+    margin-top: 20px;
+    display: flex;
+    justify-content: flex-start;
+}
+.btx-order-fulfillment-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 22px;
+    background: #1e3a5f;
+    color: #fff !important;
+    border: none;
+    border-radius: 6px;
+    font-size: .95rem;
+    font-weight: 600;
+    line-height: 1.4;
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: background .15s;
+}
+.btx-order-fulfillment-btn:hover,
+.btx-order-fulfillment-btn:focus {
+    background: #162d4a;
+    color: #fff !important;
+    text-decoration: none !important;
+}
+
 /* ================================================================
    Fulfillment Dashboard — base reset
    ================================================================ */

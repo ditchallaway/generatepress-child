@@ -342,6 +342,71 @@ function btx_inject_portal_tweaks() {
         });
     }
 
+    // ── Inject "View Fulfillment" button at bottom of order detail view ───────
+    // When viewing /dash/?action=show&model=order&id=ORDER_ID, append a CTA
+    // button at the bottom of the order details linking to /dash/?order=ORDER_ID.
+    function findOrderDetailContainer() {
+        var ordersBlock = document.querySelector('.wp-block-surecart-customer-orders');
+        if (ordersBlock) {
+            var innerSpacing = ordersBlock.querySelector('sc-spacing');
+            return innerSpacing || ordersBlock;
+        }
+        var breadcrumbs = document.querySelector('.entry-content sc-breadcrumbs, sc-breadcrumbs');
+        if (breadcrumbs && breadcrumbs.parentElement) {
+            return breadcrumbs.parentElement;
+        }
+        var orderComp = document.querySelector('sc-customer-order, sc-order');
+        if (orderComp && orderComp.parentElement) {
+            return orderComp.parentElement;
+        }
+        var cards = document.querySelectorAll('.entry-content sc-card, sc-card');
+        if (cards.length > 0 && cards[cards.length - 1].parentElement) {
+            return cards[cards.length - 1].parentElement;
+        }
+        return document.querySelector(
+            '.wp-block-surecart-customer-dashboard-area, ' +
+            'sc-tab-panel:not([hidden]), ' +
+            '.wp-block-surecart-customer-dashboard, ' +
+            '.entry-content'
+        );
+    }
+
+    function injectOrderFulfillmentButton() {
+        var pageParams = new URLSearchParams(window.location.search);
+        var orderId    = pageParams.get('id');
+        if (!orderId || pageParams.get('model') !== 'order' || pageParams.get('action') !== 'show') {
+            return;
+        }
+
+        var container = findOrderDetailContainer();
+        if (!container) return;
+
+        var fulfillmentUrl = '/dash/?order=' + encodeURIComponent(orderId);
+        var existing       = document.getElementById('btx-order-fulfillment-cta');
+        if (existing) {
+            var existingLink = existing.querySelector('a');
+            if (existingLink && existingLink.getAttribute('href') !== fulfillmentUrl) {
+                existingLink.setAttribute('href', fulfillmentUrl);
+            }
+            if (existing.parentElement !== container || container.lastElementChild !== existing) {
+                container.appendChild(existing);
+            }
+            return;
+        }
+
+        var wrap = document.createElement('div');
+        wrap.id        = 'btx-order-fulfillment-cta';
+        wrap.className = 'btx-order-fulfillment-cta';
+
+        var link = document.createElement('a');
+        link.className   = 'btx-order-fulfillment-btn';
+        link.href        = fulfillmentUrl;
+        link.textContent = 'View Fulfillment Files →';
+
+        wrap.appendChild(link);
+        container.appendChild(wrap);
+    }
+
     var hideQueued = false;
     function queueHide() {
         if (hideQueued) return;
@@ -349,6 +414,7 @@ function btx_inject_portal_tweaks() {
         requestAnimationFrame(function () {
             hideQueued = false;
             hideDownloadsTab(document);
+            injectOrderFulfillmentButton();
         });
     }
 
