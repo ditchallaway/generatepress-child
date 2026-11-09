@@ -23,7 +23,104 @@ add_action( 'rest_api_init', function () {
         'callback'            => 'btx_get_fulfillment_files',
         'permission_callback' => '__return_true',
     ] );
+
+    register_rest_route( 'btx/v1', '/download', [
+        'methods'             => 'GET',
+        'callback'            => 'btx_proxy_download_file',
+        'permission_callback' => '__return_true',
+    ] );
 } );
+
+// ── Same-origin download proxy (enforces Content-Disposition: attachment) ─────
+function btx_proxy_download_file( $request ) {
+    $raw_url  = trim( (string) $request->get_param( 'url' ) );
+    $filename = trim( (string) $request->get_param( 'filename' ) );
+
+    if ( empty( $raw_url ) ) {
+        return new WP_Error( 'missing_url', 'Missing download URL.', [ 'status' => 400 ] );
+    }
+
+    $parsed = wp_parse_url( $raw_url );
+    $scheme = isset( $parsed['scheme'] ) ? strtolower( $parsed['scheme'] ) : '';
+    $host   = isset( $parsed['host'] ) ? strtolower( $parsed['host'] ) : '';
+
+    if ( ! in_array( $scheme, [ 'https', 'http' ], true ) || empty( $host ) || $host === 'localhost' ) {
+        return new WP_Error( 'invalid_url', 'Invalid download URL.', [ 'status' => 400 ] );
+    }
+
+    // Resolve host IP and block loopback / private / reserved ranges (SSRF protection)
+    $resolved_ip = gethostbyname( $host );
+    if (
+        empty( $resolved_ip ) ||
+        ! filter_var( $resolved_ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE )
+    ) {
+        return new WP_Error( 'forbidden_host', 'Download host is not permitted.', [ 'status' => 403 ] );
+    }
+
+    $response = wp_remote_get( $raw_url, [
+        'timeout'     => 30,
+        'redirection' => 5,
+        'sslverify'   => true,
+    ] );
+
+    if ( is_wp_error( $response ) ) {
+        return new WP_Error( 'download_failed', 'Could not retrieve file.', [ 'status' => 502 ] );
+    }
+
+    $status_code = wp_remote_retrieve_response_code( $response );
+    if ( $status_code < 200 || $status_code >= 300 ) {
+        return new WP_Error( 'upstream_error', 'Upstream file returned HTTP ' . intval( $status_code ), [ 'status' => 502 ] );
+    }
+
+    $body         = wp_remote_retrieve_body( $response );
+    $content_type = (string) wp_remote_retrieve_header( $response, 'content-type' );
+    $mime         = strtolower( trim( explode( ';', $content_type )[0] ) );
+
+    $ext_map = [
+        'image/png'                            => 'png',
+        'image/jpeg'                           => 'jpg',
+        'image/jpg'                            => 'jpg',
+        'image/webp'                           => 'webp',
+        'application/vnd.google-earth.kml+xml' => 'kml',
+        'application/xml'                      => 'kml',
+        'text/xml'                             => 'kml',
+    ];
+
+    $is_kml = (bool) preg_match( '/\.kml$/i', $filename ) || in_array( $mime, [ 'application/vnd.google-earth.kml+xml', 'application/xml', 'text/xml' ], true );
+    if ( $is_kml ) {
+        $ext  = 'kml';
+        $mime = 'application/vnd.google-earth.kml+xml';
+    } elseif ( isset( $ext_map[ $mime ] ) ) {
+        $ext = $ext_map[ $mime ];
+    } else {
+        $ext  = 'jpg';
+        $mime = $mime ?: 'application/octet-stream';
+    }
+
+    if ( empty( $filename ) ) {
+        $filename = 'parcel-file.' . $ext;
+    } else {
+        // Strip existing image/kml extension and append the detected one
+        $filename = preg_replace( '/\.(jpe?g|png|webp|kml)$/i', '', $filename ) . '.' . $ext;
+    }
+
+    $safe_name = sanitize_file_name( $filename );
+    if ( empty( $safe_name ) ) {
+        $safe_name = 'parcel-file.' . $ext;
+    }
+
+    while ( ob_get_level() > 0 ) {
+        ob_end_clean();
+    }
+
+    nocache_headers();
+    header( 'Content-Type: ' . $mime );
+    header( 'Content-Disposition: attachment; filename="' . str_replace( [ '"', "\r", "\n" ], '', $safe_name ) . '"' );
+    header( 'Content-Length: ' . strlen( $body ) );
+    header( 'X-Content-Type-Options: nosniff' );
+    echo $body;
+    exit;
+}
 
 // ── PHP helpers ───────────────────────────────────────────────────────────────
 
@@ -564,6 +661,614 @@ function btx_render_fulfillment_dashboard_script() {
             history.pushState({ btxOrder: null }, '', qs ? '?' + qs : window.location.pathname);
         }
 
+        // ── Download helpers ─────────────────────────────────────
+        function buildDownloadFilename(identifier, label, isKml) {
+            const cleanId    = (identifier || 'Parcel').replace(/[^a-zA-Z0-9_-]+/g, '_').replace(/^_+|_+$/g, '');
+            const cleanLabel = (label || 'File').replace(/[^a-zA-Z0-9_-]+/g, '_').replace(/^_+|_+$/g, '');
+            const ext        = isKml ? 'kml' : 'jpg';
+            return `${cleanId}_${cleanLabel}.${ext}`;
+        }
+
+        function getProxyDownloadUrl(rawUrl, filename) {
+            return `/wp-json/btx/v1/download?url=${encodeURIComponent(rawUrl)}&filename=${encodeURIComponent(filename)}`;
+        }
+
+        async function fetchFileBlob(rawUrl, filename) {
+            const proxyUrl = getProxyDownloadUrl(rawUrl, filename);
+            try {
+                const res = await fetch(proxyUrl, {
+                    credentials: 'same-origin',
+                    headers: { 'X-WP-Nonce': WP_NONCE },
+                });
+                if (res.ok) return await res.blob();
+            } catch (_) {}
+
+            const directRes = await fetch(rawUrl, { mode: 'cors' });
+            if (!directRes.ok) throw new Error('Download failed');
+            return await directRes.blob();
+        }
+
+        function extFromBlob(blob, isKml) {
+            if (isKml) return 'kml';
+            const t = (blob && blob.type) ? blob.type.toLowerCase() : '';
+            if (t.includes('png'))  return 'png';
+            if (t.includes('webp')) return 'webp';
+            if (t.includes('kml') || t.includes('xml')) return 'kml';
+            return 'jpg';
+        }
+
+        async function triggerFileDownload(e, rawUrl, identifier, label, isKml, btnEl) {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            if (btnEl && btnEl.dataset.downloading === '1') return;
+
+            const baseFilename = buildDownloadFilename(identifier, label, isKml);
+            const proxyUrl     = getProxyDownloadUrl(rawUrl, baseFilename);
+            const origHtml     = btnEl ? btnEl.innerHTML : '';
+
+            if (btnEl) {
+                btnEl.dataset.downloading = '1';
+                btnEl.textContent = 'Downloading…';
+            }
+
+            try {
+                const blob = await fetchFileBlob(rawUrl, baseFilename);
+                const ext  = extFromBlob(blob, isKml);
+                const finalName = baseFilename.replace(/\.(jpe?g|png|webp|kml)$/i, '') + '.' + ext;
+
+                const objUrl = URL.createObjectURL(blob);
+                const a      = document.createElement('a');
+                a.style.display = 'none';
+                a.href          = objUrl;
+                a.download      = finalName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(objUrl), 5000);
+
+                if (btnEl) {
+                    btnEl.textContent = '✓ Downloaded';
+                    setTimeout(() => {
+                        delete btnEl.dataset.downloading;
+                        btnEl.innerHTML = origHtml;
+                    }, 2000);
+                }
+            } catch (err) {
+                // Fallback: use same-origin attachment endpoint in a hidden iframe so page never navigates away
+                const iframe = document.createElement('iframe');
+                iframe.style.display = 'none';
+                iframe.src = proxyUrl;
+                document.body.appendChild(iframe);
+                setTimeout(() => {
+                    if (iframe.parentNode) iframe.parentNode.removeChild(iframe);
+                }, 15000);
+
+                if (btnEl) {
+                    delete btnEl.dataset.downloading;
+                    btnEl.innerHTML = origHtml;
+                }
+            }
+        }
+
+        // ── Interactive Pan & Zoom Gallery Lightbox ──────────────
+        let galleryEl = null;
+        let galleryState = {
+            isOpen     : false,
+            images     : [],
+            index      : 0,
+            identifier : '',
+            scale      : 1,
+            tx         : 0,
+            ty         : 0,
+            minScale   : 1,
+            maxScale   : 8,
+            isDragging : false,
+            dragStartX : 0,
+            dragStartY : 0,
+            startTx    : 0,
+            startTy    : 0,
+            samples    : [],
+            rafId      : null,
+            pinchDist  : 0,
+            pinchMidX  : 0,
+            pinchMidY  : 0,
+            lastTapTime: 0,
+            lastTapX   : 0,
+            lastTapY   : 0,
+            lastFocusEl: null,
+        };
+
+        function ensureGalleryLightbox() {
+            if (galleryEl) return galleryEl;
+
+            const el = document.createElement('div');
+            el.className = 'btx-gallery';
+            el.id        = 'btx-gallery';
+            el.setAttribute('role', 'dialog');
+            el.setAttribute('aria-modal', 'true');
+            el.setAttribute('aria-label', 'Interactive image gallery');
+            el.setAttribute('aria-hidden', 'true');
+            el.tabIndex  = -1;
+
+            el.innerHTML = `
+                <div class="btx-gallery__topbar">
+                    <div class="btx-gallery__meta">
+                        <span class="btx-gallery__title" id="btx-gallery-title"></span>
+                        <span class="btx-gallery__counter" id="btx-gallery-counter"></span>
+                    </div>
+                    <div class="btx-gallery__actions">
+                        <a href="#" class="btx-gallery__download-btn" id="btx-gallery-download" download>
+                            &#8595; Download
+                        </a>
+                        <button type="button" class="btx-gallery__close-btn" id="btx-gallery-close" aria-label="Close viewer" title="Close (Esc)">
+                            &times;
+                        </button>
+                    </div>
+                </div>
+
+                <div class="btx-gallery__viewport btx-gallery__viewport--zoom-in" id="btx-gallery-viewport">
+                    <img class="btx-gallery__img" id="btx-gallery-img" src="" alt="" draggable="false">
+                    <button type="button" class="btx-gallery__nav btx-gallery__nav--prev" id="btx-gallery-prev" aria-label="Previous image" title="Previous image">&#8249;</button>
+                    <button type="button" class="btx-gallery__nav btx-gallery__nav--next" id="btx-gallery-next" aria-label="Next image" title="Next image">&#8250;</button>
+                </div>
+
+                <div class="btx-gallery__controls" role="toolbar" aria-label="Zoom controls">
+                    <button type="button" class="btx-gallery__ctrl-btn" id="btx-gallery-zoom-out" aria-label="Zoom Out" title="Zoom Out (-)">&minus;</button>
+                    <button type="button" class="btx-gallery__ctrl-btn btx-gallery__ctrl-btn--reset" id="btx-gallery-reset" aria-label="Fit to View" title="Fit to View (Double-click)">Fit to View</button>
+                    <button type="button" class="btx-gallery__ctrl-btn" id="btx-gallery-zoom-in" aria-label="Zoom In" title="Zoom In (+)">&#43;</button>
+                </div>
+            `;
+
+            document.body.appendChild(el);
+            galleryEl = el;
+
+            const viewport  = el.querySelector('#btx-gallery-viewport');
+            const imgEl     = el.querySelector('#btx-gallery-img');
+            const closeBtn  = el.querySelector('#btx-gallery-close');
+            const prevBtn   = el.querySelector('#btx-gallery-prev');
+            const nextBtn   = el.querySelector('#btx-gallery-next');
+            const zoomInBtn = el.querySelector('#btx-gallery-zoom-in');
+            const zoomOutBtn= el.querySelector('#btx-gallery-zoom-out');
+            const resetBtn  = el.querySelector('#btx-gallery-reset');
+            const dlBtn     = el.querySelector('#btx-gallery-download');
+
+            function stopInertia() {
+                if (galleryState.rafId) {
+                    cancelAnimationFrame(galleryState.rafId);
+                    galleryState.rafId = null;
+                }
+            }
+
+            function clampPan(tx, ty, scale) {
+                if (scale <= 1.005) {
+                    return { tx: 0, ty: 0 };
+                }
+                const viewW  = viewport.clientWidth  || window.innerWidth;
+                const viewH  = viewport.clientHeight || window.innerHeight;
+                const baseW  = imgEl.offsetWidth     || viewW * 0.8;
+                const baseH  = imgEl.offsetHeight    || viewH * 0.8;
+                const scaledW = baseW * scale;
+                const scaledH = baseH * scale;
+
+                // Keep at least a generous portion of the image inside the viewport so it can never be dragged out of sight
+                const marginX = Math.min(viewW * 0.2, 120);
+                const marginY = Math.min(viewH * 0.2, 120);
+                const maxTx = scaledW > viewW
+                    ? (scaledW - viewW) / 2 + marginX
+                    : Math.min((viewW - scaledW) * 0.35, marginX);
+                const maxTy = scaledH > viewH
+                    ? (scaledH - viewH) / 2 + marginY
+                    : Math.min((viewH - scaledH) * 0.35, marginY);
+
+                return {
+                    tx: Math.min(maxTx, Math.max(-maxTx, tx)),
+                    ty: Math.min(maxTy, Math.max(-maxTy, ty)),
+                };
+            }
+
+            function updateCursorAndControls() {
+                const isZoomed = galleryState.scale > 1.01;
+                viewport.classList.toggle('btx-gallery__viewport--zoom-in', !isZoomed && !galleryState.isDragging);
+                viewport.classList.toggle('btx-gallery__viewport--grab', isZoomed && !galleryState.isDragging);
+                viewport.classList.toggle('btx-gallery__viewport--grabbing', galleryState.isDragging);
+
+                zoomOutBtn.disabled = galleryState.scale <= galleryState.minScale + 0.01;
+                zoomInBtn.disabled  = galleryState.scale >= galleryState.maxScale - 0.01;
+
+                const pct = Math.round(galleryState.scale * 100);
+                resetBtn.textContent = isZoomed ? `${pct}% · Fit to View` : 'Fit to View';
+                resetBtn.classList.toggle('btx-gallery__ctrl-btn--active', isZoomed);
+            }
+
+            function applyTransform(animate) {
+                const clamped = clampPan(galleryState.tx, galleryState.ty, galleryState.scale);
+                galleryState.tx = clamped.tx;
+                galleryState.ty = clamped.ty;
+
+                if (animate) {
+                    imgEl.classList.add('btx-gallery__img--animate');
+                } else {
+                    imgEl.classList.remove('btx-gallery__img--animate');
+                }
+
+                // GPU-accelerated 3D transform matrix / translate3d
+                imgEl.style.transform = `translate3d(${galleryState.tx.toFixed(2)}px, ${galleryState.ty.toFixed(2)}px, 0) scale3d(${galleryState.scale.toFixed(4)}, ${galleryState.scale.toFixed(4)}, 1)`;
+                updateCursorAndControls();
+            }
+
+            function zoomToPoint(newScale, clientX, clientY, animate) {
+                stopInertia();
+                const targetScale = Math.min(galleryState.maxScale, Math.max(galleryState.minScale, newScale));
+                const rect = viewport.getBoundingClientRect();
+                const cx   = rect.left + rect.width / 2;
+                const cy   = rect.top  + rect.height / 2;
+                const px   = clientX - cx;
+                const py   = clientY - cy;
+
+                const ratio = targetScale / galleryState.scale;
+                galleryState.tx    = px - (px - galleryState.tx) * ratio;
+                galleryState.ty    = py - (py - galleryState.ty) * ratio;
+                galleryState.scale = targetScale;
+
+                applyTransform(animate);
+            }
+
+            function resetToFit(animate) {
+                stopInertia();
+                galleryState.scale = 1;
+                galleryState.tx    = 0;
+                galleryState.ty    = 0;
+                applyTransform(animate);
+            }
+
+            // Expose helpers on element for openGallery
+            el._resetToFit = resetToFit;
+
+            // 1. Mouse wheel & trackpad pinch zoom anchored to cursor
+            viewport.addEventListener('wheel', function (e) {
+                if (!galleryState.isOpen) return;
+                e.preventDefault();
+
+                let delta = e.deltaY;
+                if (e.deltaMode === 1) delta *= 24;
+                else if (e.deltaMode === 2) delta *= 300;
+
+                const speed  = e.ctrlKey ? 0.01 : 0.0022;
+                const factor = Math.exp(-delta * speed);
+                zoomToPoint(galleryState.scale * factor, e.clientX, e.clientY, false);
+            }, { passive: false });
+
+            // 2. Double-click to snap back to "fit to screen" (or zoom in at cursor if already at fit-to-screen)
+            viewport.addEventListener('dblclick', function (e) {
+                if (e.target.closest('button, a')) return;
+                e.preventDefault();
+                if (galleryState.scale > 1.01 || Math.abs(galleryState.tx) > 1 || Math.abs(galleryState.ty) > 1) {
+                    resetToFit(true);
+                } else {
+                    zoomToPoint(2.5, e.clientX, e.clientY, true);
+                }
+            });
+
+            // 3. Mouse drag to pan with momentum / inertia
+            let mouseDownBg = false;
+            viewport.addEventListener('mousedown', function (e) {
+                if (e.button !== 0 || e.target.closest('button, a')) return;
+                stopInertia();
+                mouseDownBg = (e.target === viewport);
+
+                if (galleryState.scale <= 1.01) return;
+                e.preventDefault();
+                galleryState.isDragging = true;
+                galleryState.dragStartX = e.clientX;
+                galleryState.dragStartY = e.clientY;
+                galleryState.startTx    = galleryState.tx;
+                galleryState.startTy    = galleryState.ty;
+                galleryState.samples    = [{ x: e.clientX, y: e.clientY, t: performance.now() }];
+                updateCursorAndControls();
+            });
+
+            window.addEventListener('mousemove', function (e) {
+                if (!galleryState.isDragging) return;
+                const dx = e.clientX - galleryState.dragStartX;
+                const dy = e.clientY - galleryState.dragStartY;
+                if (Math.abs(dx) > 3 || Math.abs(dy) > 3) mouseDownBg = false;
+
+                galleryState.tx = galleryState.startTx + dx;
+                galleryState.ty = galleryState.startTy + dy;
+                applyTransform(false);
+
+                const now = performance.now();
+                galleryState.samples.push({ x: e.clientX, y: e.clientY, t: now });
+                while (galleryState.samples.length > 2 && now - galleryState.samples[0].t > 100) {
+                    galleryState.samples.shift();
+                }
+            });
+
+            function startMomentumFromSamples() {
+                const samples = galleryState.samples;
+                if (samples.length < 2 || galleryState.scale <= 1.01) return;
+                const now   = performance.now();
+                const last  = samples[samples.length - 1];
+                if (now - last.t > 80) return;
+
+                const first = samples[0];
+                const dt    = last.t - first.t;
+                if (dt < 8) return;
+
+                let vx = (last.x - first.x) / dt; // px per ms
+                let vy = (last.y - first.y) / dt;
+                if (Math.hypot(vx, vy) < 0.12) return;
+
+                let prevTime = performance.now();
+                function step(ts) {
+                    const frameDt = Math.min(32, Math.max(1, ts - prevTime));
+                    prevTime = ts;
+
+                    const decay = Math.pow(0.92, frameDt / 16.67);
+                    vx *= decay;
+                    vy *= decay;
+
+                    const nextTx  = galleryState.tx + vx * frameDt;
+                    const nextTy  = galleryState.ty + vy * frameDt;
+                    const clamped = clampPan(nextTx, nextTy, galleryState.scale);
+
+                    if (Math.abs(clamped.tx - nextTx) > 0.5) vx = 0;
+                    if (Math.abs(clamped.ty - nextTy) > 0.5) vy = 0;
+
+                    galleryState.tx = clamped.tx;
+                    galleryState.ty = clamped.ty;
+                    applyTransform(false);
+
+                    if (Math.hypot(vx, vy) >= 0.04) {
+                        galleryState.rafId = requestAnimationFrame(step);
+                    } else {
+                        galleryState.rafId = null;
+                    }
+                }
+                galleryState.rafId = requestAnimationFrame(step);
+            }
+
+            window.addEventListener('mouseup', function (e) {
+                if (galleryState.isDragging) {
+                    galleryState.isDragging = false;
+                    updateCursorAndControls();
+                    galleryState.samples.push({ x: e.clientX, y: e.clientY, t: performance.now() });
+                    startMomentumFromSamples();
+                } else if (mouseDownBg && e.target === viewport && galleryState.scale <= 1.01) {
+                    closeGallery();
+                }
+                mouseDownBg = false;
+            });
+
+            // 4. Touch: multi-touch pinch to zoom (anchored to finger midpoint) + single-touch pan with inertia + double-tap reset
+            viewport.addEventListener('touchstart', function (e) {
+                if (e.target.closest('button, a')) return;
+                stopInertia();
+
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    galleryState.isDragging = false;
+                    const t1 = e.touches[0], t2 = e.touches[1];
+                    const rect = viewport.getBoundingClientRect();
+                    const cx   = rect.left + rect.width / 2;
+                    const cy   = rect.top  + rect.height / 2;
+                    galleryState.pinchDist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+                    galleryState.pinchMidX = (t1.clientX + t2.clientX) / 2 - cx;
+                    galleryState.pinchMidY = (t1.clientY + t2.clientY) / 2 - cy;
+                    updateCursorAndControls();
+                } else if (e.touches.length === 1) {
+                    const t   = e.touches[0];
+                    const now = performance.now();
+                    if (
+                        now - galleryState.lastTapTime < 280 &&
+                        Math.hypot(t.clientX - galleryState.lastTapX, t.clientY - galleryState.lastTapY) < 28
+                    ) {
+                        e.preventDefault();
+                        galleryState.lastTapTime = 0;
+                        if (galleryState.scale > 1.01 || Math.abs(galleryState.tx) > 1 || Math.abs(galleryState.ty) > 1) {
+                            resetToFit(true);
+                        } else {
+                            zoomToPoint(2.5, t.clientX, t.clientY, true);
+                        }
+                        return;
+                    }
+                    galleryState.lastTapTime = now;
+                    galleryState.lastTapX    = t.clientX;
+                    galleryState.lastTapY    = t.clientY;
+
+                    if (galleryState.scale > 1.01) {
+                        galleryState.isDragging = true;
+                        galleryState.dragStartX = t.clientX;
+                        galleryState.dragStartY = t.clientY;
+                        galleryState.startTx    = galleryState.tx;
+                        galleryState.startTy    = galleryState.ty;
+                        galleryState.samples    = [{ x: t.clientX, y: t.clientY, t: now }];
+                        updateCursorAndControls();
+                    }
+                }
+            }, { passive: false });
+
+            viewport.addEventListener('touchmove', function (e) {
+                if (!galleryState.isOpen) return;
+
+                if (e.touches.length === 2) {
+                    e.preventDefault();
+                    const t1   = e.touches[0], t2 = e.touches[1];
+                    const rect = viewport.getBoundingClientRect();
+                    const cx   = rect.left + rect.width / 2;
+                    const cy   = rect.top  + rect.height / 2;
+                    const dist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+                    const midX = (t1.clientX + t2.clientX) / 2 - cx;
+                    const midY = (t1.clientY + t2.clientY) / 2 - cy;
+
+                    if (galleryState.pinchDist > 0) {
+                        const rawRatio   = dist / galleryState.pinchDist;
+                        const nextScale  = Math.min(galleryState.maxScale, Math.max(galleryState.minScale, galleryState.scale * rawRatio));
+                        const scaleRatio = nextScale / galleryState.scale;
+
+                        galleryState.tx    = midX - (galleryState.pinchMidX - galleryState.tx) * scaleRatio;
+                        galleryState.ty    = midY - (galleryState.pinchMidY - galleryState.ty) * scaleRatio;
+                        galleryState.scale = nextScale;
+                        applyTransform(false);
+                    }
+
+                    galleryState.pinchDist = dist;
+                    galleryState.pinchMidX = midX;
+                    galleryState.pinchMidY = midY;
+                } else if (e.touches.length === 1 && galleryState.isDragging) {
+                    e.preventDefault();
+                    const t   = e.touches[0];
+                    const now = performance.now();
+                    galleryState.tx = galleryState.startTx + (t.clientX - galleryState.dragStartX);
+                    galleryState.ty = galleryState.startTy + (t.clientY - galleryState.dragStartY);
+                    applyTransform(false);
+
+                    galleryState.samples.push({ x: t.clientX, y: t.clientY, t: now });
+                    while (galleryState.samples.length > 2 && now - galleryState.samples[0].t > 100) {
+                        galleryState.samples.shift();
+                    }
+                }
+            }, { passive: false });
+
+            viewport.addEventListener('touchend', function (e) {
+                if (e.touches.length === 0 && galleryState.isDragging) {
+                    galleryState.isDragging = false;
+                    updateCursorAndControls();
+                    startMomentumFromSamples();
+                } else if (e.touches.length === 1) {
+                    // Transition smoothly from 2-finger pinch to 1-finger pan
+                    const t = e.touches[0];
+                    galleryState.pinchDist  = 0;
+                    galleryState.isDragging = galleryState.scale > 1.01;
+                    galleryState.dragStartX = t.clientX;
+                    galleryState.dragStartY = t.clientY;
+                    galleryState.startTx    = galleryState.tx;
+                    galleryState.startTy    = galleryState.ty;
+                    galleryState.samples    = [{ x: t.clientX, y: t.clientY, t: performance.now() }];
+                    updateCursorAndControls();
+                }
+            });
+
+            // 5. Floating overlay controls & navigation buttons
+            zoomInBtn.addEventListener('click', function () {
+                const rect = viewport.getBoundingClientRect();
+                zoomToPoint(galleryState.scale * 1.4, rect.left + rect.width / 2, rect.top + rect.height / 2, true);
+            });
+
+            zoomOutBtn.addEventListener('click', function () {
+                const rect = viewport.getBoundingClientRect();
+                zoomToPoint(galleryState.scale / 1.4, rect.left + rect.width / 2, rect.top + rect.height / 2, true);
+            });
+
+            resetBtn.addEventListener('click', function () {
+                resetToFit(true);
+            });
+
+            closeBtn.addEventListener('click', closeGallery);
+            prevBtn.addEventListener('click', () => stepGallery(-1));
+            nextBtn.addEventListener('click', () => stepGallery(1));
+
+            dlBtn.addEventListener('click', function (e) {
+                const currentImg = galleryState.images[galleryState.index];
+                if (!currentImg) return;
+                triggerFileDownload(e, currentImg.url, galleryState.identifier, currentImg.label, false, dlBtn);
+            });
+
+            // 6. Keyboard shortcuts (Esc, Arrows, +, -, 0)
+            window.addEventListener('keydown', function (e) {
+                if (!galleryState.isOpen) return;
+                if (e.key === 'Escape') {
+                    e.preventDefault();
+                    closeGallery();
+                } else if (e.key === 'ArrowLeft' && galleryState.images.length > 1) {
+                    e.preventDefault();
+                    stepGallery(-1);
+                } else if (e.key === 'ArrowRight' && galleryState.images.length > 1) {
+                    e.preventDefault();
+                    stepGallery(1);
+                } else if (e.key === '+' || e.key === '=') {
+                    e.preventDefault();
+                    zoomInBtn.click();
+                } else if (e.key === '-' || e.key === '_') {
+                    e.preventDefault();
+                    zoomOutBtn.click();
+                } else if (e.key === '0') {
+                    e.preventDefault();
+                    resetToFit(true);
+                }
+            });
+
+            window.addEventListener('resize', function () {
+                if (galleryState.isOpen) applyTransform(false);
+            });
+
+            return el;
+        }
+
+        function renderGallerySlide() {
+            const el  = ensureGalleryLightbox();
+            const img = galleryState.images[galleryState.index];
+            if (!img) return;
+
+            const imgEl      = el.querySelector('#btx-gallery-img');
+            const titleEl    = el.querySelector('#btx-gallery-title');
+            const counterEl  = el.querySelector('#btx-gallery-counter');
+            const prevBtn    = el.querySelector('#btx-gallery-prev');
+            const nextBtn    = el.querySelector('#btx-gallery-next');
+            const dlBtn      = el.querySelector('#btx-gallery-download');
+
+            el._resetToFit(false);
+
+            imgEl.src          = img.url;
+            imgEl.alt          = img.label;
+            titleEl.textContent = `${galleryState.identifier} — ${img.label}`;
+
+            const total = galleryState.images.length;
+            counterEl.textContent   = total > 1 ? `${galleryState.index + 1} / ${total}` : '';
+            counterEl.style.display = total > 1 ? '' : 'none';
+            prevBtn.style.display   = total > 1 ? '' : 'none';
+            nextBtn.style.display   = total > 1 ? '' : 'none';
+
+            const filename = buildDownloadFilename(galleryState.identifier, img.label, false);
+            dlBtn.href     = getProxyDownloadUrl(img.url, filename);
+            dlBtn.setAttribute('download', filename);
+        }
+
+        function openGallery(images, index, identifier, triggerEl) {
+            const el = ensureGalleryLightbox();
+            galleryState.isOpen      = true;
+            galleryState.images      = images;
+            galleryState.index       = index;
+            galleryState.identifier  = identifier;
+            galleryState.lastFocusEl = triggerEl || document.activeElement;
+
+            renderGallerySlide();
+            el.classList.add('btx-gallery--open');
+            el.setAttribute('aria-hidden', 'false');
+            document.body.classList.add('btx-gallery-lock');
+            el.focus();
+        }
+
+        function stepGallery(delta) {
+            const total = galleryState.images.length;
+            if (total <= 1) return;
+            galleryState.index = (galleryState.index + delta + total) % total;
+            renderGallerySlide();
+        }
+
+        function closeGallery() {
+            if (!galleryEl || !galleryState.isOpen) return;
+            galleryState.isOpen = false;
+            galleryEl.classList.remove('btx-gallery--open');
+            galleryEl.setAttribute('aria-hidden', 'true');
+            document.body.classList.remove('btx-gallery-lock');
+            if (galleryState.lastFocusEl && typeof galleryState.lastFocusEl.focus === 'function') {
+                galleryState.lastFocusEl.focus();
+            }
+        }
+
         // ── Detail panel ─────────────────────────────────────────
         function buildDetailPanel() {
             const el = document.createElement('div');
@@ -618,22 +1323,40 @@ function btx_render_fulfillment_dashboard_script() {
                 grid.className = `btx-img-grid btx-img-grid--count-${images.length}`;
                 if (images.length) body.appendChild(grid);
 
-                for (const img of images) {
+                images.forEach((img, imgIdx) => {
+                    const filename = buildDownloadFilename(data.identifier, img.label, false);
+                    const proxyUrl = getProxyDownloadUrl(img.url, filename);
+
                     const card = document.createElement('div');
                     card.className = 'btx-img-card';
                     card.innerHTML = `
-                        <div class="btx-img-card__image-wrap" id="wrap-${img.key}">
+                        <div class="btx-img-card__image-wrap" id="wrap-${img.key}" role="button" tabindex="0" aria-label="View ${img.label} full screen">
                             <img src="${img.url}" alt="${img.label}" loading="lazy">
+                            <span class="btx-img-card__zoom-hint" aria-hidden="true">&#128269; Click to inspect</span>
                         </div>
                         <div class="btx-img-card__footer">
                             <span class="btx-img-card__label">${img.label}</span>
-                            <a href="${img.url}" class="btx-img-card__btn" download>
+                            <a href="${proxyUrl}" class="btx-img-card__btn" download="${filename}">
                                 &#8595; Download
                             </a>
                         </div>
                     `;
                     const wrap  = card.querySelector('.btx-img-card__image-wrap');
                     const imgEl = card.querySelector('img');
+                    const dlBtn = card.querySelector('.btx-img-card__btn');
+
+                    wrap.addEventListener('click', () => openGallery(images, imgIdx, data.identifier, wrap));
+                    wrap.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            openGallery(images, imgIdx, data.identifier, wrap);
+                        }
+                    });
+
+                    dlBtn.addEventListener('click', (e) => {
+                        triggerFileDownload(e, img.url, data.identifier, img.label, false, dlBtn);
+                    });
+
                     imgEl.addEventListener('load',  () => wrap.classList.add('btx-loaded'));
                     imgEl.addEventListener('error', () => {
                         if (!imgEl.dataset.retried) {
@@ -646,19 +1369,25 @@ function btx_render_fulfillment_dashboard_script() {
                         wrap.innerHTML = '';   // hide broken image wrapper
                     });
                     grid.appendChild(card);
-                }
+                });
 
                 // KML row (below images) — uses the same Download button as image cards
                 if (kml) {
-                    const kmlRow = document.createElement('div');
-                    kmlRow.className = 'btx-kml-row';
-                    kmlRow.innerHTML = `
+                    const kmlFilename = buildDownloadFilename(data.identifier, 'Boundary_Coordinates', true);
+                    const kmlProxyUrl = getProxyDownloadUrl(kml.url, kmlFilename);
+                    const kmlRow      = document.createElement('div');
+                    kmlRow.className  = 'btx-kml-row';
+                    kmlRow.innerHTML  = `
                         <span class="btx-kml-row__icon">📍</span>
                         <span class="btx-kml-row__label">Boundary Coordinates (KML)</span>
-                        <a href="${kml.url}" class="btx-img-card__btn" download>
+                        <a href="${kmlProxyUrl}" class="btx-img-card__btn" download="${kmlFilename}">
                             &#8595; Download
                         </a>
                     `;
+                    const kmlBtn = kmlRow.querySelector('.btx-img-card__btn');
+                    kmlBtn.addEventListener('click', (e) => {
+                        triggerFileDownload(e, kml.url, data.identifier, 'Boundary_Coordinates', true, kmlBtn);
+                    });
                     body.appendChild(kmlRow);
                 }
 
@@ -680,6 +1409,7 @@ function btx_render_fulfillment_dashboard_script() {
         }
 
         function closeDetail() {
+            closeGallery();
             detailEl.classList.remove('btx-detail--open');
             detailEl.querySelector('#btx-detail-body').innerHTML = '';
             if (listEl) listEl.style.display = '';
@@ -716,12 +1446,9 @@ function btx_render_fulfillment_dashboard_script() {
                 let i = 1;
                 for (const img of images) {
                     try {
-                        const blob = await fetch(img.url, { mode: 'cors' }).then(r => {
-                            if (!r.ok) throw new Error('fetch failed');
-                            return r.blob();
-                        });
-                        // Guess extension from Content-Type or default to .jpg
-                        const ext = blob.type === 'image/png' ? 'png' : 'jpg';
+                        const baseFilename = buildDownloadFilename(identifier, img.label, false);
+                        const blob = await fetchFileBlob(img.url, baseFilename);
+                        const ext  = extFromBlob(blob, false);
                         zip.file(`${i}-${img.label.replace(/\s+/g, '_')}.${ext}`, blob);
                         i++;
                     } catch (fetchErr) {
@@ -729,15 +1456,18 @@ function btx_render_fulfillment_dashboard_script() {
                     }
                 }
                 if (Object.keys(zip.files).length === 0) {
-                    throw new Error('No images could be fetched. This may be a CORS restriction.');
+                    throw new Error('No images could be fetched.');
                 }
                 const content = await zip.generateAsync({ type: 'blob' });
                 // Trigger download via temporary anchor
                 const a = document.createElement('a');
+                a.style.display = 'none';
                 a.href = URL.createObjectURL(content);
                 a.download = identifier.replace(/\s+/g, '_') + '.zip';
+                document.body.appendChild(a);
                 a.click();
-                URL.revokeObjectURL(a.href);
+                document.body.removeChild(a);
+                setTimeout(() => URL.revokeObjectURL(a.href), 5000);
                 btn.textContent = '✓ Downloaded';
                 setTimeout(() => {
                     btn.disabled    = false;

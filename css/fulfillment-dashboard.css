@@ -219,6 +219,11 @@ a[href*="action=index"][href*="model=download"],
     justify-content: center;
     position: relative;
     overflow: hidden;
+    cursor: zoom-in;
+    outline: none;
+}
+.btx-img-card__image-wrap:focus-visible {
+    box-shadow: inset 0 0 0 3px #1e3a5f;
 }
 .btx-img-card__image-wrap img {
     width: 100%;
@@ -226,6 +231,35 @@ a[href*="action=index"][href*="model=download"],
     display: block;
     max-height: 520px;
     object-fit: cover;
+    transition: transform .25s ease;
+}
+.btx-img-card__image-wrap:hover img,
+.btx-img-card__image-wrap:focus-visible img {
+    transform: scale(1.015);
+}
+.btx-img-card__zoom-hint {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    z-index: 2;
+    padding: 5px 10px;
+    border-radius: 9999px;
+    background: rgba(15, 23, 42, 0.72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff;
+    font-size: .78rem;
+    font-weight: 500;
+    line-height: 1.2;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity .18s ease, transform .18s ease;
+}
+.btx-img-card__image-wrap:hover .btx-img-card__zoom-hint,
+.btx-img-card__image-wrap:focus-visible .btx-img-card__zoom-hint {
+    opacity: 1;
+    transform: translateY(0);
 }
 /* Loading skeleton shimmer */
 .btx-img-card__image-wrap::before {
@@ -336,6 +370,236 @@ a[href*="action=index"][href*="model=download"],
 .btx-download-all:hover { background: #f8fafc; border-color: #94a3b8; color: #1e293b !important; }
 .btx-download-all:disabled { opacity: .6; cursor: wait; }
 
+/* ================================================================
+   Interactive Pan & Zoom Gallery Lightbox
+   ================================================================ */
+body.btx-gallery-lock {
+    overflow: hidden !important;
+}
+
+.btx-gallery {
+    position: fixed;
+    inset: 0;
+    z-index: 999999;
+    display: none;
+    flex-direction: column;
+    background: rgba(15, 23, 42, 0.94);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #f8fafc;
+    user-select: none;
+    -webkit-user-select: none;
+    outline: none;
+    box-sizing: border-box;
+}
+.btx-gallery * {
+    box-sizing: border-box;
+}
+.btx-gallery--open {
+    display: flex;
+}
+
+/* Top bar */
+.btx-gallery__topbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 14px 20px;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.85) 0%, rgba(15, 23, 42, 0) 100%);
+    pointer-events: none;
+}
+.btx-gallery__meta,
+.btx-gallery__actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    pointer-events: auto;
+}
+.btx-gallery__title {
+    font-size: .95rem;
+    font-weight: 600;
+    color: #f8fafc;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+.btx-gallery__counter {
+    padding: 3px 9px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.14);
+    font-size: .78rem;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+.btx-gallery__download-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 6px;
+    background: #1e3a5f;
+    color: #fff !important;
+    font-size: .85rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+}
+.btx-gallery__download-btn:hover {
+    background: #254a78;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+.btx-gallery__close-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(30, 41, 59, 0.75);
+    color: #f8fafc;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background .15s, border-color .15s;
+}
+.btx-gallery__close-btn:hover {
+    background: rgba(51, 65, 85, 0.95);
+    border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Interactive viewport & dynamic cursors */
+.btx-gallery__viewport {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    touch-action: none;
+}
+.btx-gallery__viewport--zoom-in {
+    cursor: zoom-in;
+}
+.btx-gallery__viewport--grab {
+    cursor: grab;
+}
+.btx-gallery__viewport--grabbing {
+    cursor: grabbing;
+}
+
+/* GPU-accelerated image transform layer */
+.btx-gallery__img {
+    max-width: 90vw;
+    max-height: 82vh;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    transform-origin: center center;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -webkit-user-drag: none;
+    user-select: none;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+}
+.btx-gallery__img--animate {
+    transition: transform 0.22s cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* Prev / Next navigation buttons */
+.btx-gallery__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 15;
+    width: 44px;
+    height: 44px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(15, 23, 42, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    color: #fff;
+    font-size: 1.75rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background .15s, border-color .15s, transform .15s;
+}
+.btx-gallery__nav:hover {
+    background: rgba(30, 41, 59, 0.92);
+    border-color: rgba(255, 255, 255, 0.38);
+}
+.btx-gallery__nav--prev { left: 18px; }
+.btx-gallery__nav--next { right: 18px; }
+
+/* Subtle floating overlay controls: Zoom Out (-), Fit to View, Zoom In (+) */
+.btx-gallery__controls {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 20;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px;
+    border-radius: 9999px;
+    background: rgba(15, 23, 42, 0.78);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.btx-gallery__ctrl-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border-radius: 9999px;
+    border: none;
+    background: transparent;
+    color: #f8fafc;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition: background .15s, color .15s, opacity .15s;
+}
+.btx-gallery__ctrl-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.14);
+}
+.btx-gallery__ctrl-btn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+.btx-gallery__ctrl-btn--reset {
+    font-size: .82rem;
+    font-weight: 600;
+    padding: 0 14px;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    color: #cbd5e1;
+}
+.btx-gallery__ctrl-btn--reset.btx-gallery__ctrl-btn--active {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+}
+
 /* ── Mobile ───────────────────────────────────────────────────── */
 @media (max-width: 600px) {
     .btx-files-row {
@@ -351,4 +615,28 @@ a[href*="action=index"][href*="model=download"],
     .btx-img-grid--count-4,
     .btx-img-grid--count-5,
     .btx-img-grid--count-6 { grid-template-columns: 1fr; }
+    .btx-img-card__zoom-hint {
+        opacity: 1;
+        transform: none;
+    }
+    .btx-gallery__topbar {
+        padding: 10px 12px;
+    }
+    .btx-gallery__title {
+        font-size: .85rem;
+        max-width: 48vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .btx-gallery__nav {
+        width: 38px;
+        height: 38px;
+        font-size: 1.4rem;
+    }
+    .btx-gallery__nav--prev { left: 10px; }
+    .btx-gallery__nav--next { right: 10px; }
+    .btx-gallery__controls {
+        bottom: 16px;
+    }
 }
