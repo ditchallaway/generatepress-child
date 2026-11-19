@@ -154,8 +154,8 @@ $(document).ready(function() {
         return;
     }
     $('.the-map').each(function() {
-        // Avoid double-initialization if Advanced Scripts' maptest is still active
-        if ($(this).children().length > 0) {
+        // Avoid double-initialization if a Google Map (.gm-style) is already rendered inside
+        if ($(this).find('.gm-style').length > 0) {
             return;
         }
         initMap( $(this) );
