@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"uri": "vscode-remote://wsl+ubuntu/home/bot/brokertricks/repos/generatepress-child"
+		},
+		{
+			"uri": "vscode-remote://wsl+ubuntu/home/bot/brokertricks/repos/brokertricks-project-docs"
+		}
+	],
+	"remoteAuthority": "wsl+ubuntu",
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "generatepress-child"
+	}
+}

@@ -71,5 +71,26 @@ function brokertricks_enqueue_assets() {
             true
         );
     }
+
+    // 7. Google Maps API & Parcel Map JS (on /map page or any page with .the-map)
+    global $post;
+    $is_map_page = is_page( 'map' ) || ( is_a( $post, 'WP_Post' ) && strpos( $post->post_content, 'the-map' ) !== false );
+    if ( $is_map_page && file_exists( $theme_dir . '/js/parcel-map.js' ) ) {
+        wp_enqueue_script(
+            'brokertricks-google-maps',
+            'https://maps.googleapis.com/maps/api/js?key=AIzaSyB6OMFnuVXWUSgiKnVi2VpFOv7XdGppvSk',
+            array(),
+            null,
+            true
+        );
+
+        wp_enqueue_script(
+            'brokertricks-parcel-map',
+            $theme_uri . '/js/parcel-map.js',
+            array( 'jquery', 'brokertricks-google-maps' ),
+            filemtime( $theme_dir . '/js/parcel-map.js' ),
+            true
+        );
+    }
 }
 add_action( 'wp_enqueue_scripts', 'brokertricks_enqueue_assets' );

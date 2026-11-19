@@ -23,3 +23,8 @@ require_once get_stylesheet_directory() . '/inc/fulfillment-dashboard.php';
  * Theme hooks, filters, and template layout overrides
  */
 require_once get_stylesheet_directory() . '/inc/hooks.php';
+
+/**
+ * Custom theme shortcodes ([back], [copyright], [parcel], [smartcode])
+ */
+require_once get_stylesheet_directory() . '/inc/shortcodes.php';
